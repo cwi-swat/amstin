@@ -1,0 +1,44 @@
+metamodel StateMachine
+
+class Actions
+  commands: Command*
+end
+
+class Command
+  name: str
+  code: str
+end
+
+class Commands < Decl
+  commands: Command*
+end
+
+abstract class Decl
+end
+
+class Event
+  name: str
+  code: str
+end
+
+class Events < Decl
+  events: Event*
+end
+
+class State < Decl
+  name: str
+  actions: Actions?
+  transitions: Trans*
+end
+
+class StateMachine
+  decls: Decl*
+end
+
+class Trans
+  event: Event
+  state: State
+end
+
+
+end

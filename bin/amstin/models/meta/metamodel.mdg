@@ -1,0 +1,25 @@
+
+grammar MetaModel is MetaModel
+where
+  MetaModel ::= "metamodel" name:key classes:Class* "end"
+
+  Class ::= isAbstract:"abstract"? "class" name:key parent:Parent? fields:Field* "end"
+  
+  Field ::= [Field] name:id ":" type:Type mult:Mult
+  
+  Type ::= [Int] "int"
+  		| [Bool] "bool"
+  		| [Str] "str"
+  		| [Sym] "id"
+
+  // How to avoid the superfluous Klass here?
+  // the fact that Class is referenced is actually
+  // relevant when Type is reference (e.g. in Field)
+
+  		| [Klass] klass:Class^
+  
+  // todo? detect enums here
+  Mult ::= [Star] "*" | [Opt] "?" | [Single]
+  
+  Parent ::= "<" type:Class^
+end

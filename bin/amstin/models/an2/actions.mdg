@@ -1,0 +1,19 @@
+
+
+grammar Strategy is Strategies
+
+where
+
+  Strategies ::= "strategies" defs:Definition*
+  
+  Definition ::= [Def] name:key "(" formals:{id ","}* ")" "=" body:Strategy
+                 [Primitive] "primitive" name:key 
+  
+  Action ::= [Then] lhs:Action "then" rhs:Action
+          |  [AndThen] lhs:Action "and" "then" rhs:Action
+          |  [Hence] lhs:Action "hence" rhs:Action
+          |  [Rec] "rec" unfold:let "(" Action ")"
+          |  [Call] unfold:Rec<
+         
+         
+end

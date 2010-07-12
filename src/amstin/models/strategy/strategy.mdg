@@ -1,0 +1,14 @@
+grammar Strategy is Strategies
+
+where
+
+  Strategies ::= "strategies" defs:Definition*
+  
+  Definition ::= [Def] name:key "(" formals:{id ","}* ")" "=" body:Strategy
+                 [Primitive] "primitive" name:key 
+  
+  Strategy ::= [Call] def:Definition^ "(" args:{Strategy ","}* ")"
+            |  [Sequence] lhs:Strategy ";" rhs:Strategy
+            |  [OrElse] lhs:Strategy "<+" rhs:Strategy
+         
+end
