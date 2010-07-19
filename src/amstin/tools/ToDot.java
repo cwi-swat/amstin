@@ -9,6 +9,7 @@ import java.lang.reflect.Field;
 import java.util.IdentityHashMap;
 import java.util.List;
 
+@SuppressWarnings("unchecked")
 public class ToDot {
 
 	public static void main(String[] args) throws IOException {
@@ -39,19 +40,16 @@ public class ToDot {
 
 	private Object root;
 	private Writer output;
-	private IdentityHashMap<Object, Integer> visited;
-	private int node;
+	private IdentityHashMap<Object, Integer> labels;
 
 
 	private ToDot(Object obj, Writer output) {
 		this.root = obj;
 		this.output = output;
-		this.visited = new IdentityHashMap<Object,Integer>();
-		this.node = 0;
+		this.labels = Labeling.label(root);
 	}
 
 	private void todot() throws IOException {
-		toDotRec(root);
 		header();
 		nodes();
 		edges();
@@ -59,7 +57,7 @@ public class ToDot {
 	}
 	
 	private void edges() throws IOException {
-		for (Object o: visited.keySet()) {
+		for (Object o: labels.keySet()) {
 			edges(o);
 		}
 	}
@@ -70,6 +68,8 @@ public class ToDot {
 			try {
 				Object kid = f.get(o);
 				String name = f.getName();
+				
+				// TODO: what if a List contains str/int/etc. ?
 				if (kid instanceof String || kid instanceof Boolean || kid instanceof Integer || kid instanceof Double) {
 					// do nothing
 				}
@@ -92,18 +92,17 @@ public class ToDot {
 	}
 
 	private void nodes() throws IOException {
-		for (Object o: visited.keySet()) {
+		for (Object o: labels.keySet()) {
 			node(o);
 		}
 	}
 
 	private void node(Object o) throws IOException {
-		String label = makeLabel(o);
 		output.write(nodeId(o) + " [label=\"" + makeLabel(o) + "\"]\n");
 	}
 	
 	private String nodeId(Object o) {
-		return "node_" + visited.get(o);
+		return "node_" + labels.get(o);
 	}
 
 	private String makeLabel(Object o) {
@@ -114,7 +113,6 @@ public class ToDot {
 				Object kid = f.get(o);
 				String name = f.getName();
 				if (kid instanceof String || kid instanceof Boolean || kid instanceof Integer || kid instanceof Double) {
-//					label += "<tr><td>" + name + "</td><td>" + kid.toString() + "</td></tr>\n";
 					label += "|" + name + " = " + dotEscape(kid.toString());
 				}
 			} catch (IllegalArgumentException e) {
@@ -123,8 +121,7 @@ public class ToDot {
 				throw new AssertionError(e);
 			}
 		}
-		//label = "<table>\n<tr><td colspan=\"2\">" + visited.get(o) + ": " + klass.getSimpleName() + "</td></tr>\n" + label + "</table>\n";
-		label = "{" + visited.get(o) + ": " + klass.getSimpleName() + label + "}";
+		label = "{" + labels.get(o) + ": " + klass.getSimpleName() + label + "}";
 		return label;
 	}
 
@@ -148,56 +145,6 @@ public class ToDot {
 	private void header() throws IOException {
 		output.write("digraph aGraph {\n");
 		output.write("node [shape=Mrecord]\n");
-	}
-
-	private void toDotRec(Object o) {
-		if (o == null) {
-			return;
-		}
-
-		if (o instanceof String) {
-			return;
-		}
-
-		if (o instanceof Boolean) {
-			return;
-		}
-
-		if (o instanceof Integer) {
-			return;
-		}
-
-		if (o instanceof Double) {
-			return;
-		}
-
-
-		if (o instanceof List) {
-			List l = (List)o;
-			for (Object e: l) {
-				toDotRec(e);
-			}
-			return;
-		}
-
-		if (visited.containsKey(o)) {
-			return;
-		}
-		visited.put(o, node++);
-
-
-		Class<?> klass = o.getClass();
-		for (Field f: klass.getFields()) {
-			try {
-				Object kid = f.get(o);
-				toDotRec(kid);
-			} catch (IllegalArgumentException e) {
-				throw new AssertionError(e);
-			} catch (IllegalAccessException e) {
-				throw new AssertionError(e);
-			}
-		}
-		
 	}
 
 

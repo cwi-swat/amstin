@@ -29,7 +29,7 @@ public class DefaultVisitor implements Visitor {
 	}
 	
 	@SuppressWarnings("unchecked")
-	protected void visitObject(Object arg) {
+	public void visitObject(Object arg) {
 		if (arg instanceof Visitable) {
 			((Visitable)arg).accept(this);
 		}

@@ -17,8 +17,7 @@ public class CreateScript {
 	}
 	
 	private Object root;
-	private IdentityHashMap<Object, Integer> visited;
-	private int objNum;
+	private IdentityHashMap<Object, Integer> labels;
 	private String pkg;
 	private String name;
 	private Writer output;
@@ -28,12 +27,10 @@ public class CreateScript {
 		this.name = name;
 		this.root = obj;
 		this.output = output;
-		this.visited = new IdentityHashMap<Object,Integer>();
-		this.objNum = 0;
+		this.labels = Labeling.label(root);
 	}
 	
 	private void script() {
-		instantiateRec(root);
 		try {
 			header();
 			constructorInvocations();
@@ -66,7 +63,7 @@ public class CreateScript {
 	}
 
 	private void constructorInvocations() throws IOException {
-		for (Object o: visited.keySet()) {
+		for (Object o: labels.keySet()) {
 			String type = o.getClass().getName();
 			output.write(type + " " + varForObj(o) + " = new " + type + "();\n");
 		}
@@ -89,7 +86,7 @@ public class CreateScript {
 		else if (elt instanceof Double) {
 			return elt.toString();
 		}
-		else if (visited.containsKey(elt)) {
+		else if (labels.containsKey(elt)) {
 			return varForObj(elt);
 		}
 		else {
@@ -98,12 +95,12 @@ public class CreateScript {
 	}
 	
 	private String varForObj(Object obj) {
-		return "obj" + visited.get(obj);
+		return "obj" + labels.get(obj);
 	}
 	
 	@SuppressWarnings("unchecked")
 	private void assignFields() throws IOException {
-		for (Object o: visited.keySet()) {
+		for (Object o: labels.keySet()) {
 			Class<?> klass = o.getClass();
 			String var = varForObj(o);
 			for (Field f: klass.getFields()) {
@@ -130,57 +127,6 @@ public class CreateScript {
 				} catch (IllegalAccessException e) {
 					throw new AssertionError(e);
 				}
-			}
-		}
-	}
-
-	
-	@SuppressWarnings("unchecked")
-	private void instantiateRec(Object o) {
-		if (o == null) {
-			return;
-		}
-		
-		if (o instanceof String) {
-			return;
-		}
-		
-		if (o instanceof Boolean) {
-			return;
-		}
-		
-		if (o instanceof Integer) {
-			return;
-		}
-		
-		if (o instanceof Double) {
-			return;
-		}
-		
-
-		if (o instanceof List) {
-			List l = (List)o;
-			for (Object e: l) {
-				instantiateRec(e);
-			}
-			return;
-		}
-		
-		if (visited.containsKey(o)) {
-			return;
-		}
-		visited.put(o, objNum++);
-		
-		
-		Class<?> klass = o.getClass();
-		for (Field f: klass.getFields()) {
-			try {
-				Object kid = f.get(o);
-				instantiateRec(kid);
-			} catch (IllegalArgumentException e) {
-				throw new AssertionError(e);
-			} catch (IllegalAccessException e) {
-				throw new AssertionError(e);
 			}
 		}
 	}

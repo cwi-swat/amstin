@@ -1,4 +1,4 @@
-/* Generated at 2010/07/19 14:45:10; edit at your own risk. */
+/* Generated at 2010/07/19 16:27:22; edit at your own risk. */
 
 package amstin.models.meta;
 
