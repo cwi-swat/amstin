@@ -267,11 +267,25 @@ public class Unparse {
 
 	private Alt findAlt(Rule rule, Object obj) {
 		String name = obj.getClass().getSimpleName();
+		boolean isInjection = true;
 		for (Alt alt: rule.alts) {
 			if (alt.type != null && alt.type.name.equals(name)) {
 				return alt;
 			}
+			isInjection &= alt.elements.size() == 1 && (alt.elements.get(0).symbol instanceof Sym);
 		}
+		
+		// if injection look over them
+		if (isInjection) {
+			for (Alt alt: rule.alts) {
+				Sym sym = (Sym) alt.elements.get(0).symbol;
+				Alt result = findAlt(sym.rule, obj);
+				if (result != null) {
+					return result;
+				}
+			}
+		}
+		
 		// if no alt found, use rulename and first alt.
 		if (rule.name.equals(name)) {
 			return rule.alts.get(0);
