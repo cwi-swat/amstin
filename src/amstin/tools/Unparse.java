@@ -90,7 +90,6 @@ public class Unparse {
 	}
 	
 	private void collectInCons(Rule rule, Object obj, String[] key) {
-		Class<?> klz = obj.getClass();
 		Alt alt = findAlt(rule, obj); 
 		for (int i = 0; i < alt.elements.size(); i++) {
 			Element elt = alt.elements.get(i);
@@ -99,6 +98,7 @@ public class Unparse {
 				continue;
 			}
 			String fieldName = elt.label.name;
+			Class<?> klz = obj.getClass();
 			try {
 				Field f = klz.getField(fieldName);
 				Object value = f.get(obj);
@@ -231,7 +231,6 @@ public class Unparse {
 
 	private void unparseUsingAlt(Rule rule, Object obj) throws IOException {
 		Alt alt = findAlt(rule, obj); 
-		Class<?> klz = obj.getClass();
 		for (int i = 0; i < alt.elements.size(); i++) {
 			Element elt = alt.elements.get(i);
 			Symbol sym = elt.symbol;
@@ -240,6 +239,8 @@ public class Unparse {
 				unparseRec(sym, null);
 			}
 			else {
+				Class<?> klz = obj.getClass();
+				
 				String fieldName = elt.label.name;
 				try {
 					Field f = klz.getField(fieldName);
@@ -265,18 +266,40 @@ public class Unparse {
 		writer.write(" ");
 	}
 
-	private Alt findAlt(Rule rule, Object obj) {
-		String name = obj.getClass().getSimpleName();
+	private boolean isInjection(Rule rule) {
 		boolean isInjection = true;
 		for (Alt alt: rule.alts) {
-			if (alt.type != null && alt.type.name.equals(name)) {
-				return alt;
-			}
 			isInjection &= alt.elements.size() == 1 && (alt.elements.get(0).symbol instanceof Sym);
 		}
-		
+		return isInjection;
+	}
+	
+	private Alt findAlt(Rule rule, Object obj) {
+		if (obj == null) {
+			// find the empty alternative
+			for (Alt alt: rule.alts) {
+				if (alt.elements.isEmpty()) {
+					return alt;
+				}
+			}
+			throw new RuntimeException("No empty alternative found in rule: " + rule.name);
+		}
+
+		if (!isInjection(rule)) {
+			String name = obj.getClass().getSimpleName();
+			for (Alt alt: rule.alts) {
+				if (alt.type != null && alt.type.name.equals(name)) {
+					return alt;
+				}
+			}
+			// if no alt found, use rulename and first alt.
+			if (rule.name.equals(name)) {
+				return rule.alts.get(0);
+			}
+		}
+
 		// if injection look over them
-		if (isInjection) {
+		if (isInjection(rule)) {
 			for (Alt alt: rule.alts) {
 				Sym sym = (Sym) alt.elements.get(0).symbol;
 				Alt result = findAlt(sym.rule, obj);
@@ -286,10 +309,6 @@ public class Unparse {
 			}
 		}
 		
-		// if no alt found, use rulename and first alt.
-		if (rule.name.equals(name)) {
-			return rule.alts.get(0);
-		}
 		return null;
 	}
 	

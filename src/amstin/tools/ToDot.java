@@ -70,18 +70,20 @@ public class ToDot {
 				String name = f.getName();
 				
 				// TODO: what if a List contains str/int/etc. ?
-				if (kid instanceof String || kid instanceof Boolean || kid instanceof Integer || kid instanceof Double) {
-					// do nothing
+				if (isPrimitive(kid)) {
+					continue;
 				}
-				else if (kid instanceof List) {
-					for (int i = 0; i < ((List)kid).size(); i++) {
-						Object elt = ((List)kid).get(i);
-						output.write(nodeId(o) + " -> " + nodeId(elt) + " [label=\"" + name + "@" + i + "\"]\n");
+				
+				if (kid instanceof List) {
+					List l = (List)kid;
+					for (int i = 0; i < l.size(); i++) {
+						writeEdge(o, l.get(i), name + "@" + i);
 					}
 				}
 				else if (kid != null) {
-					output.write(nodeId(o) + " -> " + nodeId(kid) + " [label=\"" + name + "\"]\n");
+					writeEdge(o, kid, name);
 				}
+				
 			} catch (IllegalArgumentException e) {
 				throw new AssertionError(e);
 			} catch (IllegalAccessException e) {
@@ -89,6 +91,10 @@ public class ToDot {
 			}
 		}
 		
+	}
+
+	private void writeEdge(Object o, Object elt, String label) throws IOException {
+		output.write(nodeId(o) + " -> " + nodeId(elt) + " [label=\"" + label + "\"]\n");
 	}
 
 	private void nodes() throws IOException {
@@ -112,7 +118,7 @@ public class ToDot {
 			try {
 				Object kid = f.get(o);
 				String name = f.getName();
-				if (kid instanceof String || kid instanceof Boolean || kid instanceof Integer || kid instanceof Double) {
+				if (isPrimitive(kid)) {
 					label += "|" + name + " = " + dotEscape(kid.toString());
 				}
 			} catch (IllegalArgumentException e) {
@@ -125,7 +131,11 @@ public class ToDot {
 		return label;
 	}
 
-	private String dotEscape(String string) {
+	private static boolean isPrimitive(Object kid) {
+		return kid instanceof String || kid instanceof Boolean || kid instanceof Integer || kid instanceof Double;
+	}
+
+	private static String dotEscape(String string) {
 		return string
 		.replaceAll("\\|", "\\|")
 		.replaceAll("\\n", "\\n")
@@ -138,16 +148,16 @@ public class ToDot {
 		.replaceAll(">", "\\>");
 	}
 
-	private void footer() throws IOException {
-		output.write("}\n");
-	}
+	
 
 	private void header() throws IOException {
 		output.write("digraph aGraph {\n");
 		output.write("node [shape=Mrecord]\n");
 	}
 
-
+	private void footer() throws IOException {
+		output.write("}\n");
+	}
 
 
 }
