@@ -12,6 +12,7 @@ import amstin.parsing.Parser;
 import amstin.tools.CheckInstance;
 import amstin.tools.CreateScript;
 import amstin.tools.Equals;
+import amstin.tools.ToDot;
 import amstin.tools.Unparse;
 
 
@@ -47,17 +48,18 @@ public class _Main {
 			System.out.println("ERROR: " + error);
 		}
 		if (errors.isEmpty()) {
-			//If generating the Boot class, use this line.
-					FileWriter f = new FileWriter(new File(Config.PKG_DIR + "/models/grammar/Boot.java"));
-//			PrintWriter f = new PrintWriter(System.out);
+			FileWriter f = new FileWriter(new File(Config.PKG_DIR + "/models/grammar/Boot.java"));
 			CreateScript.script(GRAMMAR_PKG, "Boot", itself2, f);
 			f.flush();
 		}
 		
-		
 		PrintWriter writer = new PrintWriter(System.out);
 		Unparse.unparse(itself0, itself0, writer);
 		writer.flush();
+		
+		ToDot.toDot(itself0, writer);
+		writer.flush();
+		
 	}
 	
 }

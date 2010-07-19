@@ -1,5 +1,7 @@
 package amstin.models.stm;
 
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
@@ -11,6 +13,8 @@ import amstin.parsing.Parser;
 import amstin.tools.CheckInstance;
 import amstin.tools.CreateScript;
 import amstin.tools.Instantiate;
+import amstin.tools.ToDot;
+import amstin.tools.Unparse;
 
 
 public class _Main {
@@ -47,6 +51,15 @@ public class _Main {
 		for (String error: errors) {
 			System.out.println("ERROR: " + error);
 		}
+		
+		
+		PrintWriter writer = new PrintWriter(System.out);
+		Unparse.unparse(stm, grantStm, writer);
+		writer.flush();
+		
+		FileWriter f = new FileWriter(new File("stm.dot"));
+		ToDot.toDot(grantStm, f);
+		f.flush();
 		
 	}
 }

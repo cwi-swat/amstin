@@ -27,11 +27,14 @@ import amstin.models.grammar.Symbol;
 @SuppressWarnings("unchecked")
 public class Unparse {
 
+	// TODO: there is no support for nested keys and path references currently.
+	
 	public static void unparse(Grammar grammar, Object obj, Writer writer) {
 		Unparse unp = new Unparse(grammar, obj, writer);
 		try {
 			unp.unparse();
-		} catch (IOException e) {
+		} 
+		catch (IOException e) {
 			throw new RuntimeException(e);
 		}
 	}
@@ -50,7 +53,8 @@ public class Unparse {
 	
 	private void unparse() throws IOException {
 		Symbol sym = inferSymbol(root);
-		collectRec(sym, root);
+		String dummy[] = {null};
+		collectRec(sym, root, dummy);
 		unparseRec(sym, root);
 	}
 	
@@ -65,26 +69,27 @@ public class Unparse {
 		return null;
 	}
 
-	private void collectRec(Symbol sym, Object obj) {
+	private void collectRec(Symbol sym, Object obj, String key[]) {
 		if (sym instanceof Key) {
-			throw new KeyFound((String)obj);
+			// mimicking "out" variables
+			key[0] = (String)obj;
 		}
 		else if (sym instanceof Opt && obj == null) {
 			return;
 		}
 		else if (sym instanceof Opt) {
-			collectRec(((Opt)sym).arg, obj);
+			collectRec(((Opt)sym).arg, obj, key);
 		}
 		else if (obj instanceof List) {
-			collectInList(sym, (List) obj);
+			collectInList(sym, (List) obj, key);
 		}
 		else if (sym instanceof Sym){
-			collectInCons(((Sym)sym).rule, obj);
+			collectInCons(((Sym)sym).rule, obj, key);
 		}
 
 	}
 	
-	private void collectInCons(Rule rule, Object obj) {
+	private void collectInCons(Rule rule, Object obj, String[] key) {
 		Class<?> klz = obj.getClass();
 		Alt alt = findAlt(rule, obj); 
 		for (int i = 0; i < alt.elements.size(); i++) {
@@ -97,11 +102,10 @@ public class Unparse {
 			try {
 				Field f = klz.getField(fieldName);
 				Object value = f.get(obj);
-				try {
-					collectRec(sym, value);
-				}
-				catch (KeyFound e) {
-					labels.put(obj, e.key);
+				String myKey[] = {null};
+				collectRec(sym, value, myKey);
+				if (myKey[0] != null) {
+					labels.put(obj, myKey[0]);
 				}
 			} catch (SecurityException e) {
 				throw new RuntimeException(e);
@@ -114,17 +118,8 @@ public class Unparse {
 			}
 		}
 	}
-	
-	private static class KeyFound extends RuntimeException {
 
-		private String key;
-
-		public KeyFound(String key) {
-			this.key = key;
-		}
-	}
-
-	private void collectInList(Symbol sym, List l) {
+	private void collectInList(Symbol sym, List l, String[] key) {
 		Symbol arg = null;
 		if (sym instanceof Iter) {
 			arg = ((Iter)sym).arg;
@@ -144,21 +139,9 @@ public class Unparse {
 			throw new RuntimeException("Invalid symbol in collectInList; expected iter or iterStar (or sep variants), got: " + sym);
 		}
 		
-		String key = null;
 		for (Object o: l) {
-			try {
-				collectRec(arg, o);
-			}
-			catch (KeyFound k) {
-				// save it for later so the rest
-				// of the list can be processed
-				key = k.key;
-			}
-		}
-		if (key != null) {
-			throw new KeyFound(key);
-		}
-		
+			collectRec(arg, o, key);
+		}		
 	}
 	
 	private void unparseRec(Symbol sym, Object obj) throws IOException {

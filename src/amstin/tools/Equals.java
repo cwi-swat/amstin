@@ -6,7 +6,7 @@ import java.util.List;
 
 public class Equals {
 
-	private static final boolean DEBUG = true;
+	private static final boolean DEBUG = false;
 
 	public static boolean equals(Object o1, Object o2) {
 		Equals eq = new Equals(o1, o2);
