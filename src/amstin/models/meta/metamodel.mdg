@@ -1,7 +1,7 @@
 
 grammar MetaModel is MetaModel
 where
-  MetaModel ::= "metamodel" name:key classes:Class* "end"
+  MetaModel ::= "metamodel" name:id classes:Class* "end"
 
   Class ::= isAbstract:"abstract"? "class" name:key parent:Parent? fields:Field* "end"
   

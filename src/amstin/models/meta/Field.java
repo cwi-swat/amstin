@@ -5,4 +5,5 @@ public class Field {
 	public Type type;
 	public Mult mult;
 	public Inverse inverse;
+	public Class owner;
 }

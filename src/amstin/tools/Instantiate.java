@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Stack;
 
 import amstin.parsing.ast.Define;
 import amstin.parsing.ast.Field;
@@ -20,7 +21,7 @@ public class Instantiate  {
 	private String pkg;
 	private List<Fix> fixes;
 	private Object root;
-	private Map<Symbol,Object> defs;
+	private Stack<Map<Symbol,Object>> defs;
 
 	public static Object instantiate(String pkg, Object root) {
 		Instantiate toJava = new Instantiate(pkg, root);
@@ -31,13 +32,15 @@ public class Instantiate  {
 		this.pkg = pkg;
 		this.fixes = new ArrayList<Fix>();
 		this.root = root;
-		this.defs = new HashMap<Symbol, Object>();
+//		this.defs = new HashMap<Symbol, Object>();
+		this.defs = new Stack<Map<Symbol,Object>>();
+		this.defs.push(new HashMap<Symbol, Object>());
 	}
 	
 	private Object toJava() {
 		Object result = toJava(root);
 		for (Fix fix: fixes) {
-			fix.apply(defs);
+			fix.apply(defs.peek());
 		}
 		return result;
 	}
@@ -111,11 +114,17 @@ public class Instantiate  {
 			klazz = Class.forName(pkg + "." + obj.getType());
 			Object javaObject = klazz.newInstance();
 			
+			defs.push(new HashMap<Symbol, Object>());
+
+			Symbol mySymbol = null;
+			String myKeyField = null;
+			
 			for (Object kid: obj.getArgs()) {
 				if (kid instanceof Field) { 
 					String fieldName = ((Field)kid).getName();
 					Object value = ((Field)kid).getValue();
 					try {
+
 						Object fieldValue = toJava(value);
 						klazz.getField(fieldName).set(javaObject, fieldValue);
 					}
@@ -123,16 +132,27 @@ public class Instantiate  {
 						recordFieldFix(javaObject, fieldName, r.ref);
 					}
 					catch (DefineFound d) {
-						Symbol symbol = d.def.getSymbol();
-						defs.put(symbol, javaObject);
-						klazz.getField(fieldName).set(javaObject, symbol.getName());
+						mySymbol = d.def.getSymbol();
+						myKeyField = fieldName;
 					}
-					
 				}
 				else {
 					throw new IllegalArgumentException("kids of instances must be fields, not " + kid);
 				}
 			}
+			
+			Map<Symbol, Object> kids = defs.pop();
+			if (mySymbol != null) {
+				for (Map.Entry<Symbol, Object> e: kids.entrySet()) {
+					defs.peek().put(Symbol.intern(mySymbol.getName() + "." + e.getKey().getName()), e.getValue());
+				}
+				defs.peek().put(mySymbol, javaObject);
+				klazz.getField(myKeyField).set(javaObject, mySymbol.getName());
+			}
+			else {
+				defs.peek().putAll(kids);
+			}
+			
 			return javaObject;
 		
 		} catch (ClassNotFoundException e) {
@@ -189,7 +209,8 @@ public class Instantiate  {
 			Symbol symbol = ref.getSymbol();
 			if (!defines.containsKey(symbol)) {
 				throw new AssertionError("Symbol " + symbol + " is not defined");
-			}
+			}				
+			
 			Class<?> klazz = target.getClass();
 			try {
 				klazz.getField(field).set(target, defines.get(symbol));

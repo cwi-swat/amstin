@@ -23,7 +23,7 @@ metamodel MetaMetaModel
 	  name: str
 	  isAbstract: bool
 	  parent: Parent?
-	  fields: Field*
+	  fields: Field* 
 	end
 	
 	class Parent
