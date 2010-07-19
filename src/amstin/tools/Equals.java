@@ -1,6 +1,7 @@
 package amstin.tools;
 
 import java.lang.reflect.Field;
+import java.util.Arrays;
 import java.util.IdentityHashMap;
 import java.util.List;
 
@@ -73,6 +74,29 @@ public class Equals {
 			List l2 = (List)o2;
 			if (l1.size() != l2.size()) {
 				debug(n, "lists o1 and o2 are of unequal length");
+				debug(n, "o1.size = " + l1.size() + "; o2.size = " + l2.size());
+				
+				if (DEBUG) {
+					String os1[] = new String[l1.size()];
+					String os2[] = new String[l2.size()];
+
+					for (int i = 0; i < os1.length; i++) {
+						os1[i] = l1.get(i).toString();
+					}
+					for (int i = 0; i < os2.length; i++) {
+						os2[i] = l2.get(i).toString();
+					}
+
+					Arrays.sort(os1);
+					Arrays.sort(os2);
+
+
+					for (int i = 0; i < Math.max(l1.size(), l2.size()); i++) {
+						Object k1 = i < l1.size() ? os1[i] : "n.a.";
+						Object k2 = i < l2.size() ? os2[i] : "n.a.";
+						debug(n, "o1[" + i + "] = " + k1 + "; o2[] = " + k2);
+					}
+				}
 				return false;
 			}
 			for (int i = 0; i < l1.size(); i++) {

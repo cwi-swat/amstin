@@ -25,6 +25,7 @@ import amstin.models.grammar.Str;
 import amstin.models.grammar.Sym;
 import amstin.models.grammar.Symbol;
 import amstin.models.meta.Bool;
+import amstin.models.meta.Boot;
 import amstin.models.meta.Class;
 import amstin.models.meta.Field;
 import amstin.models.meta.Klass;
@@ -40,11 +41,19 @@ import amstin.parsing.Parser;
 public class InferMetaModel {
 
 	public static void main(String[] args) throws IOException {
-		Grammar o = amstin.models.grammar.Boot.instance;
 		Grammar metaGrammar = Parser.parseGrammar(_Main.METAMODEL_MDG);
-		InferMetaModel inf = new InferMetaModel("Grammar", o);
+		InferMetaModel inf = new InferMetaModel("MetaMetaModel", metaGrammar);
 		inf.infer();
 		MetaModel metaModel = inf.metaModel;
+		
+		// Returns false because list ordering is different.
+		// TODO: need order attribute on many fields.
+		if (Equals.equals(Boot.instance, metaModel)) {
+			System.out.println("YES!");
+		}
+		else {
+			System.out.println("NO!");
+		}
 		Writer writer = new PrintWriter(System.out);
 		Unparse.unparse(metaGrammar, metaModel, writer);
 		writer.flush();

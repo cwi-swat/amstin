@@ -9,4 +9,8 @@ public class Class extends Type {
 	public Parent parent = null;
 	public List<Field> fields;
 	
+	@Override
+	public String toString() {
+		return "class(" + name + ", " + isAbstract + ", " + parent + ")";
+	}
 }

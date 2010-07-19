@@ -12,9 +12,6 @@ metamodel MetaMetaModel
 	class Bool < Type
 	end
 	
-	class Id < Type
-	end
-	
 	class Klass < Type
 	  klass: Class
 	end
