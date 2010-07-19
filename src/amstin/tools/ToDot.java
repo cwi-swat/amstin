@@ -35,6 +35,10 @@ public class ToDot {
 		 */
 		
 	}
+	
+	private void toDotRec(Object obj) {
+		
+	}
 
 
 

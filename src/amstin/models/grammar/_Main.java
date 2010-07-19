@@ -12,6 +12,7 @@ import amstin.parsing.Parser;
 import amstin.tools.CheckInstance;
 import amstin.tools.CreateScript;
 import amstin.tools.Equals;
+import amstin.tools.Unparse;
 
 
 public class _Main {
@@ -52,6 +53,11 @@ public class _Main {
 			CreateScript.script(GRAMMAR_PKG, "Boot", itself2, f);
 			f.flush();
 		}
+		
+		
+		PrintWriter writer = new PrintWriter(System.out);
+		Unparse.unparse(itself0, itself0, writer);
+		writer.flush();
 	}
 	
 }

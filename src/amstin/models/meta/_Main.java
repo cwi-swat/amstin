@@ -3,6 +3,7 @@ package amstin.models.meta;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.List;
 
 import amstin.Config;
@@ -11,6 +12,7 @@ import amstin.parsing.Parser;
 import amstin.tools.CheckInstance;
 import amstin.tools.CreateScript;
 import amstin.tools.Equals;
+import amstin.tools.Unparse;
 
 
 public class _Main {
@@ -42,6 +44,9 @@ public class _Main {
 			out.flush();
 		}
 		
+		PrintWriter writer = new PrintWriter(System.out);
+		Unparse.unparse(meta, metaMetaModel, writer);
+		writer.flush();
 		
 	}
 }
