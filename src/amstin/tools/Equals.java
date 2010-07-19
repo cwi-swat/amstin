@@ -6,6 +6,8 @@ import java.util.List;
 
 public class Equals {
 
+	private static final boolean DEBUG = true;
+
 	public static boolean equals(Object o1, Object o2) {
 		Equals eq = new Equals(o1, o2);
 		return eq.equals();
@@ -24,29 +26,43 @@ public class Equals {
 
 
 	private boolean equals() {
-		return equalsRec(obj1, obj2);
+		return equalsRec(0, obj1, obj2);
 	}
 
+	private static void debug(int n, String s) {
+		if (DEBUG) {
+			for (int i = 0; i < n; i++) { 
+				System.out.print(" ");
+			}
+			System.out.println(s);
+		}
+	}
 
 	@SuppressWarnings("unchecked")
-	private boolean equalsRec(Object o1, Object o2) {
+	private boolean equalsRec(int n, Object o1, Object o2) {
+		debug(n, "Checking EQUALS: o1 = " + o1 + "; o2 = " + o2);
 		if (o1 == null && o2 != null) {
+			debug(n, "o1 is null, o2 isn't");
 			return false;
 		}
 		
 		if (o1 != null && o2 == null) {
+			debug(n, "o2 is null, o1 isn't");
 			return false;
 		}
 		
 		if (o1 == o2) {
+			debug(n, "o1 == o2");
 			return true;
 		}
 		
 		if (o1.getClass() != o2.getClass()) {
+			debug(n, "o1 and o2 have different classes");
 			return false;
 		}
 		
 		if (done.get(o1) == o2) {
+			debug(n, "we've already compared o1 and o2");
 			return true;
 		}
 		
@@ -56,38 +72,44 @@ public class Equals {
 			List l1 = (List)o1;
 			List l2 = (List)o2;
 			if (l1.size() != l2.size()) {
+				debug(n, "lists o1 and o2 are of unequal length");
 				return false;
 			}
 			for (int i = 0; i < l1.size(); i++) {
-				if (!equalsRec(l1.get(i), l2.get(i))) {
+				if (!equalsRec(n + 1, l1.get(i), l2.get(i))) {
+					debug(n, "element " + i + " of o1 and o2 differs");
 					return false;
 				}
 			}
 		}
 		
 		if (o1 instanceof String) {
+			debug(n, "comparing string values");
 			return o1.equals(o2);
 		}
 		else if (o1 instanceof Integer) {
+			debug(n, "comparing integer values");
 			return o1.equals(o2);
 		}
 		else if (o1 instanceof Boolean) {
+			debug(n, "comparing boolean values");
 			return o1.equals(o2);
 		}
 		else if (o1 instanceof Double) {
+			debug(n, "comparing double values");
 			return o1.equals(o2);
 		}
 		
 		
 		Class<?> klass = o1.getClass();
-//		System.out.println("Comparing " + o1 + " and " + o2);
+		debug(n, "comparing fields of o1 and o2");
 		for (Field f: klass.getFields()) {
 			try {
-//				System.out.println("comparing field: " + f.getName() + " in " + klass);
+				debug(n, "comparing field: " + f.getName() + " in " + klass);
 				Object kid1 = f.get(o1);
 				Object kid2 = f.get(o2);
-				if (!equalsRec(kid1, kid2)) {
-//					System.out.println("\treturning false");
+				if (!equalsRec(n + 1, kid1, kid2)) {
+					debug(n, "field " + f.getName() + " differs");
 					return false;
 				}
 				

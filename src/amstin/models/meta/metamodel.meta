@@ -34,7 +34,19 @@ metamodel MetaMetaModel
 	  name: str
 	  type: Type
 	  mult: Mult
+	  inverse: Inverse?
 	end
+	
+	abstract class Inverse
+	end
+	
+	class None < Inverse
+	end
+	
+	class Other < Inverse
+	  other: Field
+	end
+	   
 	
 	abstract class Mult 
 	end

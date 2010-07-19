@@ -37,8 +37,8 @@ public class _Main {
 		}
 
 		if (errors.isEmpty()) {
-//			FileWriter out = new FileWriter(new File(BOOT_JAVA));
-			PrintWriter out = new PrintWriter(System.out);
+			FileWriter out = new FileWriter(new File(BOOT_JAVA));
+//			PrintWriter out = new PrintWriter(System.out);
 			CreateScript.script(METAMODEL_PKG, "Boot", metaMetaModel, out);
 			out.flush();
 		}

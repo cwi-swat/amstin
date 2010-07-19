@@ -70,6 +70,7 @@ public class Parser {
 
 	
 	private static final String ID_REGEX = "[a-zA-Z_$][a-zA-Z_$0-9]*";
+	private static final String REF_REGEX = "(" + ID_REGEX + ")" + "(\\."  + ID_REGEX + ")*";
 	private Map<Sym, IParser> symCache;
 	private Map<Alt, IParser> altCache;
 	private Map<Symbol, IParser> optCache;
@@ -374,7 +375,7 @@ public class Parser {
 	}
 
 	private void parseRef(Ref sym, Cnt cnt, String src, int pos) {
-		Pattern re = Pattern.compile(ID_REGEX);
+		Pattern re = Pattern.compile(REF_REGEX);
 		Matcher m = re.matcher(src.subSequence(pos, src.length()));
 		if (m.lookingAt() && !isReserved(m.group())) {
 			cnt.apply(pos + m.end(), new Reference(amstin.parsing.ast.Symbol.intern(m.group()), sym.ref));

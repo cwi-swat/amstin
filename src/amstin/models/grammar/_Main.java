@@ -1,5 +1,7 @@
 package amstin.models.grammar;
 
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
@@ -45,8 +47,8 @@ public class _Main {
 		}
 		if (errors.isEmpty()) {
 			//If generating the Boot class, use this line.
-			//		FileWriter f = new FileWriter(new File("src/a2mtk/models/grammar/Boot.java"));
-			PrintWriter f = new PrintWriter(System.out);
+					FileWriter f = new FileWriter(new File(Config.PKG_DIR + "/models/grammar/Boot.java"));
+//			PrintWriter f = new PrintWriter(System.out);
 			CreateScript.script(GRAMMAR_PKG, "Boot", itself2, f);
 			f.flush();
 		}

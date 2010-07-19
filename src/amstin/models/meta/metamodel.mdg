@@ -5,12 +5,11 @@ where
 
   Class ::= isAbstract:"abstract"? "class" name:key parent:Parent? fields:Field* "end"
   
-  Field ::= [Field] name:id ":" type:Type mult:Mult
+  Field ::= [Field] name:key ":" type:Type mult:Mult inverse:Inverse
   
   Type ::= [Int] "int"
   		| [Bool] "bool"
   		| [Str] "str"
-  		| [Sym] "id"
 
   // How to avoid the superfluous Klass here?
   // the fact that Class is referenced is actually
@@ -18,8 +17,12 @@ where
 
   		| [Klass] klass:Class^
   
+  
+  
   // todo? detect enums here
   Mult ::= [Star] "*" | [Opt] "?" | [Single]
+  
+  Inverse ::= [Other] "(" "<-" other:Field^ ")" | [None]
   
   Parent ::= "<" type:Class^
 end
