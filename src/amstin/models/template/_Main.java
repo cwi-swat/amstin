@@ -46,7 +46,7 @@ public class _Main {
 		System.out.println("\nmodel = "  + exampleModel);
 		
 		writer.write("\n\n");
-		exampleModel.definitions.get(0).body.eval(new Env(), writer);
+		exampleModel.eval(writer);
 		writer.write("\n\n");
 		
 		Unparse.unparse(templateGrammar, exampleModel, writer);

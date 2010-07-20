@@ -13,6 +13,9 @@ public class Element
 {
 
     public Tag tag;
+    
+    // This is a bug in infer or codegen, should be Args
+    
     public List<Args> args;
     public Statement body;
     

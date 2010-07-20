@@ -1,10 +1,17 @@
 
+def main() 
+  layout {
+     p echo "Another test";
+  }
+end
+
 def layout()
   html {
     head title echo "Title";
     body {
       h1 echo "Title";
       echo "Dit is een test";
+      yield;
     }
   } 
 end
