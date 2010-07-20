@@ -1,4 +1,4 @@
-package amstin.tools;
+package amstin.tools.utils;
 
 import java.lang.reflect.Field;
 import java.util.IdentityHashMap;

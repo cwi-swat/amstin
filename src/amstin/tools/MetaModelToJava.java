@@ -1,10 +1,8 @@
 package amstin.tools;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -22,6 +20,7 @@ import amstin.models.meta.Mult;
 import amstin.models.meta.Single;
 import amstin.models.meta.Str;
 import amstin.models.meta.Type;
+import amstin.tools.utils.SVNReconcile;
 
 import com.sun.codemodel.JClass;
 import com.sun.codemodel.JClassAlreadyExistsException;
@@ -80,44 +79,19 @@ public class MetaModelToJava {
 				addField(current, field);
 			}
 		}
-		Set<File> before = existingJavaFiles(dir, pkg);
-		Set<File> after = generatedJavaFiles(dir, codeModel);
-		// TODO: make backup files for files that are about to be overwritten
-		// but are modified in subversion.
-		codeModel.build(dir);
-		updateSubversion(before, after);
+		
+		if (ENABLE_SVN) {
+			SVNReconcile rec = new SVNReconcile(existingJavaFiles(dir, pkg), generatedJavaFiles(dir, codeModel));
+			rec.prepare();
+			codeModel.build(dir);
+			rec.reconcile();
+		}
+		else {
+			codeModel.build(dir);
+		}
 	}
 	
-	private void svn(String arg) {
-		try {
-			String line;
-			Process p = Runtime.getRuntime().exec("svn " + arg);
-			BufferedReader input = new BufferedReader(new InputStreamReader(p.getInputStream()));
-			while ((line = input.readLine()) != null) {
-				System.out.println(line);
-			}
-			input.close();
-		}
-		catch (Exception err) {
-			err.printStackTrace();
-		}
-	}
-
-	private void updateSubversion(Set<File> before, Set<File> after) {
-		if (!ENABLE_SVN) {
-			return;
-		}
-
-		for (File generated: after) {
-			String wcpath = generated.toString();
-			if (before.contains(generated)) {
-				svn("merge " + wcpath); 
-			}
-			else {
-				svn("add " + wcpath);
-			}
-		}
-	}
+	
 
 	private static File pkgToDir(File dir, String p) {
 		return new File(dir, p.replaceAll("\\.", File.separator));
@@ -150,7 +124,7 @@ public class MetaModelToJava {
 		return result;
 	}
 	
-	private void makeAbstract(JDefinedClass dc) {
+	private static void makeAbstract(JDefinedClass dc) {
 		
 		/* 
 		 * JCodeModel interface for modifiers is incomplete.
