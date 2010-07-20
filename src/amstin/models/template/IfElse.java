@@ -1,6 +1,11 @@
 
 package amstin.models.template;
 
+import java.io.IOException;
+import java.io.Writer;
+
+import amstin.models.template.utils.Env;
+
 
 public class IfElse
     extends Statement
@@ -9,5 +14,16 @@ public class IfElse
     public Expression cond;
     public Statement then;
     public Statement otherwise;
+    
+	@Override
+	public void eval(Env env, Writer output) throws IOException {
+		Object val = cond.eval(env);
+		if (val.equals(true)) {
+			then.eval(env, output);
+		}
+		else {
+			otherwise.eval(env, output);
+		}
+	}
 
 }

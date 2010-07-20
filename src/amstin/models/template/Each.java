@@ -1,7 +1,13 @@
 
 package amstin.models.template;
 
+import java.io.IOException;
+import java.io.Writer;
 
+import amstin.models.template.utils.Env;
+
+
+@SuppressWarnings("unchecked")
 public class Each
     extends Statement
 {
@@ -9,5 +15,14 @@ public class Each
     public String var;
     public Expression iter;
     public Statement body;
+	@Override
+	public void eval(Env env, Writer output) throws IOException {
+		Iterable i = (Iterable) iter.eval(env);
+		env = new Env(env);
+		for (Object x: i) {
+			env.store(var, x);
+			body.eval(env, output);
+		}
+	}
 
 }
