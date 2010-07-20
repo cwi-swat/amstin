@@ -14,11 +14,11 @@ public class Definition {
     public Formals formals;
     public Statement body;
     
-	public void eval(Env env, List<Args> args, Writer output) throws IOException {
+	public void eval(Env env, Args args, Writer output) throws IOException {
 		if (args != null) {
-			Object objs[] = new Object[args.size()];
+			Object objs[] = new Object[args.args.size()];
 			int i = 0;
-			for (Arg arg: args.get(0).args) {
+			for (Arg arg: args.args) {
 				if (arg instanceof Actual) {
 					objs[i++] = ((Actual)arg).expression.eval(env);
 				}

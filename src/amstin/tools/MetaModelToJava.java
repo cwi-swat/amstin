@@ -17,6 +17,7 @@ import amstin.models.meta.Int;
 import amstin.models.meta.Klass;
 import amstin.models.meta.MetaModel;
 import amstin.models.meta.Mult;
+import amstin.models.meta.Opt;
 import amstin.models.meta.Single;
 import amstin.models.meta.Str;
 import amstin.models.meta.Type;
@@ -162,7 +163,7 @@ public class MetaModelToJava {
 		int mods = Modifier.PUBLIC;
 		
 		Type type = field.type;
-		if (field.mult instanceof Single) {
+		if (field.mult instanceof Single || field.mult instanceof Opt) {
 			if (type instanceof Str) {
 				dc.field(mods, String.class, name);
 			}

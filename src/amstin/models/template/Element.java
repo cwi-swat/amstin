@@ -3,7 +3,6 @@ package amstin.models.template;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.util.List;
 
 import amstin.models.template.utils.Closure;
 import amstin.models.template.utils.Env;
@@ -13,10 +12,7 @@ public class Element
 {
 
     public Tag tag;
-    
-    // This is a bug in infer or codegen, should be Args
-    
-    public List<Args> args;
+    public Args args;
     public Statement body;
     
     @Override

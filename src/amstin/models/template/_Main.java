@@ -36,7 +36,7 @@ public class _Main {
 
 		File file = new File(Config.ROOT);
 		
-		//MetaModelToJava.metaModelToJava(file, TEMPLATE_PKG, templateMetaModel);
+//		MetaModelToJava.metaModelToJava(file, TEMPLATE_PKG, templateMetaModel);
 		
 		
 		String example = Parser.readPath(EXAMPLE_TEMPLATE);
