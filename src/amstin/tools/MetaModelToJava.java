@@ -1,9 +1,16 @@
 package amstin.tools;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FilenameFilter;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.lang.reflect.Modifier;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import amstin.models.meta.Bool;
 import amstin.models.meta.Class;
@@ -21,9 +28,12 @@ import com.sun.codemodel.JClassAlreadyExistsException;
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JMods;
+import com.sun.codemodel.JPackage;
 import com.sun.codemodel.internal.JMod;
 
 public class MetaModelToJava {
+	
+	private static boolean ENABLE_SVN = true;
 	
 	public static void metaModelToJava(File dir, String pkg, MetaModel metaModel) {
 		MetaModelToJava m2j = new MetaModelToJava(dir, pkg, metaModel);
@@ -70,9 +80,76 @@ public class MetaModelToJava {
 				addField(current, field);
 			}
 		}
+		Set<File> before = existingJavaFiles(dir, pkg);
+		Set<File> after = generatedJavaFiles(dir, codeModel);
+		// TODO: make backup files for files that are about to be overwritten
+		// but are modified in subversion.
 		codeModel.build(dir);
+		updateSubversion(before, after);
+	}
+	
+	private void svn(String arg) {
+		try {
+			String line;
+			Process p = Runtime.getRuntime().exec("svn " + arg);
+			BufferedReader input = new BufferedReader(new InputStreamReader(p.getInputStream()));
+			while ((line = input.readLine()) != null) {
+				System.out.println(line);
+			}
+			input.close();
+		}
+		catch (Exception err) {
+			err.printStackTrace();
+		}
 	}
 
+	private void updateSubversion(Set<File> before, Set<File> after) {
+		if (!ENABLE_SVN) {
+			return;
+		}
+
+		for (File generated: after) {
+			String wcpath = generated.toString();
+			if (before.contains(generated)) {
+				svn("merge " + wcpath); 
+			}
+			else {
+				svn("add " + wcpath);
+			}
+		}
+	}
+
+	private static File pkgToDir(File dir, String p) {
+		return new File(dir, p.replaceAll("\\.", File.separator));
+	}
+	
+	private static File classToFile(File dir, JDefinedClass clazz) {
+		return new File(pkgToDir(dir, clazz.getPackage().name()), clazz.name() + ".java");
+	}
+	
+	private static Set<File> existingJavaFiles(File dir, String pkg) {
+		File pkgDir = pkgToDir(dir, pkg);
+		File files[] = pkgDir.listFiles(new FilenameFilter() {
+			@Override
+			public boolean accept(File dir, String name) {
+				return name.matches(".*\\.java");
+			}
+		});
+		return new HashSet<File>(Arrays.asList(files));
+	}
+	
+	private static Set<File> generatedJavaFiles(File dir, JCodeModel codeModel) {
+		Set<File> result = new HashSet<File>();
+		Iterator<JPackage> iter = codeModel.packages();
+		while (iter.hasNext()) {
+			Iterator<JDefinedClass> classes = iter.next().classes();
+			while (classes.hasNext()) {
+				result.add(classToFile(dir, classes.next()));
+			}
+		}
+		return result;
+	}
+	
 	private void makeAbstract(JDefinedClass dc) {
 		
 		/* 
