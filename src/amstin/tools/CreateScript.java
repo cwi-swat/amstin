@@ -11,6 +11,8 @@ import java.util.List;
 
 public class CreateScript {
 
+	// TODO: use code model here?
+	
 	public static void script(String pkg, String name, Object obj, Writer output) {
 		CreateScript inst = new CreateScript(pkg, name, obj, output);
 		inst.script();

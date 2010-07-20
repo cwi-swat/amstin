@@ -1,6 +1,7 @@
 package amstin.models.entity;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 
@@ -10,9 +11,8 @@ import amstin.models.meta.MetaModel;
 import amstin.parsing.Parser;
 import amstin.tools.InferMetaModel;
 import amstin.tools.MetaModelToJava;
+import amstin.tools.ToDot;
 import amstin.tools.Unparse;
-
-import com.sun.codemodel.JClassAlreadyExistsException;
 
 public class _Main {
 	
@@ -22,7 +22,7 @@ public class _Main {
 	private static final String ENTITY_META = ENTITY_DIR + "/entity.meta";
 	private static final String EXAMPLE_ENTITY = ENTITY_DIR + "/example.entity";
 
-	public static void main(String[] args) throws IOException, JClassAlreadyExistsException {
+	public static void main(String[] args) throws IOException {
 		Grammar entityGrammar = Parser.parseGrammar(ENTITY_MDG);
 		System.out.println(entityGrammar);
 		MetaModel entityMetaModel = InferMetaModel.infer("Entity", entityGrammar);
@@ -48,6 +48,10 @@ public class _Main {
 		Unparse.unparse(entityGrammar, exampleModel, writer);
 		writer.flush();
 		
+		
+		FileWriter dot = new FileWriter(new File("employee.dot"));
+		ToDot.toDot(exampleModel, dot);
+		dot.close();
 		
 	}
 	

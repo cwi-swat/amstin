@@ -90,7 +90,8 @@ public class MetaModelToJava {
 			
 			java.lang.reflect.Field modsMods = JMods.class.getDeclaredField("mods");
 			modsMods.setAccessible(true);
-			modsMods.set(jmods, JMod.ABSTRACT | JMod.PUBLIC);
+			int mods = modsMods.getInt(jmods);
+			modsMods.set(jmods, mods | JMod.ABSTRACT);
 			
 			classMods.set(dc, jmods);
 			

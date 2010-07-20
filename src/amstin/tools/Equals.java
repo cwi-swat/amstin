@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.IdentityHashMap;
 import java.util.List;
 
+@SuppressWarnings("unchecked")
 public class Equals {
 
 	private static final boolean DEBUG = false;
@@ -39,7 +40,6 @@ public class Equals {
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	private boolean equalsRec(int n, Object o1, Object o2) {
 		debug(n, "Checking EQUALS: o1 = " + o1 + "; o2 = " + o2);
 		if (o1 == null && o2 != null) {
@@ -77,25 +77,7 @@ public class Equals {
 				debug(n, "o1.size = " + l1.size() + "; o2.size = " + l2.size());
 				
 				if (DEBUG) {
-					String os1[] = new String[l1.size()];
-					String os2[] = new String[l2.size()];
-
-					for (int i = 0; i < os1.length; i++) {
-						os1[i] = l1.get(i).toString();
-					}
-					for (int i = 0; i < os2.length; i++) {
-						os2[i] = l2.get(i).toString();
-					}
-
-					Arrays.sort(os1);
-					Arrays.sort(os2);
-
-
-					for (int i = 0; i < Math.max(l1.size(), l2.size()); i++) {
-						Object k1 = i < l1.size() ? os1[i] : "n.a.";
-						Object k2 = i < l2.size() ? os2[i] : "n.a.";
-						debug(n, "o1[" + i + "] = " + k1 + "; o2[] = " + k2);
-					}
+					displayDiff(n, l1, l2);
 				}
 				return false;
 			}
@@ -145,6 +127,29 @@ public class Equals {
 		}
 		return true;
 		
+	}
+
+
+	private static void displayDiff(int n, List l1, List l2) {
+		String os1[] = new String[l1.size()];
+		String os2[] = new String[l2.size()];
+
+		for (int i = 0; i < os1.length; i++) {
+			os1[i] = l1.get(i).toString();
+		}
+		for (int i = 0; i < os2.length; i++) {
+			os2[i] = l2.get(i).toString();
+		}
+
+		Arrays.sort(os1);
+		Arrays.sort(os2);
+
+
+		for (int i = 0; i < Math.max(l1.size(), l2.size()); i++) {
+			Object k1 = i < l1.size() ? os1[i] : "n.a.";
+			Object k2 = i < l2.size() ? os2[i] : "n.a.";
+			debug(n, "o1[" + i + "] = " + k1 + "; o2[] = " + k2);
+		}
 	}
 
 

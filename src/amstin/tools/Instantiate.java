@@ -213,6 +213,7 @@ public class Instantiate  {
 			
 			Class<?> klazz = target.getClass();
 			try {
+				// TODO: typecheck references here?
 				klazz.getField(field).set(target, defines.get(symbol));
 			} catch (IllegalArgumentException e) {
 				throw new RuntimeException(e);

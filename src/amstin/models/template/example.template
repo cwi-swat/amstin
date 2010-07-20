@@ -1,0 +1,10 @@
+
+def layout(title)
+  html {
+    head title echo title;
+    body {
+      h1 echo title;
+      yield;
+    }
+  } 
+end

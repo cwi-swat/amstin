@@ -27,7 +27,8 @@ import amstin.models.grammar.Symbol;
 @SuppressWarnings("unchecked")
 public class Unparse {
 
-	// TODO: there is no support for nested keys and path references currently.
+	// TODO: there is no support for nested keys and path references currently,
+	// so the unparsed result is incorrect if there are duplicate keys.
 	
 	public static void unparse(Grammar grammar, Object obj, Writer writer) {
 		Unparse unp = new Unparse(grammar, obj, writer);
