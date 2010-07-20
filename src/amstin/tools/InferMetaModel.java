@@ -59,6 +59,12 @@ public class InferMetaModel {
 		writer.flush();
 	}
 	
+	public static MetaModel infer(String name, Grammar grammar) {
+		InferMetaModel inf = new InferMetaModel(name, grammar);
+		inf.infer();
+		return inf.metaModel;
+	}
+	
 	private Grammar grammar;
 	private MetaModel metaModel;
 	private Map<String, Class> table;

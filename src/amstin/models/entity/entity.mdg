@@ -1,0 +1,37 @@
+grammar Entity is Entities where
+
+  Entities ::= entities:Entity* 
+  
+  Entity ::= "entity" name:key fields:Field* "end"
+  
+  Field ::= name:key ":" Type Modifier* ";"
+  
+  Type ::= [IntType] "int"
+  	    | [StrType] "str"
+  	    | [BoolType] "bool"
+  	    | [AssocType] entity:Entity^   
+  
+  Modifier ::= [Default] "default" "=" value:Value
+  			|  [Derived] "derived" "=" expression:Expression
+  	        |  [Ordered] "ordered"
+  	        |  [Unique] "unique"
+  	        |  [Optional] "optional"
+  	        |  [Inverse] "inverse" field:Field^
+
+  Value ::= [IntValue] value:int 
+  	     |  [StrValue] value:str
+  	     
+// TODO add bool as builtin terminal type
+  	     |  [BoolValue] value:Bool
+  	     
+  Bool ::= [True] "true" | [False] "false"
+  
+
+  Expression ::= [Const] value:Value 
+  			  |  [FieldRef] name:id
+  			  |  [Mul] Expression "*" Expression
+  			  |  [Div] Expression "/" Expression
+  			  |  [Add] Expression "+" Expression
+  			  |  [Sub] Expression "-" Expression
+    
+end
