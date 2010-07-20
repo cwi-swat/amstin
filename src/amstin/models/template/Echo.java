@@ -8,4 +8,9 @@ public class Echo
 
     public Expression expression;
 
+    @Override
+    public String toString() {
+    	return "echo";
+    }
+    
 }

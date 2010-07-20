@@ -49,7 +49,7 @@ public class _Main {
 		writer.flush();
 		
 		
-		FileWriter dot = new FileWriter(new File("employee.dot"));
+		FileWriter dot = new FileWriter(new File("layout.dot"));
 		ToDot.toDot(exampleModel, dot);
 		dot.close();
 		

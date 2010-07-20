@@ -5,6 +5,6 @@ import java.util.List;
 
 public class Formals {
 
-    public List<String> params;
+    public List<Param> params;
 
 }

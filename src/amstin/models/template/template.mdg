@@ -4,9 +4,13 @@ where
 
   Definition ::= "def" name:key formals:Formals body:Statement "end"
   
-  // Problem here with unparse (and possibly elsewhere): list of id's
-  Formals ::= "(" params:{id ","}* ")"
+  Formals ::= "(" params:{Param ","}* ")"
 
+// Problem here with unparse (and possibly elsewhere): list of id's is not supported
+// so introduce extra indirection (Param)
+
+  Param ::= name:id
+  
   Statement ::= [Element] tag:Tag args:Args? body:Statement
              | [Block] "{" statements:Statement* "}"
              | [IfElse] "if" "(" cond:Expression ")" then:Statement "else" otherwise:Statement
