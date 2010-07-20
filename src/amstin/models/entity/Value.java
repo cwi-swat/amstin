@@ -2,7 +2,7 @@
 package amstin.models.entity;
 
 
-public class Value {
+public abstract class Value {
 
 
 }

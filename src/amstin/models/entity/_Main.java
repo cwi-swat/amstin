@@ -20,6 +20,7 @@ public class _Main {
 	private static final String ENTITY_PKG = Config.PKG +".models.entity";
 	private static final String ENTITY_MDG = ENTITY_DIR + "/entity.mdg";
 	private static final String ENTITY_META = ENTITY_DIR + "/entity.meta";
+	private static final String EXAMPLE_ENTITY = ENTITY_DIR + "/example.entity";
 
 	public static void main(String[] args) throws IOException, JClassAlreadyExistsException {
 		Grammar entityGrammar = Parser.parseGrammar(ENTITY_MDG);
@@ -36,6 +37,17 @@ public class _Main {
 		File file = new File(Config.ROOT);
 		
 		MetaModelToJava.metaModelToJava(file, ENTITY_PKG, entityMetaModel);
+		
+		
+		String example = Parser.readPath(EXAMPLE_ENTITY);
+		Parser entityParser = new Parser(entityGrammar);
+		
+		Object exampleModel = entityParser.parse(ENTITY_PKG, example);
+		System.out.println(exampleModel);
+		
+		Unparse.unparse(entityGrammar, exampleModel, writer);
+		writer.flush();
+		
 		
 	}
 	

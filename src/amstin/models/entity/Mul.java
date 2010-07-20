@@ -6,5 +6,7 @@ public class Mul
     extends Expression
 {
 
+    public Expression lhs;
+    public Expression rhs;
 
 }

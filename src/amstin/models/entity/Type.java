@@ -2,7 +2,7 @@
 package amstin.models.entity;
 
 
-public class Type {
+public abstract class Type {
 
 
 }

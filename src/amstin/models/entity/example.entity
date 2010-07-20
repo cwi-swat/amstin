@@ -1,0 +1,11 @@
+
+
+entity Employee
+
+  salary: int;
+  tax: int derived = salary * 3;
+  name: str;
+  manager: Employee optional;
+  subordinates: Employee many inverse Employee.manager;
+
+end

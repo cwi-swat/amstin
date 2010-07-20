@@ -4,7 +4,7 @@ grammar Entity is Entities where
   
   Entity ::= "entity" name:key fields:Field* "end"
   
-  Field ::= name:key ":" Type Modifier* ";"
+  Field ::= name:key ":" type:Type modifiers:Modifier* ";"
   
   Type ::= [IntType] "int"
   	    | [StrType] "str"
@@ -15,6 +15,7 @@ grammar Entity is Entities where
   			|  [Derived] "derived" "=" expression:Expression
   	        |  [Ordered] "ordered"
   	        |  [Unique] "unique"
+  	        |  [Many] "many"
   	        |  [Optional] "optional"
   	        |  [Inverse] "inverse" field:Field^
 
@@ -29,9 +30,9 @@ grammar Entity is Entities where
 
   Expression ::= [Const] value:Value 
   			  |  [FieldRef] name:id
-  			  |  [Mul] Expression "*" Expression
-  			  |  [Div] Expression "/" Expression
-  			  |  [Add] Expression "+" Expression
-  			  |  [Sub] Expression "-" Expression
+  			  |  [Mul] lhs:Expression "*" rhs:Expression
+  			  |  [Div] lhs:Expression "/" rhs:Expression
+  			  |  [Add] lhs:Expression "+" rhs:Expression
+  			  |  [Sub] lhs:Expression "-" rhs:Expression
     
 end

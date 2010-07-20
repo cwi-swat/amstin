@@ -20,6 +20,8 @@ import com.sun.codemodel.JClass;
 import com.sun.codemodel.JClassAlreadyExistsException;
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JDefinedClass;
+import com.sun.codemodel.JMods;
+import com.sun.codemodel.internal.JMod;
 
 public class MetaModelToJava {
 	
@@ -53,7 +55,10 @@ public class MetaModelToJava {
 
 	private void generate() throws IOException, JClassAlreadyExistsException {
 		for (Class klass: metaModel.classes) {
-			codeModel._class(qName(klass.name));
+			JDefinedClass dc = codeModel._class(qName(klass.name));
+			if (klass.isAbstract) {
+				makeAbstract(dc);
+			}
 		}
 		for (Class klass: metaModel.classes) {
 			JDefinedClass current = codeModel._getClass(qName(klass.name));
@@ -66,6 +71,38 @@ public class MetaModelToJava {
 			}
 		}
 		codeModel.build(dir);
+	}
+
+	private void makeAbstract(JDefinedClass dc) {
+		
+		/* 
+		 * JCodeModel interface for modifiers is incomplete.
+		 * This is the reason for this horrible hack to make
+		 * classes abstract.
+		 */
+		
+		java.lang.Class<? extends JDefinedClass> cls = dc.getClass();
+		java.lang.reflect.Field classMods;
+		try {
+			classMods = cls.getDeclaredField("mods");
+			classMods.setAccessible(true);
+			JMods jmods = (JMods) classMods.get(dc);
+			
+			java.lang.reflect.Field modsMods = JMods.class.getDeclaredField("mods");
+			modsMods.setAccessible(true);
+			modsMods.set(jmods, JMod.ABSTRACT | JMod.PUBLIC);
+			
+			classMods.set(dc, jmods);
+			
+		} catch (SecurityException e) {
+			throw new RuntimeException(e);
+		} catch (NoSuchFieldException e) {
+			throw new RuntimeException(e);
+		} catch (IllegalArgumentException e) {
+			throw new RuntimeException(e);
+		} catch (IllegalAccessException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	private void addField(JDefinedClass dc, Field field) {

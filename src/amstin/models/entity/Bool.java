@@ -2,7 +2,7 @@
 package amstin.models.entity;
 
 
-public class Bool {
+public abstract class Bool {
 
 
 }

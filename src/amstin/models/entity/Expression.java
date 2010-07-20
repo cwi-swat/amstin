@@ -2,7 +2,7 @@
 package amstin.models.entity;
 
 
-public class Expression {
+public abstract class Expression {
 
 
 }
