@@ -1,10 +1,10 @@
 
-def layout(title)
+def layout()
   html {
-    head title echo title;
+    head title echo "Title";
     body {
-      h1 echo title;
-      yield;
+      h1 echo "Title";
+      echo "Dit is een test";
     }
   } 
 end

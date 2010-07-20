@@ -8,9 +8,9 @@ import java.io.PrintWriter;
 import amstin.Config;
 import amstin.models.grammar.Grammar;
 import amstin.models.meta.MetaModel;
+import amstin.models.template.utils.Env;
 import amstin.parsing.Parser;
 import amstin.tools.InferMetaModel;
-import amstin.tools.MetaModelToJava;
 import amstin.tools.ToDot;
 import amstin.tools.Unparse;
 
@@ -36,14 +36,18 @@ public class _Main {
 
 		File file = new File(Config.ROOT);
 		
-		MetaModelToJava.metaModelToJava(file, TEMPLATE_PKG, templateMetaModel);
+		//MetaModelToJava.metaModelToJava(file, TEMPLATE_PKG, templateMetaModel);
 		
 		
 		String example = Parser.readPath(EXAMPLE_TEMPLATE);
 		Parser templateParser = new Parser(templateGrammar);
 		
-		Object exampleModel = templateParser.parse(TEMPLATE_PKG, example);
-		System.out.println(exampleModel);
+		Definitions exampleModel = (Definitions) templateParser.parse(TEMPLATE_PKG, example);
+		System.out.println("\nmodel = "  + exampleModel);
+		
+		writer.write("\n\n");
+		exampleModel.definitions.get(0).body.eval(new Env(), writer);
+		writer.write("\n\n");
 		
 		Unparse.unparse(templateGrammar, exampleModel, writer);
 		writer.flush();
