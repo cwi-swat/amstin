@@ -1,4 +1,4 @@
-package amstin.parsing.ast;
+package amstin.models.grammar.parsing.ast;
 
 public class Field implements Visitable {
 

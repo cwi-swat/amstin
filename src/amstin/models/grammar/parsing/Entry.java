@@ -1,4 +1,4 @@
-package amstin.parsing;
+package amstin.models.grammar.parsing;
 
 import java.util.ArrayList;
 import java.util.List;

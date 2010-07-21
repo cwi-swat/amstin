@@ -7,12 +7,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
-import amstin.parsing.ast.Define;
-import amstin.parsing.ast.Field;
-import amstin.parsing.ast.Instance;
-import amstin.parsing.ast.Reference;
-import amstin.parsing.ast.Str;
-import amstin.parsing.ast.Symbol;
+import amstin.models.grammar.parsing.ast.Define;
+import amstin.models.grammar.parsing.ast.Field;
+import amstin.models.grammar.parsing.ast.Instance;
+import amstin.models.grammar.parsing.ast.Reference;
+import amstin.models.grammar.parsing.ast.Str;
+import amstin.models.grammar.parsing.ast.Symbol;
 
 
 

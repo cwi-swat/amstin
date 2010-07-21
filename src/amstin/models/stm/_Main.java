@@ -8,8 +8,8 @@ import java.util.List;
 
 import amstin.Config;
 import amstin.models.grammar.Grammar;
+import amstin.models.grammar.parsing.Parser;
 import amstin.models.meta.MetaModel;
-import amstin.parsing.Parser;
 import amstin.tools.CheckInstance;
 import amstin.tools.CreateScript;
 import amstin.tools.Instantiate;

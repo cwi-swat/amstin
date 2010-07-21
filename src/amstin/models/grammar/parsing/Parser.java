@@ -1,4 +1,4 @@
-package amstin.parsing;
+package amstin.models.grammar.parsing;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -34,10 +34,10 @@ import amstin.models.grammar.Rule;
 import amstin.models.grammar.Str;
 import amstin.models.grammar.Sym;
 import amstin.models.grammar.Symbol;
-import amstin.parsing.ast.Define;
-import amstin.parsing.ast.Field;
-import amstin.parsing.ast.Instance;
-import amstin.parsing.ast.Reference;
+import amstin.models.grammar.parsing.ast.Define;
+import amstin.models.grammar.parsing.ast.Field;
+import amstin.models.grammar.parsing.ast.Instance;
+import amstin.models.grammar.parsing.ast.Reference;
 import amstin.tools.Instantiate;
 
 
@@ -378,7 +378,7 @@ public class Parser {
 		Pattern re = Pattern.compile(REF_REGEX);
 		Matcher m = re.matcher(src.subSequence(pos, src.length()));
 		if (m.lookingAt() && !isReserved(m.group())) {
-			cnt.apply(pos + m.end(), new Reference(amstin.parsing.ast.Symbol.intern(m.group()), sym.ref));
+			cnt.apply(pos + m.end(), new Reference(amstin.models.grammar.parsing.ast.Symbol.intern(m.group()), sym.ref));
 		}
 	}
 
@@ -386,7 +386,7 @@ public class Parser {
 		Pattern re = Pattern.compile(ID_REGEX);
 		Matcher m = re.matcher(src.subSequence(pos, src.length()));
 		if (m.lookingAt() && !isReserved(m.group())) {
-			cnt.apply(pos + m.end(), new Define(amstin.parsing.ast.Symbol.intern(m.group())));
+			cnt.apply(pos + m.end(), new Define(amstin.models.grammar.parsing.ast.Symbol.intern(m.group())));
 		}
 	}
 
@@ -411,7 +411,7 @@ public class Parser {
 		Pattern re = Pattern.compile(ID_REGEX);
 		Matcher m = re.matcher(src.subSequence(pos, src.length()));
 		if (m.lookingAt() && !isReserved(m.group())) {
-			cnt.apply(pos + m.end(), amstin.parsing.ast.Symbol.intern(m.group()));
+			cnt.apply(pos + m.end(), amstin.models.grammar.parsing.ast.Symbol.intern(m.group()));
 		}
 	}
 
@@ -437,7 +437,7 @@ public class Parser {
 			s = s.replaceAll("\\t", "\t");
 			s = s.replaceAll("\\f", "\f");
 			s = s.replaceAll("\\r", "\r");
-			cnt.apply(pos + m.end(), new amstin.parsing.ast.Str(s.substring(1, s.length() - 1)));
+			cnt.apply(pos + m.end(), new amstin.models.grammar.parsing.ast.Str(s.substring(1, s.length() - 1)));
 		}
 	}
 

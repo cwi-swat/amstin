@@ -7,9 +7,9 @@ import java.io.PrintWriter;
 
 import amstin.Config;
 import amstin.models.grammar.Grammar;
+import amstin.models.grammar.parsing.Parser;
 import amstin.models.meta.MetaModel;
-import amstin.models.template.utils.Env;
-import amstin.parsing.Parser;
+import amstin.models.template.render.Env;
 import amstin.tools.InferMetaModel;
 import amstin.tools.ToDot;
 import amstin.tools.Unparse;

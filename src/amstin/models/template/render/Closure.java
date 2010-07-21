@@ -1,4 +1,4 @@
-package amstin.models.template.utils;
+package amstin.models.template.render;
 
 import java.io.IOException;
 import java.io.Writer;

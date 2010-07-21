@@ -1,4 +1,4 @@
-package amstin.parsing;
+package amstin.models.grammar.parsing;
 
 
 public interface Cnt {

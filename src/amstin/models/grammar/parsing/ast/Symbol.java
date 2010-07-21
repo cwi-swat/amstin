@@ -1,4 +1,4 @@
-package amstin.parsing.ast;
+package amstin.models.grammar.parsing.ast;
 
 import java.util.HashMap;
 import java.util.Map;

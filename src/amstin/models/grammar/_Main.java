@@ -7,8 +7,8 @@ import java.io.PrintWriter;
 import java.util.List;
 
 import amstin.Config;
+import amstin.models.grammar.parsing.Parser;
 import amstin.models.meta.MetaModel;
-import amstin.parsing.Parser;
 import amstin.tools.CheckInstance;
 import amstin.tools.CreateScript;
 import amstin.tools.Equals;

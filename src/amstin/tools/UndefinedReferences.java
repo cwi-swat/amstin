@@ -7,11 +7,11 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
 
-import amstin.parsing.ast.DefaultVisitor;
-import amstin.parsing.ast.Define;
-import amstin.parsing.ast.Instance;
-import amstin.parsing.ast.Reference;
-import amstin.parsing.ast.Symbol;
+import amstin.models.grammar.parsing.ast.DefaultVisitor;
+import amstin.models.grammar.parsing.ast.Define;
+import amstin.models.grammar.parsing.ast.Instance;
+import amstin.models.grammar.parsing.ast.Reference;
+import amstin.models.grammar.parsing.ast.Symbol;
 
 
 public class UndefinedReferences extends DefaultVisitor {

@@ -24,6 +24,7 @@ import amstin.models.grammar.Rule;
 import amstin.models.grammar.Str;
 import amstin.models.grammar.Sym;
 import amstin.models.grammar.Symbol;
+import amstin.models.grammar.parsing.Parser;
 import amstin.models.meta.Bool;
 import amstin.models.meta.Boot;
 import amstin.models.meta.Class;
@@ -36,7 +37,6 @@ import amstin.models.meta.Single;
 import amstin.models.meta.Star;
 import amstin.models.meta.Type;
 import amstin.models.meta._Main;
-import amstin.parsing.Parser;
 
 public class InferMetaModel {
 
