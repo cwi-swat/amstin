@@ -1,0 +1,17 @@
+grammar Audit is ValueCycle
+where
+  
+  ValueCycle ::= decls:Decl*
+  
+  Decl ::= Account | Journal
+  
+  Account ::= "account" name:key flows:AFlow* "end"
+  
+  AFlow ::= negative:"-"? cardinality:int "->" journal:Journal^ 
+  
+  Journal ::= "journal" name:key flows:JFlow* "end"
+  
+  JFlow ::= negative:"-"? cardinality:int "->" account:Account^
+
+
+end

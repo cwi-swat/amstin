@@ -1,0 +1,17 @@
+
+account Geld
+  10 -> Inkoop
+end
+
+account Maaltijd
+  300 -> Verkoop
+end
+
+journal Verkoop
+  500 -> Geld
+end
+
+journal Inkoop
+  20 -> Maaltijd
+end
+
