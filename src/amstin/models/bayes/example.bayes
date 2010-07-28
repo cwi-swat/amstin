@@ -1,0 +1,29 @@
+
+
+EntryPoint = {seaPort, airPort, clientSite, counter}
+
+Product = {postzegel, brief, kaart, doos}
+
+input Product.income
+
+entryPoint |seaPort airPort clientSite counter | 
+postzegel  | 0.4        0       0         0.6  |
+brief      |  1         0       0         0    |
+kaart      | 0.2       0.2     0.2        0.4  |
+doos       | 0.9       0.1      0         0    |
+ 
+
+
+// also dists: location, grouping, locatedAtHub, exitPoint
+
+Activity = {localHub, seaPort, unGroup, localHub, storeInWarehouse, group, counter, clientSite, airPort}  
+
+net Activity.products { 
+  seaPort = (start & entryPoint[seaPort])
+           | (storeInWareHouse & grouping[asIs] & locatedAtHub[yes])
+           | (transportToHub & grouping[asIs] & exitPoint[seaPort]) 
+ 
+}
+
+
+

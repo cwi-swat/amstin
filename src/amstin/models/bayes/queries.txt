@@ -1,0 +1,67 @@
+
+
+Assume distributions: Product * EntryPoint
+   
+   seaPort  airPort client Counter
+p1   0.3       0.5             0.2  // sum of each row must be 1, values are fractions/probabilities
+p2
+.
+.
+.
+pn
+
+All queries operate on vectors index by p in P (e.g. Products).
+
+Query: entry-point = seaPort
+means: select column "seaPort", so result is vector
+
+p1  0.3
+p2  ...
+.
+.
+.
+pn  0.1
+
+
+Query: true, return unit/id vector
+
+p1   1
+p2   1
+...  
+pn   1
+
+
+Query: false, return zero vector
+
+p1  0
+p2  0
+... 
+pn  0
+
+Query: q1 && q2: if vectors resulting from q1 and q2 are of the same type, i.e.
+having the same value set, return the zero vector: a thing cannot be, e.g., 
+light and heavy at the same time.
+
+If q1 and q2 are of different type, (assumptions is they are independent)
+perform 
+
+p1  x1 * y1
+p2  x2 * y2
+...
+pn  xn * yn
+
+(Matrix Vector product?)
+
+Query: q1 || q2: add both the results of q1 and q2, but subtract the result of q1 && q2.
+
+
+
+
+
+
+
+
+
+"(and (grouping = as-is)
+     (located-at-hub = yes)
+     (exit-point = seaport))" 

@@ -1,0 +1,23 @@
+
+start Spec
+
+Spec ::= decls:Decl*
+
+Decl ::= [Type] name:key "=" "{" values:{id ","}* "}"
+      |  [Dist] header:Header rows:Row*
+      |  [Input] "input" type:id "." name:id
+      |  [Net] "net" type:id "." name:id "{" rules:Rule* "}"
+      // todo: values + expressions 
+      
+Rule ::= name:id "=" query:Query
+
+Query ::= [Bracket] "(" arg:Query ")"
+	   |  [Obj] name:id
+	   |  [And] lhs:Query "&" rhs:Query
+	   |  [Or] lhs:Query "|" rhs:Query
+	   |  [Project] dist:id "[" value:id "]"
+
+Header ::= name:id "|" colNames:id* "|"
+
+Row ::= name:id "|" rowValues:real* "|"
+
