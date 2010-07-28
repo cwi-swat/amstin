@@ -28,6 +28,7 @@ import amstin.models.grammar.IterStar;
 import amstin.models.grammar.Key;
 import amstin.models.grammar.Klass;
 import amstin.models.grammar.Lit;
+//import amstin.models.grammar.Mod;
 import amstin.models.grammar.Opt;
 import amstin.models.grammar.Ref;
 import amstin.models.grammar.Rule;
@@ -69,21 +70,29 @@ public class Parser {
 	}
 
 	
-	private static final String ID_REGEX = "[a-zA-Z_$][a-zA-Z_$0-9]*";
+	public static final String ID_REGEX = "[a-zA-Z_$][a-zA-Z_$0-9]*";
 	private static final String REF_REGEX = "(" + ID_REGEX + ")" + "(\\."  + ID_REGEX + ")*";
+
+	// TODO: remove this
+	private static final String MOD_REGEX = "(" + ID_REGEX + ")" + "(\\."  + ID_REGEX + ")*";
 	private Map<Sym, IParser> symCache;
 	private Map<Alt, IParser> altCache;
 	private Map<Symbol, IParser> optCache;
 	private Map<Symbol, IParser> iterCache;
 	private Map<Symbol, IParser> iterSepCache;
 	private Map<IParser, Map<Integer, Entry>> table;
-	private final Grammar format;
+	private final Grammar grammar;
 	private Set<String> reserved;
 
-	public Parser(Grammar format) {
-		this.format = format;
-		this.reserved = collectReserved(format);
+	public Parser(Grammar grammar) {
+		this.grammar = grammar;
+		this.reserved = collectReserved(grammar);
 	}
+	
+	public Grammar getGrammar() {
+		return grammar;
+	}
+	
 	
 	private Set<String> collectReserved(Grammar f) {
 		Set<String> lits = new HashSet<String>();
@@ -98,6 +107,7 @@ public class Parser {
 		}
 		return lits;
 	}
+	
 	
 	public Object parse(String pkg, String src) {
 		Object ast = parse(src);
@@ -115,7 +125,7 @@ public class Parser {
 			this.iterSepCache = new HashMap<Symbol, IParser>();
 			this.table = new HashMap<IParser, Map<Integer,Entry>>();
 			Sym start = new Sym();
-			start.rule = format.start;
+			start.rule = grammar.startSymbol;
 			parseSym(start, success, src, 0);
 		}
 		catch (Success s) {
@@ -176,7 +186,7 @@ public class Parser {
 		}
 	}
 	
-	private void parseElement(Element elt, Cnt cnt, String src, int pos) {
+	protected void parseElement(Element elt, Cnt cnt, String src, int pos) {
 		if (elt instanceof Layout) {
 			parseLayout(cnt, src, pos);
 		}
@@ -188,14 +198,14 @@ public class Parser {
 		}
 		else {
 			if (elt.symbol == null) {
-				System.out.println("aaaa");
+				throw new RuntimeException("Element's symbol is null " + elt);
 			}
 			parse(elt.symbol, cnt, src, pos);
 		}
 		
 	}
 	
-	private static class LabelCnt implements Cnt {
+	protected static class LabelCnt implements Cnt {
 		private Cnt cnt;
 		private String name;
 
@@ -216,16 +226,16 @@ public class Parser {
 			altCache.put(alt, new Memo(list(interleaveLayout(alt.elements))));
 		}
 		IParser p = altCache.get(alt); 
-		p.parse(table, new Build(rule, alt.type, cnt, isInjection(alt)), src, pos);
+		p.parse(table, new Build(rule, alt.type, cnt), src, pos);
 	}
 	
-	private boolean isInjection(Alt alt) {
-		if (alt.elements.size() != 1) {
-			return false;
-		}
-		Element e = alt.elements.get(0);
-		return e.symbol instanceof Sym;
-	}
+//	private boolean isInjection(Alt alt) {
+//		if (alt.elements.size() != 1) {
+//			return false;
+//		}
+//		Element e = alt.elements.get(0);
+//		return e.symbol instanceof Sym;
+//	}
 	
 	private void parseIterSepStar(IterSepStar sym, Cnt cnt, String src, int pos) {
 		parseIteratedSymbolSep(sym.arg, sym.sep, cnt, src, pos);
@@ -374,7 +384,7 @@ public class Parser {
 		
 	}
 
-	private void parseRef(Ref sym, Cnt cnt, String src, int pos) {
+	protected void parseRef(Ref sym, Cnt cnt, String src, int pos) {
 		Pattern re = Pattern.compile(REF_REGEX);
 		Matcher m = re.matcher(src.subSequence(pos, src.length()));
 		if (m.lookingAt() && !isReserved(m.group())) {
@@ -414,6 +424,14 @@ public class Parser {
 			cnt.apply(pos + m.end(), amstin.models.grammar.parsing.ast.Symbol.intern(m.group()));
 		}
 	}
+	
+//	public void parseMod(Mod mod, Cnt cnt, String src, int pos) {
+//		Pattern re = Pattern.compile(MOD_REGEX);
+//		Matcher m = re.matcher(src.subSequence(pos, src.length()));
+//		if (m.lookingAt() && !isReserved(m.group())) {
+//			cnt.apply(pos + m.end(), amstin.models.grammar.parsing.ast.Symbol.intern(m.group()));
+//		}
+//	}
 
 	private boolean isReserved(String str) {
 		return reserved.contains(str);
@@ -569,21 +587,19 @@ public class Parser {
 	private static class Build implements Cnt {
 		private Cnt cnt;
 		private Klass klass;
-		private boolean isInjection;
 		private Rule rule;
 
-		public Build(Rule rule, Klass klass, Cnt cnt, boolean isInjection) {
+		public Build(Rule rule, Klass klass, Cnt cnt) {
 			this.rule = rule;
 			this.klass = klass;
 			this.cnt = cnt;
-			this.isInjection = isInjection;
 		}
 
 		@SuppressWarnings("unchecked")
 		@Override
 		public void apply(int result, Object obj) {
 			List<Object> kids = (List<Object>) obj;
-			if (klass == null && isInjection) {
+			if (klass == null && rule.isInjection()) {
 				// injection
 				cnt.apply(result, kids.get(0));
 			}

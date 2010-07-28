@@ -5,7 +5,7 @@ import java.util.List;
 public class Grammar {
 
 	public String name;
-	public Rule start;
+	public Rule startSymbol;
 	public List<Rule> rules;
 	
 	

@@ -19,7 +19,6 @@ public class _Main {
 	private static final String AUDIT_DIR = Config.PKG_DIR + "/models/audit";
 	private static final String AUDIT_PKG = Config.PKG +".models.audit";
 	private static final String AUDIT_MDG = AUDIT_DIR + "/audit.mdg";
-	private static final String AUDIT_META = AUDIT_DIR + "/audit.meta";
 	private static final String EXAMPLE_AUDIT = AUDIT_DIR + "/example.audit";
 
 	public static void main(String[] args) throws IOException {

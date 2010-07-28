@@ -1,6 +1,7 @@
 
-grammar MetaModel is MetaModel
-where
+
+start MetaModel
+
   MetaModel ::= "metamodel" name:id classes:Class* "end"
 
   Class ::= isAbstract:"abstract"? "class" name:key parent:Parent? fields:Field* "end"
@@ -25,4 +26,3 @@ where
   Inverse ::= [Other] "(" "<-" other:Field^ ")" | [None]
   
   Parent ::= "<" type:Class^
-end

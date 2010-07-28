@@ -30,6 +30,7 @@ public class _Main {
 		Parser parser0 = new Parser(itself0);
 		Grammar itself1 = (Grammar) parser0.parse(GRAMMAR_PKG, src);
 		
+//		
 		Parser parser1 = new Parser((Grammar) itself1);
 		Grammar itself2 = (Grammar) parser1.parse(GRAMMAR_PKG, src);
 		
@@ -43,22 +44,22 @@ public class _Main {
 		Parser metaParser = new Parser(meta);
 		MetaModel grammarMetaModel = (MetaModel)metaParser.parse(amstin.models.meta._Main.METAMODEL_PKG, grammarMeta);
 		
-		List<String> errors = CheckInstance.checkInstance(grammarMetaModel, itself0);
+		List<String> errors = CheckInstance.checkInstance(grammarMetaModel, itself1);
 		for (String error: errors) {
 			System.out.println("ERROR: " + error);
 		}
 		if (errors.isEmpty()) {
 			FileWriter f = new FileWriter(new File(Config.PKG_DIR + "/models/grammar/Boot.java"));
-			CreateScript.script(GRAMMAR_PKG, "Boot", itself2, f);
+			CreateScript.script(GRAMMAR_PKG, "Boot", itself1, f);
 			f.flush();
 		}
 		
 		PrintWriter writer = new PrintWriter(System.out);
-		Unparse.unparse(itself0, itself0, writer);
+		Unparse.unparse(itself1, itself1, writer);
 		writer.flush();
 		
-		ToDot.toDot(itself0, writer);
-		writer.flush();
+//		ToDot.toDot(itself0, writer);
+//		writer.flush();
 		
 	}
 	

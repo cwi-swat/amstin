@@ -19,7 +19,6 @@ public class _Main {
 	private static final String ENTITY_DIR = Config.PKG_DIR + "/models/entity";
 	private static final String ENTITY_PKG = Config.PKG +".models.entity";
 	private static final String ENTITY_MDG = ENTITY_DIR + "/entity.mdg";
-	private static final String ENTITY_META = ENTITY_DIR + "/entity.meta";
 	private static final String EXAMPLE_ENTITY = ENTITY_DIR + "/example.entity";
 
 	public static void main(String[] args) throws IOException {
