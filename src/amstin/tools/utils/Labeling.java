@@ -9,10 +9,11 @@ public class Labeling {
 	public static IdentityHashMap<Object, Integer> label(Object obj) {
 		return new Labeling(obj).label();
 	}
-	
+
 	private IdentityHashMap<Object, Integer> visited;
 	private int label;
 	private Object root;
+	private boolean labelPrimitivesInList;
 
 	private Labeling(Object root) {
 		this.root = root;

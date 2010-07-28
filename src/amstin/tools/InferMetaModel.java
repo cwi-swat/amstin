@@ -19,6 +19,7 @@ import amstin.models.grammar.IterStar;
 import amstin.models.grammar.Key;
 import amstin.models.grammar.Lit;
 import amstin.models.grammar.Opt;
+import amstin.models.grammar.Real;
 import amstin.models.grammar.Ref;
 import amstin.models.grammar.Rule;
 import amstin.models.grammar.Str;
@@ -90,13 +91,13 @@ public class InferMetaModel {
 		for (Rule rule: grammar.rules) {
 			Class sup = table.get(rule.name);
 			
-			if (isInjection(rule)) {
+			if (rule.isInjection()) {
 				// injection means all alts delegate to a non-terminal
 				// this means the types for those symbols are dealt with elsewhere
 				continue;
 			}
 			
-			if (isSingleton(rule)) {
+			if (rule.isSingleton()) {
 				sup.isAbstract = false;
 				addFields(sup, rule.alts.get(0));
 			}
@@ -145,6 +146,9 @@ public class InferMetaModel {
 		if (sym instanceof Int) {
 			return new amstin.models.meta.Int();
 		}
+		if (sym instanceof Real) {
+			return new amstin.models.meta.Real();
+		}
 		
 		Mult dummy[] = {null};
 		
@@ -189,6 +193,7 @@ public class InferMetaModel {
 			return new amstin.models.meta.Str();
 		}
 		
+
 		throw new RuntimeException("Cannot convert symbol: " + sym);
 
 	}
@@ -204,20 +209,4 @@ public class InferMetaModel {
 		addFields(klass, alt);
 	}
 
-	private boolean isSingleton(Rule rule) {
-		return rule.alts.size() == 1;
-	}
-
-	private boolean isInjection(Rule rule) {
-		for (Alt alt: rule.alts) {
-			if (alt.elements.size() != 1) {
-				return false;
-			}
-			else if (!(alt.elements.get(0).symbol instanceof Sym)) {
-				return false;
-			}
-		}
-		return true;
-	}
-	
 }

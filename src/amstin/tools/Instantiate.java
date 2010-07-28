@@ -208,7 +208,7 @@ public class Instantiate  {
 		public void apply(Map<Symbol,Object> defines) {
 			Symbol symbol = ref.getSymbol();
 			if (!defines.containsKey(symbol)) {
-				throw new AssertionError("Symbol " + symbol + " is not defined");
+				throw new RuntimeException("Symbol " + symbol + " is not defined");
 			}				
 			
 			Class<?> klazz = target.getClass();

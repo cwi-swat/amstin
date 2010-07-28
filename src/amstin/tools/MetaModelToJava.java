@@ -18,6 +18,7 @@ import amstin.models.meta.Klass;
 import amstin.models.meta.MetaModel;
 import amstin.models.meta.Mult;
 import amstin.models.meta.Opt;
+import amstin.models.meta.Real;
 import amstin.models.meta.Single;
 import amstin.models.meta.Str;
 import amstin.models.meta.Type;
@@ -170,6 +171,9 @@ public class MetaModelToJava {
 			else if (type instanceof Int) {
 				dc.field(mods, Integer.class, name);
 			}
+			else if (type instanceof Real) {
+				dc.field(mods, Double.class, name);
+			}
 			else if (type instanceof Bool) {
 				dc.field(mods, Boolean.class, name);
 			}
@@ -188,6 +192,9 @@ public class MetaModelToJava {
 			}
 			else if (type instanceof Int) {
 				dc.field(mods, list.narrow(Integer.class), name);
+			}
+			else if (type instanceof Real) {
+				dc.field(mods, list.narrow(Double.class), name);
 			}
 			else if (type instanceof Bool) {
 				dc.field(mods, list.narrow(Boolean.class), name);

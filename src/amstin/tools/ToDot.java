@@ -43,12 +43,14 @@ public class ToDot {
 	private Object root;
 	private Writer output;
 	private IdentityHashMap<Object, Integer> labels;
+	private int primId;
 
 
 	private ToDot(Object obj, Writer output) {
 		this.root = obj;
 		this.output = output;
 		this.labels = Labeling.label(root);
+		this.primId = 0;
 	}
 
 	private void todot() throws IOException {
@@ -79,7 +81,14 @@ public class ToDot {
 				if (kid instanceof List) {
 					List l = (List)kid;
 					for (int i = 0; i < l.size(); i++) {
-						writeEdge(o, l.get(i), name + "@" + i);
+						Object elt = l.get(i);
+						String label = name + "@" + i;
+						if (isPrimitive(elt)) {
+							writeEdgeToPrimitive(o, elt, label);
+						}
+						else {
+							writeEdge(o, elt, label);
+						}
 					}
 				}
 				else if (kid != null) {
@@ -93,6 +102,12 @@ public class ToDot {
 			}
 		}
 		
+	}
+
+	private void writeEdgeToPrimitive(Object o, Object elt, String label) throws IOException {
+		String id = "primNode" + primId++;
+		output.write(id + " [shape=plaintext, label=\"" + elt.toString() + "\"]\n");		
+		output.write(nodeId(o) + " -> " + id + " [label=\"" + label + "\"]\n");		
 	}
 
 	private void writeEdge(Object o, Object elt, String label) throws IOException {

@@ -18,6 +18,7 @@ import amstin.models.grammar.IterStar;
 import amstin.models.grammar.Key;
 import amstin.models.grammar.Lit;
 import amstin.models.grammar.Opt;
+import amstin.models.grammar.Real;
 import amstin.models.grammar.Ref;
 import amstin.models.grammar.Rule;
 import amstin.models.grammar.Str;
@@ -162,6 +163,9 @@ public class Unparse {
 			writer.write(unparseString((String)obj));
 		}
 		else if (sym instanceof Int && obj instanceof Integer) {
+			writer.write(obj.toString());
+		}
+		else if (sym instanceof Real && obj instanceof Double) {
 			writer.write(obj.toString());
 		}
 		else if (sym instanceof Opt && ((Opt)sym).arg instanceof Lit && obj instanceof Boolean) {
