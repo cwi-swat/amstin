@@ -30,10 +30,15 @@ public class Memo implements IParser {
 		}
 		else {
 			entry.cnts.add(cnt);
-			int i = 0;
-			for (int r: entry.results) {
+			int l = entry.results.size();
+			for (int i = 0; i < l; i++) {
+				// if an item is added to entry.results cflowbelow cnt.apply
+				// we do not reprocesses it here. I don't know if this is wrong.
+				// but we cannot use an iterator over results, because
+				// you get concurrentmodification errors (e.g. when parsing
+				// multiply nested left recursive expressions).
+				int r = entry.results.get(i);
 				cnt.apply(r, entry.objects.get(i));
-				i++;
 			}
 		}
 	}
