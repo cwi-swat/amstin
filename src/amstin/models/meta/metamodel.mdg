@@ -10,6 +10,7 @@ start MetaModel
   
   Type ::= [Int] "int"
   		| [Bool] "bool"
+  		| [Real] "real"
   		| [Str] "str"
 
   // How to avoid the superfluous Klass here?

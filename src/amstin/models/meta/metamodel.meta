@@ -11,6 +11,9 @@ metamodel MetaMetaModel
 	
 	class Bool < Type
 	end
+
+	class Real < Type
+	end
 	
 	class Klass < Type
 	  klass: Class

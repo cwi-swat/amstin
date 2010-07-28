@@ -38,6 +38,7 @@ metamodel Format
 	
 	class Int < Symbol end
 	class Str < Symbol end
+	class Real < Symbol end
 	class Id < Symbol end
 	class Key < Symbol end
 	

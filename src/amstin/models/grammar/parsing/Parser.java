@@ -28,6 +28,7 @@ import amstin.models.grammar.IterStar;
 import amstin.models.grammar.Key;
 import amstin.models.grammar.Klass;
 import amstin.models.grammar.Lit;
+import amstin.models.grammar.Real;
 //import amstin.models.grammar.Mod;
 import amstin.models.grammar.Opt;
 import amstin.models.grammar.Ref;
@@ -151,6 +152,9 @@ public class Parser {
 		else if (sym instanceof Int) {
 			parseInt((Int)sym, cnt, src, pos);
 		}
+		else if (sym instanceof Real) {
+			parseReal((Real)sym, cnt, src, pos);
+		}
 		else if (sym instanceof Id) {
 			parseId((Id)sym, cnt, src, pos);
 		}
@@ -186,6 +190,7 @@ public class Parser {
 		}
 	}
 	
+
 	protected void parseElement(Element elt, Cnt cnt, String src, int pos) {
 		if (elt instanceof Layout) {
 			parseLayout(cnt, src, pos);
@@ -444,6 +449,15 @@ public class Parser {
 			cnt.apply(pos + m.end(), Integer.parseInt(m.group()));
 		}
 	}
+	
+	private void parseReal(Real sym, Cnt cnt, String src, int pos) {
+		Pattern re = Pattern.compile("[-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?");
+		Matcher m = re.matcher(src.subSequence(pos, src.length()));
+		if (m.lookingAt()) {
+			cnt.apply(pos + m.end(), Double.parseDouble(m.group()));
+		}
+	}
+
 
 	public void parseStr(Str str, Cnt cnt, String src, int pos) {
 		Pattern re = Pattern.compile("\"(\\\\.|[^\"])*\"");

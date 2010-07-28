@@ -16,6 +16,7 @@
   Symbol ::= [Sym] rule:Rule^
           | [Int] "int"
           | [Str] "str"
+          | [Real] "real"
           | [Id]  "id"
           | [Ref] ref:id "^"
           | [Lit] value:str
