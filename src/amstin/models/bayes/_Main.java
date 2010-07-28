@@ -35,7 +35,7 @@ public class _Main {
 
 		File file = new File(Config.ROOT);
 		
-		MetaModelToJava.metaModelToJava(file, BAYES_PKG, bayesMetaModel);
+		//MetaModelToJava.metaModelToJava(file, BAYES_PKG, bayesMetaModel);
 		
 		
 		String example = Parser.readPath(EXAMPLE_BAYES);

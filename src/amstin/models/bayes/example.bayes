@@ -23,6 +23,14 @@ net Activity.products {
            | (storeInWareHouse & grouping[asIs] & locatedAtHub[yes])
            | (transportToHub & grouping[asIs] & exitPoint[seaPort]) 
  
+  ungroup =  (storeInWareHouse &  grouping[required])
+     | (transportToHub & grouping[required])
+     
+  localHub = (storeInWareHouse & grouping[asIs] & locatedAtHub[yes] & exitPoint[local])
+             | (transportToHub & grouping[asIs] & exitPoint[local]) 
+          
+          
+ 
 }
 
 

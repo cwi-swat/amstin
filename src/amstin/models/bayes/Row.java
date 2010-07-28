@@ -7,5 +7,9 @@ public class Row {
 
     public String name;
     public List<Double> rowValues;
+    
+	public double get(int j) {
+		return rowValues.get(j);
+	}
 
 }
