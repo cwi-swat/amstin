@@ -23,6 +23,7 @@ public class Obj {
 
 	// TODO: inverses
 	
+	
 	public Obj(Entity type) {
 		this.type = type; 
 		this.table = new HashMap<String, Object>();
