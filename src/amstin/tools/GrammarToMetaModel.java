@@ -39,29 +39,29 @@ import amstin.models.meta.Star;
 import amstin.models.meta.Type;
 import amstin.models.meta._Main;
 
-public class InferMetaModel {
+public class GrammarToMetaModel {
 
 	public static void main(String[] args) throws IOException {
 		Grammar metaGrammar = Parser.parseGrammar(_Main.METAMODEL_MDG);
-		InferMetaModel inf = new InferMetaModel("MetaMetaModel", metaGrammar);
+		GrammarToMetaModel inf = new GrammarToMetaModel("MetaMetaModel", metaGrammar);
 		inf.infer();
 		MetaModel metaModel = inf.metaModel;
 		
 		// Returns false because list ordering is different.
 		// TODO: need order attribute on many fields.
-		if (Equals.equals(Boot.instance, metaModel)) {
+		if (ModelEquality.equals(Boot.instance, metaModel)) {
 			System.out.println("YES!");
 		}
 		else {
 			System.out.println("NO!");
 		}
 		Writer writer = new PrintWriter(System.out);
-		Unparse.unparse(metaGrammar, metaModel, writer);
+		ModelToString.unparse(metaGrammar, metaModel, writer);
 		writer.flush();
 	}
 	
 	public static MetaModel infer(String name, Grammar grammar) {
-		InferMetaModel inf = new InferMetaModel(name, grammar);
+		GrammarToMetaModel inf = new GrammarToMetaModel(name, grammar);
 		inf.infer();
 		return inf.metaModel;
 	}
@@ -70,7 +70,7 @@ public class InferMetaModel {
 	private MetaModel metaModel;
 	private Map<String, Class> table;
 	
-	public InferMetaModel(String name, Grammar grammar) {
+	public GrammarToMetaModel(String name, Grammar grammar) {
 		this.grammar = grammar;
 		this.metaModel = new MetaModel();
 		metaModel.name = name;

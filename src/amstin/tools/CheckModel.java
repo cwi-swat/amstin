@@ -16,7 +16,7 @@ import amstin.models.meta.Str;
 import amstin.models.meta.Type;
 
 
-public class CheckInstance {
+public class CheckModel {
 
 	private IdentityHashMap<Object, Class> done;
 	private Class klass;
@@ -26,7 +26,7 @@ public class CheckInstance {
 
 
 	public static List<String> checkInstance(MetaModel metaModel, Object obj) {
-		CheckInstance check = new CheckInstance(metaModel, obj);
+		CheckModel check = new CheckModel(metaModel, obj);
 		return check.errors();
 	}
 
@@ -42,7 +42,7 @@ public class CheckInstance {
 	}
 
 	
-	private CheckInstance(MetaModel metaModel, Object obj) {
+	private CheckModel(MetaModel metaModel, Object obj) {
 		this.metaModel = metaModel;
 		this.done = new IdentityHashMap<Object, Class>();
 		this.klass = findClass(metaModel, obj.getClass().getSimpleName());

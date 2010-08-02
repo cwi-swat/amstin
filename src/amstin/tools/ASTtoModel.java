@@ -16,7 +16,7 @@ import amstin.models.grammar.parsing.ast.Symbol;
 
 
 
-public class Instantiate  {
+public class ASTtoModel  {
 
 	private String pkg;
 	private List<Fix> fixes;
@@ -24,11 +24,11 @@ public class Instantiate  {
 	private Stack<Map<Symbol,Object>> defs;
 
 	public static Object instantiate(String pkg, Object root) {
-		Instantiate toJava = new Instantiate(pkg, root);
+		ASTtoModel toJava = new ASTtoModel(pkg, root);
 		return toJava.toJava();
 	}
 	
-	private Instantiate(String pkg, Object root) {
+	private ASTtoModel(String pkg, Object root) {
 		this.pkg = pkg;
 		this.fixes = new ArrayList<Fix>();
 		this.root = root;

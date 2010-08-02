@@ -7,7 +7,7 @@ import java.io.Writer;
 
 import org.yaml.snakeyaml.Yaml;
 
-public class Dump {
+public class ModelToYAML {
 	
 	public static void dump(Object obj, File file) {
 		FileWriter writer;

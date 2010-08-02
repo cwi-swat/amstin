@@ -6,12 +6,12 @@ import java.util.IdentityHashMap;
 import java.util.List;
 
 @SuppressWarnings("unchecked")
-public class Equals {
+public class ModelEquality {
 
 	private static final boolean DEBUG = false;
 
 	public static boolean equals(Object o1, Object o2) {
-		Equals eq = new Equals(o1, o2);
+		ModelEquality eq = new ModelEquality(o1, o2);
 		return eq.equals();
 	}
 
@@ -20,7 +20,7 @@ public class Equals {
 	private Object obj1;
 	private Object obj2;
 
-	private Equals(Object o1, Object o2) {
+	private ModelEquality(Object o1, Object o2) {
 		this.obj1 = o1;
 		this.obj2 = o2;
 		this.done = new IdentityHashMap<Object, Object>();

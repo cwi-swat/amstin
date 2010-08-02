@@ -11,12 +11,12 @@ import java.util.List;
 
 import amstin.tools.utils.Labeling;
 
-public class CreateScript {
+public class ModelToJava {
 
 	// TODO: use code model here?
 	
 	public static void script(String pkg, String name, Object obj, Writer output) {
-		CreateScript inst = new CreateScript(pkg, name, obj, output);
+		ModelToJava inst = new ModelToJava(pkg, name, obj, output);
 		inst.script();
 	}
 	
@@ -26,7 +26,7 @@ public class CreateScript {
 	private String name;
 	private Writer output;
 	
-	private CreateScript(String pkg, String name, Object obj, Writer output) {
+	private ModelToJava(String pkg, String name, Object obj, Writer output) {
 		this.pkg = pkg;
 		this.name = name;
 		this.root = obj;

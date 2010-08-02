@@ -12,7 +12,7 @@ import java.util.List;
 import amstin.tools.utils.Labeling;
 
 @SuppressWarnings("unchecked")
-public class ToDot {
+public class ModelToDot {
 
 	public static void main(String[] args) throws IOException {
 		Object o = amstin.models.meta.Boot.instance;
@@ -32,7 +32,7 @@ public class ToDot {
 	}
 	
 	public static void toDot(Object obj, Writer output) {
-		ToDot inst = new ToDot(obj, output);
+		ModelToDot inst = new ModelToDot(obj, output);
 		try {
 			inst.todot();
 		} catch (IOException e) {
@@ -46,7 +46,7 @@ public class ToDot {
 	private int primId;
 
 
-	private ToDot(Object obj, Writer output) {
+	private ModelToDot(Object obj, Writer output) {
 		this.root = obj;
 		this.output = output;
 		this.labels = Labeling.label(root);

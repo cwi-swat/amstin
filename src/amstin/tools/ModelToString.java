@@ -26,13 +26,13 @@ import amstin.models.grammar.Sym;
 import amstin.models.grammar.Symbol;
 
 @SuppressWarnings("unchecked")
-public class Unparse {
+public class ModelToString {
 
 	// TODO: there is no support for nested keys and path references currently,
 	// so the unparsed result is incorrect if there are duplicate keys.
 	
 	public static void unparse(Grammar grammar, Object obj, Writer writer) {
-		Unparse unp = new Unparse(grammar, obj, writer);
+		ModelToString unp = new ModelToString(grammar, obj, writer);
 		try {
 			unp.unparse();
 		} 
@@ -46,7 +46,7 @@ public class Unparse {
 	private IdentityHashMap<Object, String> labels;
 	private Writer writer;
 
-	private Unparse(Grammar grammar, Object obj, Writer writer) {
+	private ModelToString(Grammar grammar, Object obj, Writer writer) {
 		this.grammar = grammar;
 		this.root = obj;
 		this.labels = new IdentityHashMap<Object, String>();
@@ -289,6 +289,8 @@ public class Unparse {
 			}
 			throw new RuntimeException("No empty alternative found in rule: " + rule.name);
 		}
+
+		// TODO: use rule.isInjection()
 
 		if (!isInjection(rule)) {
 			String name = obj.getClass().getSimpleName();
