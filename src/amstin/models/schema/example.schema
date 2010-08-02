@@ -1,0 +1,48 @@
+
+
+create table MetaModel (
+  id int primary key,
+  name varchar(32)
+);
+
+
+ 
+
+create table Type (
+  id int primary key,
+  class varchar(32),
+  meta_model_id int references MetaModel,
+  klass_id int references Type, // self-reference (when type = Klass)
+  name varchar(32), // when type = Class
+  isAbstract bool,
+  parent_id int references Parent
+);
+
+
+create table Field (
+  id int primary key,
+  name varchar(32),
+  owner_id int references Type not null,
+  type_id int references Type not null,
+  mult_id int references Mult not null,
+  inverse_id int references Inverse
+);
+
+create table Parent (
+  id int primary key,
+  type_id int references Type // should be a Class in Type
+);
+
+
+create table Inverse (
+  id int primary key,
+  class varchar(32), // None or Other
+  other_id int references Field
+);
+
+create table Mult (
+   id int primary key,
+   class varchar(32)  // Single, Star, Opt
+);
+	
+

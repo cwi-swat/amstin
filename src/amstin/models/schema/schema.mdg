@@ -1,0 +1,19 @@
+
+start Schema
+
+  Schema ::= tables:Table*
+  
+  Table ::= "create" "table" name:key "(" columns:{Column ","}* ")" ";"
+  
+  Column ::= name:id type:Type modifiers:Modifier*
+  
+  Type ::= [Int] "int"
+        |  [VarChar] "varchar" "(" length:int ")"
+        |  [Real] "real"
+        |  [Bool] "bool"
+  
+  
+  Modifier ::= [NotNull] "not" "null"
+            |  [Ref] "references" table:Table^
+            |  [Key] "primary" "key"
+  
