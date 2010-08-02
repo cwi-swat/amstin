@@ -6,11 +6,5 @@ public class False
     extends Bool
 {
 
-	@Override
-	public Object eval() {
-		return false;
-	}
-
-	
 
 }

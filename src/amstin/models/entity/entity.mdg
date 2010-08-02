@@ -1,4 +1,4 @@
-grammar Entity is Entities where
+start Entities
 
   Entities ::= entities:Entity* 
   
@@ -35,4 +35,3 @@ grammar Entity is Entities where
   			  |  [Add] lhs:Expression "+" rhs:Expression
   			  |  [Sub] lhs:Expression "-" rhs:Expression
     
-end

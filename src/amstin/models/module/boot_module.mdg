@@ -1,0 +1,9 @@
+start Module
+
+  Module ::= "module" name:mod ":" syntax:mod imports:Import* contents:Contents
+  
+  Import ::= [One] "import" name:mod ";" | [All] "import" name:mod "." "*" ";"
+  
+  // empty
+  Contents ::= [Object]
+  

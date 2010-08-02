@@ -8,9 +8,4 @@ public class IntValue
 
     public Integer value;
 
-	@Override
-	public Object eval() {
-		return value;
-	}
-
 }

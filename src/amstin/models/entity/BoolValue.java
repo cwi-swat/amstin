@@ -8,9 +8,4 @@ public class BoolValue
 
     public Bool value;
 
-	@Override
-	public Object eval() {
-		return value.eval();
-	}
-
 }

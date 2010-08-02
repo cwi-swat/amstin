@@ -8,9 +8,4 @@ public class AssocType
 
     public Entity entity;
 
-	@Override
-	public Object defaultValue() {
-		return null;
-	}
-
 }

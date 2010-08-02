@@ -8,9 +8,4 @@ public class StrValue
 
     public String value;
 
-	@Override
-	public Object eval() {
-		return value;
-	}
-
 }
