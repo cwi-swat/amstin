@@ -10,11 +10,12 @@ import amstin.Config;
 import amstin.models.grammar.Grammar;
 import amstin.models.grammar.parsing.Parser;
 import amstin.models.meta.MetaModel;
-import amstin.tools.CheckInstance;
-import amstin.tools.CreateScript;
-import amstin.tools.Instantiate;
-import amstin.tools.ToDot;
-import amstin.tools.Unparse;
+import amstin.tools.CheckModel;
+import amstin.tools.ModelToJava;
+import amstin.tools.ModelToYAML;
+import amstin.tools.ASTtoModel;
+import amstin.tools.ModelToDot;
+import amstin.tools.ModelToString;
 
 
 public class _Main {
@@ -34,11 +35,11 @@ public class _Main {
 		Parser stmParser = new Parser(stm);
 		Object obj = stmParser.parse(grant);
 		System.out.println(obj);
-		StateMachine grantStm = (StateMachine) Instantiate.instantiate(STATEMACHINE_PKG, obj);
+		StateMachine grantStm = (StateMachine) ASTtoModel.instantiate(STATEMACHINE_PKG, obj);
 		System.out.println(grantStm);
 		
 		PrintWriter out = new PrintWriter(System.out);
-		CreateScript.script("a2mtk.models.stm", "Grant", grantStm, out);
+		ModelToJava.script("a2mtk.models.stm", "Grant", grantStm, out);
 		out.flush();
 		
 		
@@ -47,18 +48,21 @@ public class _Main {
 		Parser metaParser = new Parser(meta);
 		MetaModel stmMetaModel = (MetaModel)metaParser.parse(amstin.models.meta._Main.METAMODEL_PKG, stmMeta);
 		
-		List<String> errors = CheckInstance.checkInstance(stmMetaModel, grantStm);
+		List<String> errors = CheckModel.checkInstance(stmMetaModel, grantStm);
 		for (String error: errors) {
 			System.out.println("ERROR: " + error);
 		}
 		
 		
 		PrintWriter writer = new PrintWriter(System.out);
-		Unparse.unparse(stm, grantStm, writer);
+		ModelToString.unparse(stm, grantStm, writer);
+		writer.flush();
+		
+		ModelToYAML.dump(grantStm, writer);
 		writer.flush();
 		
 		FileWriter f = new FileWriter(new File("stm.dot"));
-		ToDot.toDot(grantStm, f);
+		ModelToDot.toDot(grantStm, f);
 		f.flush();
 		
 	}

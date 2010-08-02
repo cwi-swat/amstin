@@ -9,10 +9,10 @@ import amstin.Config;
 import amstin.models.grammar.Grammar;
 import amstin.models.grammar.parsing.Parser;
 import amstin.models.meta.MetaModel;
-import amstin.tools.InferMetaModel;
+import amstin.tools.GrammarToMetaModel;
 import amstin.tools.MetaModelToJava;
-import amstin.tools.ToDot;
-import amstin.tools.Unparse;
+import amstin.tools.ModelToDot;
+import amstin.tools.ModelToString;
 
 public class _Main {
 
@@ -25,17 +25,17 @@ public class _Main {
 	public static void main(String[] args) throws IOException {
 		Grammar bayesGrammar = Parser.parseGrammar(BAYES_MDG);
 		System.out.println(bayesGrammar);
-		MetaModel bayesMetaModel = InferMetaModel.infer("Bayes", bayesGrammar);
+		MetaModel bayesMetaModel = GrammarToMetaModel.infer("Bayes", bayesGrammar);
 		PrintWriter writer = new PrintWriter(System.out);
 		
 		Grammar metaGrammar = Parser.parseGrammar(amstin.models.meta._Main.METAMODEL_MDG);
-		Unparse.unparse(metaGrammar, bayesMetaModel, writer);
+		ModelToString.unparse(metaGrammar, bayesMetaModel, writer);
 		writer.flush();
 		
 
 		File file = new File(Config.ROOT);
 		
-		//MetaModelToJava.metaModelToJava(file, BAYES_PKG, bayesMetaModel);
+		MetaModelToJava.metaModelToJava(file, BAYES_PKG, bayesMetaModel);
 		
 		
 		String example = Parser.readPath(EXAMPLE_BAYES);
@@ -44,12 +44,12 @@ public class _Main {
 		Object exampleModel = bayesParser.parse(BAYES_PKG, example);
 		System.out.println(exampleModel);
 		
-		Unparse.unparse(bayesGrammar, exampleModel, writer);
+		ModelToString.unparse(bayesGrammar, exampleModel, writer);
 		writer.flush();
 		
 		
 		FileWriter dot = new FileWriter(new File("bayes.dot"));
-		ToDot.toDot(exampleModel, dot);
+		ModelToDot.toDot(exampleModel, dot);
 		dot.close();
 		
 	}

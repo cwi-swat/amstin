@@ -9,10 +9,10 @@ import amstin.Config;
 import amstin.models.grammar.Grammar;
 import amstin.models.grammar.parsing.Parser;
 import amstin.models.meta.MetaModel;
-import amstin.tools.InferMetaModel;
+import amstin.tools.GrammarToMetaModel;
 import amstin.tools.MetaModelToJava;
-import amstin.tools.ToDot;
-import amstin.tools.Unparse;
+import amstin.tools.ModelToDot;
+import amstin.tools.ModelToString;
 
 public class _Main {
 	
@@ -24,11 +24,11 @@ public class _Main {
 	public static void main(String[] args) throws IOException {
 		Grammar entityGrammar = Parser.parseGrammar(ENTITY_MDG);
 		System.out.println(entityGrammar);
-		MetaModel entityMetaModel = InferMetaModel.infer("Entity", entityGrammar);
+		MetaModel entityMetaModel = GrammarToMetaModel.infer("Entity", entityGrammar);
 		PrintWriter writer = new PrintWriter(System.out);
 		
 		Grammar metaGrammar = Parser.parseGrammar(amstin.models.meta._Main.METAMODEL_MDG);
-		Unparse.unparse(metaGrammar, entityMetaModel, writer);
+		ModelToString.unparse(metaGrammar, entityMetaModel, writer);
 		writer.flush();
 		
 		
@@ -44,12 +44,12 @@ public class _Main {
 		Object exampleModel = entityParser.parse(ENTITY_PKG, example);
 		System.out.println(exampleModel);
 		
-		Unparse.unparse(entityGrammar, exampleModel, writer);
+		ModelToString.unparse(entityGrammar, exampleModel, writer);
 		writer.flush();
 		
 		
 		FileWriter dot = new FileWriter(new File("employee.dot"));
-		ToDot.toDot(exampleModel, dot);
+		ModelToDot.toDot(exampleModel, dot);
 		dot.close();
 		
 	}

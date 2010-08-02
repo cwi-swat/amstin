@@ -9,10 +9,10 @@ import java.util.List;
 import amstin.Config;
 import amstin.models.grammar.Grammar;
 import amstin.models.grammar.parsing.Parser;
-import amstin.tools.CheckInstance;
-import amstin.tools.CreateScript;
-import amstin.tools.Equals;
-import amstin.tools.Unparse;
+import amstin.tools.CheckModel;
+import amstin.tools.ModelToJava;
+import amstin.tools.ModelEquality;
+import amstin.tools.ModelToString;
 
 
 public class _Main {
@@ -29,10 +29,10 @@ public class _Main {
 		Parser metaParser = new Parser(meta);
 		MetaModel metaMetaModel = (MetaModel)metaParser.parse(METAMODEL_PKG, metaMeta);
 
-		System.out.println("parsed eq boot? " + Equals.equals(metaMetaModel, Boot.instance));
+		System.out.println("parsed eq boot? " + ModelEquality.equals(metaMetaModel, Boot.instance));
 		
 		// Check if metaMetaModel conforms to itself
-		List<String> errors = CheckInstance.checkInstance(metaMetaModel, metaMetaModel);
+		List<String> errors = CheckModel.checkInstance(metaMetaModel, metaMetaModel);
 		for (String error: errors) {
 			System.out.println("ERROR: " + error);
 		}
@@ -40,12 +40,12 @@ public class _Main {
 		if (errors.isEmpty()) {
 			FileWriter out = new FileWriter(new File(BOOT_JAVA));
 //			PrintWriter out = new PrintWriter(System.out);
-			CreateScript.script(METAMODEL_PKG, "Boot", metaMetaModel, out);
+			ModelToJava.script(METAMODEL_PKG, "Boot", metaMetaModel, out);
 			out.flush();
 		}
 		
 		PrintWriter writer = new PrintWriter(System.out);
-		Unparse.unparse(meta, metaMetaModel, writer);
+		ModelToString.unparse(meta, metaMetaModel, writer);
 		writer.flush();
 		
 	}

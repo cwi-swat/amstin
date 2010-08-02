@@ -1,6 +1,6 @@
 
-grammar StateMachine is StateMachine
-where
+start StateMachine
+
   StateMachine ::= decls:Decl*
 
   Decl ::= State | Commands | Events
@@ -18,6 +18,5 @@ where
   Events ::= "events" events:Event+ "end"
 
   Event ::= name:key code:id
-end
 
   
