@@ -9,11 +9,11 @@ import java.util.List;
 import amstin.Config;
 import amstin.models.grammar.parsing.Parser;
 import amstin.models.meta.MetaModel;
-import amstin.tools.CheckInstance;
-import amstin.tools.CreateScript;
-import amstin.tools.Equals;
-import amstin.tools.ToDot;
-import amstin.tools.Unparse;
+import amstin.tools.CheckModel;
+import amstin.tools.ModelToJava;
+import amstin.tools.ModelEquality;
+import amstin.tools.ModelToDot;
+import amstin.tools.ModelToString;
 
 
 public class _Main {
@@ -34,9 +34,9 @@ public class _Main {
 		Parser parser1 = new Parser((Grammar) itself1);
 		Grammar itself2 = (Grammar) parser1.parse(GRAMMAR_PKG, src);
 		
-		System.out.println("grammar0 eq grammar1? " + Equals.equals(itself0, itself1));
-		System.out.println("grammar1 eq grammar2? " + Equals.equals(itself1, itself2));
-		System.out.println("grammar0 eq grammar2? " + Equals.equals(itself0, itself2));
+		System.out.println("grammar0 eq grammar1? " + ModelEquality.equals(itself0, itself1));
+		System.out.println("grammar1 eq grammar2? " + ModelEquality.equals(itself1, itself2));
+		System.out.println("grammar0 eq grammar2? " + ModelEquality.equals(itself0, itself2));
 		
 		
 		Grammar meta = Parser.parseGrammar(amstin.models.meta._Main.METAMODEL_MDG);
@@ -44,18 +44,18 @@ public class _Main {
 		Parser metaParser = new Parser(meta);
 		MetaModel grammarMetaModel = (MetaModel)metaParser.parse(amstin.models.meta._Main.METAMODEL_PKG, grammarMeta);
 		
-		List<String> errors = CheckInstance.checkInstance(grammarMetaModel, itself1);
+		List<String> errors = CheckModel.checkInstance(grammarMetaModel, itself1);
 		for (String error: errors) {
 			System.out.println("ERROR: " + error);
 		}
 		if (errors.isEmpty()) {
 			FileWriter f = new FileWriter(new File(Config.PKG_DIR + "/models/grammar/Boot.java"));
-			CreateScript.script(GRAMMAR_PKG, "Boot", itself1, f);
+			ModelToJava.script(GRAMMAR_PKG, "Boot", itself1, f);
 			f.flush();
 		}
 		
 		PrintWriter writer = new PrintWriter(System.out);
-		Unparse.unparse(itself1, itself1, writer);
+		ModelToString.unparse(itself1, itself1, writer);
 		writer.flush();
 		
 //		ToDot.toDot(itself0, writer);

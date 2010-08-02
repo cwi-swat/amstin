@@ -40,7 +40,7 @@ import amstin.models.grammar.parsing.ast.Define;
 import amstin.models.grammar.parsing.ast.Field;
 import amstin.models.grammar.parsing.ast.Instance;
 import amstin.models.grammar.parsing.ast.Reference;
-import amstin.tools.Instantiate;
+import amstin.tools.ASTtoModel;
 
 
 public class Parser {
@@ -67,7 +67,7 @@ public class Parser {
 		String src = readPath(path);
 		Grammar grammar = Boot.instance;
 		Parser parser = new Parser(grammar);
-		return (Grammar) Instantiate.instantiate(amstin.models.grammar._Main.GRAMMAR_PKG, parser.parse(src));
+		return (Grammar) ASTtoModel.instantiate(amstin.models.grammar._Main.GRAMMAR_PKG, parser.parse(src));
 	}
 
 	
@@ -112,7 +112,7 @@ public class Parser {
 	
 	public Object parse(String pkg, String src) {
 		Object ast = parse(src);
-		return Instantiate.instantiate(pkg, ast);
+		return ASTtoModel.instantiate(pkg, ast);
 	}
 
 	public Object parse(String src) {
