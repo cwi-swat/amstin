@@ -12,7 +12,7 @@ Tree ::= [Obj] name:id "(" args:{Tree ","}* ")" loc:Location?
        | [List] "[" elements:{Tree ","}* "]" loc:Location?
        | [True] "true" loc:Location?
        | [False] "false" loc:Location?
-       | [Arg] name:id ":" value:Tree
+       | [Arg] name:id ":" value:Tree?
        
 
 Location ::= "@" "<" file:str "," line:int "," column:int "," offset:int "," length:int ">"  

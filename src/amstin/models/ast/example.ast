@@ -1,4 +1,4 @@
 
 
-obj(Add, lhs: obj(Var, value: x), rhs: obj(Num, value: 3)) @<"example.ast", 3, 4, 2, 2>
+Add(lhs: Var(value: x), rhs: Num(value: 3)) @<"example.ast", 3, 4, 2, 2>
 
