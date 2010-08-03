@@ -11,10 +11,11 @@ Tree ::= [Obj] name:id "(" args:{Tree ","}* ")"
        | [Ref] "*" name:id "#" type:id loc:Location?
        | [Id] value:id loc:Location?
        | [Str] value:str loc:Location?
+       | [Lit] "'" value:str loc:Location?
        | [Int] value:int loc:Location?
        | [Real] value:real loc:Location?
        
 
-Location ::= "@" "<" file:str "," line:int "," column:int "," offset:int "," length:int ">"  
+Location ::= "@" "<" file:str "," offset:int "," length:int ">"  
 
 

@@ -12,6 +12,7 @@ import amstin.models.ast.Def;
 import amstin.models.ast.False;
 import amstin.models.ast.Id;
 import amstin.models.ast.Int;
+import amstin.models.ast.Lit;
 import amstin.models.ast.Obj;
 import amstin.models.ast.Real;
 import amstin.models.ast.Ref;
@@ -22,6 +23,11 @@ import amstin.models.ast.True;
 
 
 public class ASTtoModel  {
+	
+	// TODO this tool should use the grammar, for instance
+	// to know whether certain optional literals are absent
+	// in order to convert them to booleans. It should therefore
+	// follow the strategy of ModelToString.
 
 	private String pkg;
 	private List<Fix> fixes;
@@ -85,6 +91,9 @@ public class ASTtoModel  {
 			List<Object> newList = new ArrayList<Object>();
 			int i = 0;
 			for (Tree o: ((amstin.models.ast.List)obj).elements) {
+				if (o instanceof Lit) {
+					continue;
+				}
 				try {
 					newList.add(toJava(o));
 				}
@@ -123,6 +132,9 @@ public class ASTtoModel  {
 			String myKeyField = null;
 			
 			for (Object kid: obj.args) {
+				if (kid instanceof Lit) {
+					continue;
+				}
 				if (kid instanceof Arg) { 
 					String fieldName = ((Arg)kid).name;
 					Tree value = ((Arg)kid).value;

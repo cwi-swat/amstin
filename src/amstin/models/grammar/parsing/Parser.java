@@ -18,6 +18,7 @@ import java.util.regex.Pattern;
 import amstin.models.ast.Arg;
 import amstin.models.ast.Def;
 import amstin.models.ast.False;
+import amstin.models.ast.Location;
 import amstin.models.ast.Obj;
 import amstin.models.ast.Tree;
 import amstin.models.ast.True;
@@ -64,6 +65,10 @@ public class Parser {
 	    return src;
 	}
 	
+	public static String readPath(File file) {
+		return readPath(file.getAbsolutePath());
+	}
+	
 	public static Grammar parseGrammar(String path) {
 		String src = readPath(path);
 		Grammar grammar = Boot.instance;
@@ -76,8 +81,6 @@ public class Parser {
 	public static final String ID_REGEX = "[a-zA-Z_$][a-zA-Z_$0-9]*";
 	private static final String REF_REGEX = "(" + ID_REGEX + ")" + "(\\."  + ID_REGEX + ")*";
 
-	// TODO: remove this
-	private static final String MOD_REGEX = "(" + ID_REGEX + ")" + "(\\."  + ID_REGEX + ")*";
 	private Map<Sym, IParser> symCache;
 	private Map<Alt, IParser> altCache;
 	private Map<Symbol, IParser> optCache;
@@ -86,6 +89,7 @@ public class Parser {
 	private Map<IParser, Map<Integer, Entry>> table;
 	private final Grammar grammar;
 	private Set<String> reserved;
+	private String file = "-";
 
 	public Parser(Grammar grammar) {
 		this.grammar = grammar;
@@ -113,12 +117,22 @@ public class Parser {
 	
 	
 	public Object parse(String pkg, String src) {
-		Tree ast = parse(src);
+		Tree ast = parseAsPath("-", src);
 		return ASTtoModel.instantiate(pkg, ast);
+	}
+	
+	public Tree parse(File file) {
+		String path = file.getAbsolutePath();
+		return parseAsPath(path, readPath(path));
 	}
 
 	public Tree parse(String src) {
+		return parseAsPath("-", src);
+	}
+	
+	private Tree parseAsPath(String file, String src) { 
 		src = src.trim();
+		this.file = file;
 		Success success = new Success(src);
 		try {
 			this.symCache = new HashMap<Sym, IParser>();
@@ -238,14 +252,6 @@ public class Parser {
 		IParser p = altCache.get(alt); 
 		p.parse(table, new Build(rule, alt.type, cnt), src, pos);
 	}
-	
-//	private boolean isInjection(Alt alt) {
-//		if (alt.elements.size() != 1) {
-//			return false;
-//		}
-//		Element e = alt.elements.get(0);
-//		return e.symbol instanceof Sym;
-//	}
 	
 	private void parseIterSepStar(IterSepStar sym, Cnt cnt, String src, int pos) {
 		parseIteratedSymbolSep(sym.arg, sym.sep, cnt, src, pos);
@@ -373,6 +379,8 @@ public class Parser {
 
 		@Override
 		public void parse(Map<IParser, Map<Integer, Entry>> table, Cnt cnt, String src, int pos) {
+			// TODO: this is wrong, booleans should not be in the AST, but
+			// inferred in ASTtoModel.
 			if (sym instanceof Lit) {
 				Parser.this.parse(sym, new OptCnt(cnt), src, pos);
 				cnt.apply(pos, new False());
@@ -407,6 +415,7 @@ public class Parser {
 			amstin.models.ast.Ref ref = new amstin.models.ast.Ref();
 			ref.name = m.group();
 			ref.type = sym.ref;
+			ref.loc = makeLoc(pos, m.group().length());
 			cnt.apply(pos + m.end(), ref);
 		}
 	}
@@ -417,6 +426,7 @@ public class Parser {
 		if (m.lookingAt() && !isReserved(m.group())) {
 			Def def = new Def();
 			def.name = m.group();
+			def.loc = makeLoc(pos, m.group().length());
 			cnt.apply(pos + m.end(), def);
 		}
 	}
@@ -425,7 +435,10 @@ public class Parser {
 		Pattern re = Pattern.compile(Pattern.quote(lit.value));
 		Matcher m = re.matcher(src.subSequence(pos, src.length()));
 		if (m.lookingAt()) {
-			cnt.apply(pos + m.end(), null);
+			amstin.models.ast.Lit litAst = new amstin.models.ast.Lit();
+			litAst.value = lit.value;
+			litAst.loc = makeLoc(pos, lit.value.length());	
+			cnt.apply(pos + m.end(), litAst);
 		}
 	}
 
@@ -444,18 +457,11 @@ public class Parser {
 		if (m.lookingAt() && !isReserved(m.group())) {
 			amstin.models.ast.Id idAst = new amstin.models.ast.Id();
 			idAst.value = m.group();
+			idAst.loc = makeLoc(pos, m.group().length());
 			cnt.apply(pos + m.end(), idAst);
 		}
 	}
 	
-//	public void parseMod(Mod mod, Cnt cnt, String src, int pos) {
-//		Pattern re = Pattern.compile(MOD_REGEX);
-//		Matcher m = re.matcher(src.subSequence(pos, src.length()));
-//		if (m.lookingAt() && !isReserved(m.group())) {
-//			cnt.apply(pos + m.end(), amstin.models.grammar.parsing.ast.Symbol.intern(m.group()));
-//		}
-//	}
-
 	private boolean isReserved(String str) {
 		return reserved.contains(str);
 	}
@@ -466,6 +472,7 @@ public class Parser {
 		if (m.lookingAt()) {
 			amstin.models.ast.Int intAst = new amstin.models.ast.Int();
 			intAst.value = Integer.parseInt(m.group());
+			intAst.loc = makeLoc(pos, m.group().length());
 			cnt.apply(pos + m.end(), intAst);
 		}
 	}
@@ -476,10 +483,20 @@ public class Parser {
 		if (m.lookingAt()) {
 			amstin.models.ast.Real real = new amstin.models.ast.Real();
 			real.value = Double.parseDouble(m.group());
+			real.loc = makeLoc(pos, m.group().length());
 			cnt.apply(pos + m.end(), real);
 		}
 	}
 
+
+
+	private Location makeLoc(int pos, int length) {
+		Location loc = new Location();
+		loc.offset = pos;
+		loc.length = length;
+		loc.file = this.file ;
+		return loc;
+	}
 
 	public void parseStr(Str str, Cnt cnt, String src, int pos) {
 		Pattern re = Pattern.compile("\"(\\\\.|[^\"])*\"");
@@ -493,6 +510,7 @@ public class Parser {
 			s = s.replaceAll("\\r", "\r");
 			amstin.models.ast.Str strAst = new amstin.models.ast.Str();
 			strAst.value = s.substring(1, s.length() - 1);
+			strAst.loc = makeLoc(pos, m.group().length());
 			cnt.apply(pos + m.end(), strAst);
 		}
 	}

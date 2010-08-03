@@ -34,7 +34,7 @@ import com.sun.codemodel.internal.JMod;
 
 public class MetaModelToJava {
 	
-	private static boolean ENABLE_SVN = true;
+	private static boolean ENABLE_SVN = false;
 	
 	public static void metaModelToJava(File dir, String pkg, MetaModel metaModel) {
 		MetaModelToJava m2j = new MetaModelToJava(dir, pkg, metaModel);

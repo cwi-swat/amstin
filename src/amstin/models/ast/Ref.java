@@ -10,8 +10,4 @@ public class Ref
     public String type;
     public Location loc;
 
-    @Override
-    public String toString() {
-    	return "*" + name + "#" + type;
-    }
 }

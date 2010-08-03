@@ -9,8 +9,4 @@ public class Id
     public String value;
     public Location loc;
 
-    @Override
-    public String toString() {
-    	return value;
-    }
 }

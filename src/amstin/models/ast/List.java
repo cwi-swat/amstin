@@ -8,8 +8,4 @@ public class List
 
     public java.util.List<Tree> elements;
 
-    @Override
-    public String toString() {
-    	return elements.toString();
-    }
 }
