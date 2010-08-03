@@ -7,7 +7,6 @@ public class List
 {
 
     public java.util.List<Tree> elements;
-    public Location loc;
 
     @Override
     public String toString() {

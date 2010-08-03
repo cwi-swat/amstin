@@ -9,7 +9,6 @@ public class Obj
 
     public String name;
     public List<Tree> args;
-    public Location loc;
 
     @Override
     public String toString() {

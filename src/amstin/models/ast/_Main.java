@@ -10,7 +10,6 @@ import amstin.models.grammar.Grammar;
 import amstin.models.grammar.parsing.Parser;
 import amstin.models.meta.MetaModel;
 import amstin.tools.GrammarToMetaModel;
-import amstin.tools.MetaModelToJava;
 import amstin.tools.ModelToDot;
 import amstin.tools.ModelToString;
 
@@ -32,8 +31,7 @@ public class _Main {
 		
 		
 
-		File file = new File(Config.ROOT);
-		
+//		File file = new File(Config.ROOT);
 //		MetaModelToJava.metaModelToJava(file, AST_PKG, astMetaModel);
 		
 		
