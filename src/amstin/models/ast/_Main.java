@@ -9,6 +9,7 @@ import amstin.Config;
 import amstin.models.grammar.Grammar;
 import amstin.models.grammar.parsing.Parser;
 import amstin.models.meta.MetaModel;
+import amstin.tools.ASTtoString;
 import amstin.tools.GrammarToMetaModel;
 import amstin.tools.MetaModelToJava;
 import amstin.tools.ModelToDot;
@@ -40,8 +41,13 @@ public class _Main {
 		Parser astParser = new Parser(astGrammar);
 		
 		Tree exampleAST = astParser.parse(example);
-		Tree exampleModel = (Tree) astParser.parse(AST_PKG, example);
 		
+		System.out.println("AST = " + ASTtoString.astToString(exampleAST));
+		
+		Tree exampleModel = (Tree) astParser.parse(AST_PKG, example);
+
+		System.out.println("AST2 = " + ASTtoString.astToString(exampleModel));
+
 		System.out.println();
 		System.out.println();
 		

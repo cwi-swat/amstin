@@ -22,6 +22,7 @@ import amstin.models.ast.Location;
 import amstin.models.ast.Obj;
 import amstin.models.ast.Tree;
 import amstin.models.ast.True;
+import amstin.models.ast.Ws;
 import amstin.models.grammar.Alt;
 import amstin.models.grammar.Boot;
 import amstin.models.grammar.Element;
@@ -446,7 +447,10 @@ public class Parser {
 		Pattern re = Pattern.compile("([\\t\\n\\r\\f ]*(//[^\n]*\n)?)*");
 		Matcher m = re.matcher(src.subSequence(pos, src.length()));
 		if (m.lookingAt()) {
-			cnt.apply(pos + m.end(), null);
+			Ws ws = new Ws();
+			ws.value = m.group();
+			ws.loc = makeLoc(pos, m.end());
+			cnt.apply(pos + m.end(), ws);
 		}
 	}
 
@@ -546,7 +550,6 @@ public class Parser {
 
 		@Override
 		public void parse(Map<IParser, Map<Integer, Entry>> table, Cnt cnt, String src, int pos) {
-			// new ArrayList<Object>()
 			cnt.apply(pos, emptyList());
 		}
 		
@@ -599,7 +602,6 @@ public class Parser {
 			this.cnt = cnt;
 		}
 
-		@SuppressWarnings("unchecked")
 		@Override
 		public void apply(int result, Tree obj) {
 			amstin.models.ast.List list = (amstin.models.ast.List)obj;
@@ -652,7 +654,6 @@ public class Parser {
 			this.cnt = cnt;
 		}
 
-		@SuppressWarnings("unchecked")
 		@Override
 		public void apply(int result, Tree obj) {
 			amstin.models.ast.List kids = (amstin.models.ast.List) obj;

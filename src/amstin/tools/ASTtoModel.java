@@ -19,6 +19,7 @@ import amstin.models.ast.Ref;
 import amstin.models.ast.Str;
 import amstin.models.ast.Tree;
 import amstin.models.ast.True;
+import amstin.models.ast.Ws;
 
 
 
@@ -91,7 +92,7 @@ public class ASTtoModel  {
 			List<Object> newList = new ArrayList<Object>();
 			int i = 0;
 			for (Tree o: ((amstin.models.ast.List)obj).elements) {
-				if (o instanceof Lit) {
+				if (o instanceof Lit || o instanceof Ws) {
 					continue;
 				}
 				try {
@@ -132,7 +133,7 @@ public class ASTtoModel  {
 			String myKeyField = null;
 			
 			for (Object kid: obj.args) {
-				if (kid instanceof Lit) {
+				if (kid instanceof Lit || kid instanceof Ws) {
 					continue;
 				}
 				if (kid instanceof Arg) { 
