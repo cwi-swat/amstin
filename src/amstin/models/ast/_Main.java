@@ -7,7 +7,7 @@ import java.io.PrintWriter;
 
 import amstin.Config;
 import amstin.models.grammar.Grammar;
-import amstin.models.grammar.parsing.Parser;
+import amstin.models.grammar.parsing2.Parser;
 import amstin.models.meta.MetaModel;
 import amstin.tools.GrammarToMetaModel;
 import amstin.tools.MetaModelToJava;
@@ -23,7 +23,6 @@ public class _Main {
 
 	public static void main(String[] args) throws IOException {
 		Grammar astGrammar = Parser.parseGrammar(AST_MDG);
-		System.out.println(astGrammar);
 		MetaModel astMetaModel = GrammarToMetaModel.infer("AST", astGrammar);
 		PrintWriter writer = new PrintWriter(System.out);
 		
@@ -35,18 +34,27 @@ public class _Main {
 
 		File file = new File(Config.ROOT);
 		
-		MetaModelToJava.metaModelToJava(file, AST_PKG, astMetaModel);
+//		MetaModelToJava.metaModelToJava(file, AST_PKG, astMetaModel);
 		
 		
 		String example = Parser.readPath(EXAMPLE_AST);
 		Parser astParser = new Parser(astGrammar);
 		
-		Object exampleModel = astParser.parse(AST_PKG, example);
-		System.out.println(exampleModel);
+		Tree exampleAST = astParser.parse(example);
+		Tree exampleModel = (Tree) astParser.parse(AST_PKG, example);
+		
+		System.out.println();
+		System.out.println();
 		
 		ModelToString.unparse(astGrammar, exampleModel, writer);
 		writer.flush();
-		
+
+		System.out.println();
+		System.out.println();
+
+		ModelToString.unparse(astGrammar, exampleAST, writer);
+		writer.flush();
+
 		
 		FileWriter dot = new FileWriter(new File("ast.dot"));
 		ModelToDot.toDot(exampleModel, dot);

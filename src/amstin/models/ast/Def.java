@@ -9,4 +9,8 @@ public class Def
     public String name;
     public Location loc;
 
+    @Override
+    public String toString() {
+    	return "&" + name;
+    }
 }

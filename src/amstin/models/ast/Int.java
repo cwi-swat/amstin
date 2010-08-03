@@ -9,4 +9,8 @@ public class Int
     public Integer value;
     public Location loc;
 
+    @Override
+    public String toString() {
+    	return value.toString();
+    }
 }

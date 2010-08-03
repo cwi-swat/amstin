@@ -2,15 +2,19 @@ start Tree
 
 // This should be the model produced by the parser (eventually).
 
-Tree ::= [Obj] "obj" "(" name:id "," args:{Arg ","}* ")" loc:Location?
+Tree ::= [Obj] name:id "(" args:{Tree ","}* ")" loc:Location?
        | [Def] "&" name:id loc:Location?
-       | [Ref] "*" name:id ":" type:id loc:Location?
+       | [Ref] "*" name:id "#" type:id loc:Location?
        | [Id] value:id loc:Location?
        | [Str] value:str loc:Location?
        | [Int] value:int loc:Location?
        | [Real] value:real loc:Location?
+       | [List] "[" elements:{Tree ","}* "]" loc:Location?
+       | [True] "true" loc:Location?
+       | [False] "false" loc:Location?
+       | [Arg] name:id ":" value:Tree
+       
 
 Location ::= "@" "<" file:str "," line:int "," column:int "," offset:int "," length:int ">"  
 
-Arg ::= name:id ":" value:Tree
 

@@ -8,7 +8,19 @@ public class Obj
 {
 
     public String name;
-    public List<Arg> args;
+    public List<Tree> args;
     public Location loc;
 
+    @Override
+    public String toString() {
+    	String s = name + "(";
+    	for (int i = 0; i < args.size(); i++) {
+    		Tree t = args.get(i);
+    		s += t.toString();
+    		if (i < args.size() - 1) {
+    			s += ", ";
+    		}
+    	}
+    	return s + ")";
+    }
 }

@@ -9,4 +9,8 @@ public class Real
     public Double value;
     public Location loc;
 
+    @Override
+    public String toString() {
+    	return value.toString();
+    }
 }

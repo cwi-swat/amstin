@@ -2,15 +2,14 @@
 package amstin.models.ast;
 
 
-public class Id
+public class False
     extends Tree
 {
 
-    public String value;
     public Location loc;
 
     @Override
     public String toString() {
-    	return value;
+    	return "false";
     }
 }

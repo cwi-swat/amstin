@@ -2,15 +2,15 @@
 package amstin.models.ast;
 
 
-public class Id
+public class List
     extends Tree
 {
 
-    public String value;
+    public java.util.List<Tree> elements;
     public Location loc;
 
     @Override
     public String toString() {
-    	return value;
+    	return elements.toString();
     }
 }
