@@ -9,7 +9,6 @@ import amstin.Config;
 import amstin.models.grammar.Grammar;
 import amstin.models.grammar.parsing.Parser;
 import amstin.models.meta.MetaModel;
-import amstin.models.template.render.Env;
 import amstin.tools.GrammarToMetaModel;
 import amstin.tools.ModelToDot;
 import amstin.tools.ModelToString;

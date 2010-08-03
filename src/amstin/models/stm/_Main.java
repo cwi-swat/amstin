@@ -7,6 +7,7 @@ import java.io.PrintWriter;
 import java.util.List;
 
 import amstin.Config;
+import amstin.models.ast.Tree;
 import amstin.models.grammar.Grammar;
 import amstin.models.grammar.parsing.Parser;
 import amstin.models.meta.MetaModel;
@@ -33,7 +34,7 @@ public class _Main {
 		System.out.println(stm);
 		String grant = Parser.readPath(GRANT_STM);
 		Parser stmParser = new Parser(stm);
-		Object obj = stmParser.parse(grant);
+		Tree obj = stmParser.parse(grant);
 		System.out.println(obj);
 		StateMachine grantStm = (StateMachine) ASTtoModel.instantiate(STATEMACHINE_PKG, obj);
 		System.out.println(grantStm);

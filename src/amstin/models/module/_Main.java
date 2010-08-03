@@ -1,22 +1,17 @@
 package amstin.models.module;
 
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.List;
 
 import amstin.Config;
+import amstin.models.ast.Tree;
 import amstin.models.grammar.Grammar;
 import amstin.models.grammar.parsing.Parser;
 import amstin.models.meta.MetaModel;
-import amstin.models.stm.StateMachine;
-import amstin.tools.CheckModel;
-import amstin.tools.ModelToJava;
-import amstin.tools.GrammarToMetaModel;
 import amstin.tools.ASTtoModel;
+import amstin.tools.GrammarToMetaModel;
 import amstin.tools.MetaModelToJava;
-import amstin.tools.ModelToDot;
 import amstin.tools.ModelToString;
 
 public class _Main {
@@ -48,7 +43,7 @@ public class _Main {
 		
 		String meta = Parser.readPath(META_MODULE);
 		Parser moduleParser = new Parser(moduleGrammar);
-		Object obj = moduleParser.parse(meta);
+		Tree obj = moduleParser.parse(meta);
 		
 		// Import map:
 		// instance -> java.pkg.namespace

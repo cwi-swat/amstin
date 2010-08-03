@@ -7,12 +7,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
-import amstin.models.grammar.parsing.ast.Define;
-import amstin.models.grammar.parsing.ast.Field;
-import amstin.models.grammar.parsing.ast.Instance;
-import amstin.models.grammar.parsing.ast.Reference;
-import amstin.models.grammar.parsing.ast.Str;
-import amstin.models.grammar.parsing.ast.Symbol;
+import amstin.models.ast.Arg;
+import amstin.models.ast.Def;
+import amstin.models.ast.False;
+import amstin.models.ast.Id;
+import amstin.models.ast.Int;
+import amstin.models.ast.Obj;
+import amstin.models.ast.Real;
+import amstin.models.ast.Ref;
+import amstin.models.ast.Str;
+import amstin.models.ast.Tree;
+import amstin.models.ast.True;
 
 
 
@@ -20,21 +25,20 @@ public class ASTtoModel  {
 
 	private String pkg;
 	private List<Fix> fixes;
-	private Object root;
-	private Stack<Map<Symbol,Object>> defs;
+	private Tree root;
+	private Stack<Map<String,Object>> defs;
 
-	public static Object instantiate(String pkg, Object root) {
+	public static Object instantiate(String pkg, Tree root) {
 		ASTtoModel toJava = new ASTtoModel(pkg, root);
 		return toJava.toJava();
 	}
 	
-	private ASTtoModel(String pkg, Object root) {
+	private ASTtoModel(String pkg, Tree root) {
 		this.pkg = pkg;
 		this.fixes = new ArrayList<Fix>();
 		this.root = root;
-//		this.defs = new HashMap<Symbol, Object>();
-		this.defs = new Stack<Map<Symbol,Object>>();
-		this.defs.push(new HashMap<Symbol, Object>());
+		this.defs = new Stack<Map<String,Object>>();
+		this.defs.push(new HashMap<String, Object>());
 	}
 	
 	private Object toJava() {
@@ -46,42 +50,41 @@ public class ASTtoModel  {
 	}
 
 	
-	@SuppressWarnings("unchecked")
-	private Object toJava(Object obj) {
+	private Object toJava(Tree obj) {
 		if (obj == null) {
 			return null;
 		}
-		if (obj instanceof Instance) {
-			return instanceToJava((Instance)obj);
-		}
-		if (obj instanceof String) {
-			return obj;
+		if (obj instanceof Obj) {
+			return instanceToJava((Obj)obj);
 		}
 		if (obj instanceof Str) {
-			return ((Str)obj).getValue();
+			return ((Str)obj).value;
 		}
-		if (obj instanceof Integer) {
-			return obj;
+		if (obj instanceof Int) {
+			return ((Int)obj).value;
 		}
-		if (obj instanceof Boolean) {
-			return obj;
+		if (obj instanceof Real) {
+			return ((Real)obj).value;
 		}
-		if (obj instanceof Double) {
-			return obj;
+		if (obj instanceof Id) {
+			return ((Id)obj).value;
 		}
-		if (obj instanceof Symbol) {
-			return ((Symbol)obj).getName();
+		if (obj instanceof True) {
+			return true;
 		}
-		if (obj instanceof Reference) {
-			throw new ReferenceFound((Reference) obj);
+		if (obj instanceof False) {
+			return false;
 		}
-		if (obj instanceof Define) {
-			throw new DefineFound((Define)obj);
+		if (obj instanceof Ref) {
+			throw new ReferenceFound((Ref)obj);
 		}
-		if (obj instanceof List) {
+		if (obj instanceof Def) {
+			throw new DefineFound((Def)obj);
+		}
+		if (obj instanceof amstin.models.ast.List) {
 			List<Object> newList = new ArrayList<Object>();
 			int i = 0;
-			for (Object o: ((List)obj)) {
+			for (Tree o: ((amstin.models.ast.List)obj).elements) {
 				try {
 					newList.add(toJava(o));
 				}
@@ -95,36 +98,35 @@ public class ASTtoModel  {
 			}
 			return newList;
 		}
-		throw new AssertionError("invalid object in Instantiate: " + obj);
+		throw new AssertionError("invalid object in ast to model: " + obj);
 	}
 
 
-	private void recordListFix(List<Object> list, int index, Reference ref) {
+	private void recordListFix(List<Object> list, int index, Ref ref) {
 		fixes.add(new ListFix(list, index, ref));
 	}
 
-	private void recordFieldFix(Object target, String fieldName, Reference ref) {
+	private void recordFieldFix(Object target, String fieldName, Ref ref) {
 		fixes.add(new FieldFix(target, fieldName, ref));
 	}
 
 
-	private Object instanceToJava(Instance obj) {
+	private Object instanceToJava(Obj obj) {
 		Class<?> klazz;
 		try {
-			klazz = Class.forName(pkg + "." + obj.getType());
+			klazz = Class.forName(pkg + "." + obj.name);
 			Object javaObject = klazz.newInstance();
 			
-			defs.push(new HashMap<Symbol, Object>());
+			defs.push(new HashMap<String, Object>());
 
-			Symbol mySymbol = null;
+			String mySymbol = null;
 			String myKeyField = null;
 			
-			for (Object kid: obj.getArgs()) {
-				if (kid instanceof Field) { 
-					String fieldName = ((Field)kid).getName();
-					Object value = ((Field)kid).getValue();
+			for (Object kid: obj.args) {
+				if (kid instanceof Arg) { 
+					String fieldName = ((Arg)kid).name;
+					Tree value = ((Arg)kid).value;
 					try {
-
 						Object fieldValue = toJava(value);
 						klazz.getField(fieldName).set(javaObject, fieldValue);
 					}
@@ -132,7 +134,7 @@ public class ASTtoModel  {
 						recordFieldFix(javaObject, fieldName, r.ref);
 					}
 					catch (DefineFound d) {
-						mySymbol = d.def.getSymbol();
+						mySymbol = d.def.name;
 						myKeyField = fieldName;
 					}
 				}
@@ -141,13 +143,13 @@ public class ASTtoModel  {
 				}
 			}
 			
-			Map<Symbol, Object> kids = defs.pop();
+			Map<String, Object> kids = defs.pop();
 			if (mySymbol != null) {
-				for (Map.Entry<Symbol, Object> e: kids.entrySet()) {
-					defs.peek().put(Symbol.intern(mySymbol.getName() + "." + e.getKey().getName()), e.getValue());
+				for (Map.Entry<String, Object> e: kids.entrySet()) {
+					defs.peek().put(mySymbol + "." + e.getKey(), e.getValue());
 				}
 				defs.peek().put(mySymbol, javaObject);
-				klazz.getField(myKeyField).set(javaObject, mySymbol.getName());
+				klazz.getField(myKeyField).set(javaObject, mySymbol);
 			}
 			else {
 				defs.peek().putAll(kids);
@@ -173,40 +175,40 @@ public class ASTtoModel  {
 
 
 	private static abstract class Fix {
-		public abstract void apply(Map<Symbol,Object> defines);
+		public abstract void apply(Map<String,Object> defines);
 	}
 	
 	private static class ListFix extends Fix {
 		private List<Object> list;
 		private int index;
-		private Reference ref;
+		private Ref ref;
 
-		public ListFix(List<Object> list, int index, Reference ref) {
+		public ListFix(List<Object> list, int index, Ref ref) {
 			this.list = list;
 			this.index = index;
 			this.ref = ref;
 		}
 
 		@Override
-		public void apply(Map<Symbol, Object> defines) {
-			list.set(index, defines.get(ref.getSymbol()));
+		public void apply(Map<String, Object> defines) {
+			list.set(index, defines.get(ref.name));
 		}
 	}
 	
 	private static class FieldFix extends Fix {
 		private Object target;
 		private String field;
-		private Reference ref;
+		private Ref ref;
 
-		public FieldFix(Object target, String field, Reference ref) {
+		public FieldFix(Object target, String field, Ref ref) {
 			this.target = target;
 			this.field = field;
 			this.ref = ref;
 		}
 		
 		@Override
-		public void apply(Map<Symbol,Object> defines) {
-			Symbol symbol = ref.getSymbol();
+		public void apply(Map<String,Object> defines) {
+			String symbol = ref.name;
 			if (!defines.containsKey(symbol)) {
 				throw new RuntimeException("Symbol " + symbol + " is not defined");
 			}				
@@ -230,18 +232,18 @@ public class ASTtoModel  {
 	
 	@SuppressWarnings("serial")
 	private static class ReferenceFound extends RuntimeException {
-		private Reference ref;
+		private Ref ref;
 
-		public ReferenceFound(Reference ref) {
+		public ReferenceFound(Ref ref) {
 			this.ref = ref;
 		}
 	}
 	
 	@SuppressWarnings("serial")
 	private static class DefineFound extends RuntimeException {
-		private Define def;
+		private Def def;
 
-		public DefineFound(Define def) {
+		public DefineFound(Def def) {
 			this.def = def;
 		}
 	}

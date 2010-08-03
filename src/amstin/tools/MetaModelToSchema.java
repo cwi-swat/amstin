@@ -43,6 +43,11 @@ public class MetaModelToSchema {
 	}
 	
 	
+	public static Schema metaModelToSchema(MetaModel metaModel) {
+		MetaModelToSchema mmts = new MetaModelToSchema(metaModel);
+		return mmts.toSchema();
+	}
+	
 	private MetaModel metaModel;
 	private Map<Class, Class> subType;
 

@@ -1,5 +1,5 @@
-grammar Template is Definitions
-where
+start Definitions
+
   Definitions ::= definitions:Definition*
 
   Definition ::= "def" name:key formals:Formals body:Statement "end"
@@ -34,4 +34,3 @@ where
   			  | [Var] name:id 
   			  | [Field] expression:Expression "." field:id 
 
-end

@@ -12,7 +12,6 @@ import amstin.models.meta.MetaModel;
 import amstin.tools.CheckModel;
 import amstin.tools.ModelToJava;
 import amstin.tools.ModelEquality;
-import amstin.tools.ModelToDot;
 import amstin.tools.ModelToString;
 
 

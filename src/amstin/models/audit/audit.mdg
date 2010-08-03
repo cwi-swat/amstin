@@ -1,5 +1,4 @@
-grammar Audit is ValueCycle
-where
+start ValueCycle
   
   ValueCycle ::= decls:Decl*
   
@@ -14,4 +13,3 @@ where
   JFlow ::= negative:"-"? cardinality:int "->" account:Account^
 
 
-end
