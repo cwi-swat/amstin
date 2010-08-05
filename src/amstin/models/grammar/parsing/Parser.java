@@ -8,7 +8,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -24,6 +23,7 @@ import amstin.models.ast.Tree;
 import amstin.models.ast.True;
 import amstin.models.ast.Ws;
 import amstin.models.grammar.Alt;
+import amstin.models.grammar.Bool;
 import amstin.models.grammar.Boot;
 import amstin.models.grammar.Element;
 import amstin.models.grammar.Grammar;
@@ -156,6 +156,9 @@ public class Parser {
 		}
 		else if (sym instanceof Real) {
 			parseReal((Real)sym, cnt, src, pos);
+		}
+		else if (sym instanceof Bool) {
+			parseBool((Bool)sym, cnt, src, pos);
 		}
 		else if (sym instanceof Id) {
 			parseId((Id)sym, cnt, src, pos);
@@ -467,6 +470,17 @@ public class Parser {
 			intAst.value = Integer.parseInt(m.group());
 			intAst.loc = makeLoc(pos, m.group().length());
 			cnt.apply(pos + m.end(), intAst);
+		}
+	}
+	
+	private void parseBool(Bool sym, Cnt cnt, String src, int pos) {
+		Pattern re = Pattern.compile("true|false");
+		Matcher m = re.matcher(src.subSequence(pos, src.length()));
+		if (m.lookingAt()) {
+			amstin.models.ast.Bool bool = new amstin.models.ast.Bool();
+			bool.value = Boolean.parseBoolean(m.group());
+			bool.loc = makeLoc(pos, m.group().length());
+			cnt.apply(pos + m.end(), bool);
 		}
 	}
 	

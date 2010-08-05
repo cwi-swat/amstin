@@ -21,12 +21,8 @@ start Entities
 
   Value ::= [IntValue] value:int 
   	     |  [StrValue] value:str
+  	     |  [BoolValue] value:bool
   	     
-// TODO add bool as builtin terminal type
-  	     |  [BoolValue] value:Bool
-  	     
-  Bool ::= [True] "true" | [False] "false"
-  
 
   Expression ::= [Const] value:Value 
   			  |  [FieldRef] name:id

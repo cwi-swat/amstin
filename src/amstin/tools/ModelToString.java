@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Set;
 
 import amstin.models.grammar.Alt;
+import amstin.models.grammar.Bool;
 import amstin.models.grammar.Element;
 import amstin.models.grammar.Grammar;
 import amstin.models.grammar.Id;
@@ -174,6 +175,9 @@ public class ModelToString {
 			writer.write(obj.toString());
 		}
 		else if (sym instanceof Real && obj instanceof Double) {
+			writer.write(obj.toString());
+		}
+		else if (sym instanceof Bool && obj instanceof Boolean) {
 			writer.write(obj.toString());
 		}
 		else if (sym instanceof Opt && ((Opt)sym).arg instanceof Lit && obj instanceof Boolean) {

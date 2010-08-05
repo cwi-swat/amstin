@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Stack;
 
 import amstin.models.ast.Arg;
+import amstin.models.ast.Bool;
 import amstin.models.ast.Def;
 import amstin.models.ast.False;
 import amstin.models.ast.Id;
@@ -18,7 +19,6 @@ import amstin.models.ast.Real;
 import amstin.models.ast.Ref;
 import amstin.models.ast.Str;
 import amstin.models.ast.Tree;
-import amstin.models.ast.True;
 import amstin.models.ast.Ws;
 
 
@@ -76,8 +76,8 @@ public class ASTtoModel  {
 		if (obj instanceof Id) {
 			return ((Id)obj).value;
 		}
-		if (obj instanceof True) {
-			return true;
+		if (obj instanceof Bool) {
+			return ((Bool)obj).value;
 		}
 		if (obj instanceof False) {
 			return false;

@@ -1,9 +1,5 @@
 start Tree
 
-// TODO: think about if booleans should be here.
-// also: should we include layout? Then it's not
-// really an ast anymore, but a full parsetree.
-
 Tree ::= [Obj] name:id "(" args:{Tree ","}* ")"
        | [List] "[" elements:{Tree ","}* "]"
        | [True] "true" 
@@ -18,6 +14,7 @@ Tree ::= [Obj] name:id "(" args:{Tree ","}* ")"
        | [Comment] "#" value:str loc:Location?
        | [Int] value:int loc:Location?
        | [Real] value:real loc:Location?
+       | [Bool] value:bool loc:Location?
        
 
 Location ::= "@" "<" file:str "," offset:int "," length:int ">"  

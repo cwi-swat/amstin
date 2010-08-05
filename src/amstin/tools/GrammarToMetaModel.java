@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import amstin.models.grammar.Alt;
+import amstin.models.grammar.Bool;
 import amstin.models.grammar.Element;
 import amstin.models.grammar.Grammar;
 import amstin.models.grammar.Id;
@@ -26,7 +27,6 @@ import amstin.models.grammar.Str;
 import amstin.models.grammar.Sym;
 import amstin.models.grammar.Symbol;
 import amstin.models.grammar.parsing.Parser;
-import amstin.models.meta.Bool;
 import amstin.models.meta.Boot;
 import amstin.models.meta.Class;
 import amstin.models.meta.Field;
@@ -149,6 +149,9 @@ public class GrammarToMetaModel {
 		if (sym instanceof Real) {
 			return new amstin.models.meta.Real();
 		}
+		if (sym instanceof Bool) {
+			return new amstin.models.meta.Bool();
+		}
 		
 		Mult dummy[] = {null};
 		
@@ -173,7 +176,7 @@ public class GrammarToMetaModel {
 		}
 
 		if (sym instanceof Opt && ((Opt)sym).arg instanceof Lit) {
-			return new Bool();
+			return new amstin.models.meta.Bool();
 		}
 
 		if (sym instanceof Opt) {
