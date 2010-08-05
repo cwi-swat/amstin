@@ -5,6 +5,7 @@ import java.io.Writer;
 import java.lang.reflect.Field;
 import java.util.IdentityHashMap;
 import java.util.List;
+import java.util.Set;
 
 import amstin.models.grammar.Alt;
 import amstin.models.grammar.Element;
@@ -45,12 +46,14 @@ public class ModelToString {
 	private Object root;
 	private IdentityHashMap<Object, String> labels;
 	private Writer writer;
+	private Set<String> reserved;
 
 	private ModelToString(Grammar grammar, Object obj, Writer writer) {
 		this.grammar = grammar;
 		this.root = obj;
 		this.labels = new IdentityHashMap<Object, String>();
 		this.writer = writer;
+		this.reserved = grammar.reservedKeywords();
 	}
 	
 	private void unparse() throws IOException {
@@ -157,7 +160,12 @@ public class ModelToString {
 			writer.write((String)obj);
 		}
 		else if (sym instanceof Id && obj instanceof String) {
-			writer.write((String)obj);
+			if (reserved.contains(obj)) {
+				writer.write("\\" + obj);
+			}
+			else {
+				writer.write((String)obj);
+			}
 		}
 		else if (sym instanceof Str && obj instanceof String) {
 			writer.write(unparseString((String)obj));

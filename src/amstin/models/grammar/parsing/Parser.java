@@ -94,26 +94,11 @@ public class Parser {
 
 	public Parser(Grammar grammar) {
 		this.grammar = grammar;
-		this.reserved = collectReserved(grammar);
+		this.reserved = grammar.reservedKeywords();
 	}
 	
 	public Grammar getGrammar() {
 		return grammar;
-	}
-	
-	
-	private Set<String> collectReserved(Grammar f) {
-		Set<String> lits = new HashSet<String>();
-		for (Rule r: f.rules) {
-			for (Alt a: r.alts) {
-				for (Element e: a.elements) {
-					if (e.symbol instanceof Lit) {
-						lits.add(((Lit)e.symbol).value);
-					}
-				}
-			}
-		}
-		return lits;
 	}
 	
 	
@@ -414,7 +399,7 @@ public class Parser {
 		Matcher m = re.matcher(src.subSequence(pos, src.length()));
 		if (m.lookingAt() && !isReserved(m.group())) {
 			amstin.models.ast.Ref ref = new amstin.models.ast.Ref();
-			ref.name = m.group();
+			ref.name = unescapeId(m.group());
 			ref.type = sym.ref;
 			ref.loc = makeLoc(pos, m.group().length());
 			cnt.apply(pos + m.end(), ref);
@@ -426,10 +411,14 @@ public class Parser {
 		Matcher m = re.matcher(src.subSequence(pos, src.length()));
 		if (m.lookingAt() && !isReserved(m.group())) {
 			Def def = new Def();
-			def.name = m.group();
+			def.name = unescapeId(m.group());
 			def.loc = makeLoc(pos, m.group().length());
 			cnt.apply(pos + m.end(), def);
 		}
+	}
+
+	private String unescapeId(String str) {
+		return str.replaceAll("\\\\", "");
 	}
 
 	public void parseLit(Lit lit, Cnt cnt, String src, int pos) {
@@ -458,17 +447,10 @@ public class Parser {
 	public void parseId(Id id, Cnt cnt, String src, int pos) {
 		Pattern re = Pattern.compile(ID_REGEX);
 		Matcher m = re.matcher(src.subSequence(pos, src.length()));
-		if (m.lookingAt()) {
-			String str = m.group();
+		if (m.lookingAt() && !isReserved(m.group())) {
 			amstin.models.ast.Id idAst = new amstin.models.ast.Id();
 			idAst.loc = makeLoc(pos, m.group().length());
-			if (str.startsWith("\\")) {
-				str = str.substring(1);
-			}
-			else if (isReserved(str)) {
-				return;
-			}
-			idAst.value = str;
+			idAst.value = unescapeId(m.group());
 			cnt.apply(pos + m.end(), idAst);
 		}
 	}
