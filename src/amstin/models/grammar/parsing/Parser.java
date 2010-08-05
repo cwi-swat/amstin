@@ -79,7 +79,7 @@ public class Parser {
 	}
 
 	
-	public static final String ID_REGEX = "[a-zA-Z_$][a-zA-Z_$0-9]*";
+	public static final String ID_REGEX = "[\\\\]?[a-zA-Z_$][a-zA-Z_$0-9]*";
 	private static final String REF_REGEX = "(" + ID_REGEX + ")" + "(\\."  + ID_REGEX + ")*";
 
 	private Map<Sym, IParser> symCache;
@@ -458,10 +458,17 @@ public class Parser {
 	public void parseId(Id id, Cnt cnt, String src, int pos) {
 		Pattern re = Pattern.compile(ID_REGEX);
 		Matcher m = re.matcher(src.subSequence(pos, src.length()));
-		if (m.lookingAt() && !isReserved(m.group())) {
+		if (m.lookingAt()) {
+			String str = m.group();
 			amstin.models.ast.Id idAst = new amstin.models.ast.Id();
-			idAst.value = m.group();
 			idAst.loc = makeLoc(pos, m.group().length());
+			if (str.startsWith("\\")) {
+				str = str.substring(1);
+			}
+			else if (isReserved(str)) {
+				return;
+			}
+			idAst.value = str;
 			cnt.apply(pos + m.end(), idAst);
 		}
 	}
