@@ -1,4 +1,4 @@
-package amstin.models.grammar.parsing;
+package amstin.models.grammar.parsing.mj;
 
 import java.io.BufferedInputStream;
 import java.io.File;
