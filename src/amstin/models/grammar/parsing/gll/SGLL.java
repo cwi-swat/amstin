@@ -130,7 +130,7 @@ public abstract class SGLL implements IGLL{
 			if(prev.hasEdges()){
 				sharedPrev.addEdges(prev.getEdges());
 			}
-		}while(sharedNext != null);
+		} while (!(next == null || next == node));
 	}
 	
 	private void updateNextNode(AbstractStackNode next, AbstractStackNode node){
@@ -513,12 +513,8 @@ public abstract class SGLL implements IGLL{
 		
 		System.out.println(root.getResult());
 		
-		//Tree result = root.getResult().toTerm(new IndexedStack<AbstractNode>(), 0);
-		
-		//if(result == null) throw new RuntimeException("Parse Error: all trees were filtered.");
-		
-		//return makeParseTree(result);
-		return null;
+		Tree result = root.getResult().toTree(new IndexedStack<AbstractNode>(), 0);
+		return result;
 	}
 	
 	public Tree parse(AbstractStackNode startNode, URI inputURI, String inputString){

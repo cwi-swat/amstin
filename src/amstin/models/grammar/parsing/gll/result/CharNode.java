@@ -1,5 +1,6 @@
 package amstin.models.grammar.parsing.gll.result;
 
+import amstin.models.ast.Lit;
 import amstin.models.ast.Tree;
 import amstin.models.grammar.parsing.gll.Production;
 import amstin.models.grammar.parsing.gll.result.struct.Link;
@@ -35,10 +36,12 @@ public class CharNode extends AbstractNode{
 		return sb.toString();
 	}
 	
-	public Tree toTerm(IndexedStack<AbstractNode> stack, int depth){
+	public Tree toTree(IndexedStack<AbstractNode> stack, int depth){
 //		IInteger characterValue = vf.integer(getNumericCharValue(character));
 //		return vf.constructor(Factory.Tree_Char, characterValue);
-		return null;
+		Lit lit = new Lit();
+		lit.value = new Character(character).toString();
+		return lit;
 	}
 	
 	public static int getNumericCharValue(char character){

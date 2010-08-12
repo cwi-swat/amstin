@@ -1,10 +1,19 @@
 package amstin.models.grammar.parsing.gll.result;
 
 import java.net.URI;
+import java.util.Arrays;
+import java.util.List;
 
+
+import amstin.models.ast.Amb;
+import amstin.models.ast.Cycle;
+import amstin.models.ast.Location;
+import amstin.models.ast.Obj;
+import amstin.models.ast.Tree;
 import amstin.models.grammar.parsing.gll.Production;
 import amstin.models.grammar.parsing.gll.result.struct.Link;
 import amstin.models.grammar.parsing.gll.util.ArrayList;
+import amstin.models.grammar.parsing.gll.util.DoubleArrayList;
 import amstin.models.grammar.parsing.gll.util.IndexedStack;
 import amstin.models.grammar.parsing.gll.util.Stack;
 
@@ -208,13 +217,13 @@ public class ContainerNode extends AbstractNode{
 		if(nrOfAlternatives == 1){
 			printAlternative(gatheredAlternatives.get(0), out);
 		}else{
-			out.append('[');
+			out.append('{');
 			printAlternative(gatheredAlternatives.get(nrOfAlternatives - 1), out);
 			for(int i = nrOfAlternatives - 2; i >= 0; i--){
 				out.append(',');
 				printAlternative(gatheredAlternatives.get(i), out);
 			}
-			out.append(']');
+			out.append('}');
 		}
 		
 		stack.purge(); // Pop
@@ -234,5 +243,231 @@ public class ContainerNode extends AbstractNode{
 		return sb.toString();
 	}
 	
+	
+	////////////////////////////////////////
+	////////////////////////////////////////
+	////////////////////////////////////////
+	////////////////////////////////////////
+	////////////////////////////////////////
+	////////////////////////////////////////
+	////////////////////////////////////////
+	////////////////////////////////////////
+	////////////////////////////////////////
+	
+	private Tree cachedResult;
+	
+	private void gatherAlternatives(Link child, DoubleArrayList<Tree[], Production> gatheredAlternatives, Production production, IndexedStack<AbstractNode> stack, int depth){
+		AbstractNode resultNode = child.node;
+		
+		if(!(resultNode.isEpsilon() && child.prefixes == null)){
+			Tree result = resultNode.toTree(stack, depth);
+			if(result == null) return; // Rejected.
+			
+			Tree[] postFix = new Tree[]{result};
+			gatherProduction(child, postFix, gatheredAlternatives, production, stack, depth);
+		}else{
+			gatheredAlternatives.add(new Tree[]{}, production);
+		}
+	}
+	
+	private void gatherProduction(Link child, Tree[] postFix, DoubleArrayList<Tree[], Production> gatheredAlternatives, Production production, IndexedStack<AbstractNode> stack, int depth){
+		ArrayList<Link> prefixes = child.prefixes;
+		if(prefixes == null){
+			gatheredAlternatives.add(postFix, production);
+			return;
+		}
+		
+		for(int i = prefixes.size() - 1; i >= 0; i--){
+			Link prefix = prefixes.get(i);
+			
+			AbstractNode resultNode = prefix.node;
+			if(!resultNode.isRejected()){
+				Tree result = resultNode.toTree(stack, depth);
+				if(result == null) return; // Rejected.
+				
+				int length = postFix.length;
+				Tree[] newPostFix = new Tree[length + 1];
+				System.arraycopy(postFix, 0, newPostFix, 1, length);
+				newPostFix[0] = result;
+				gatherProduction(prefix, newPostFix, gatheredAlternatives, production, stack, depth);
+			}
+		}
+	}
+	
+	private void gatherListAlternatives(Link child, DoubleArrayList<Tree[], Production> gatheredAlternatives, Production production, IndexedStack<AbstractNode> stack, int depth){
+		AbstractNode resultNode = child.node;
+		
+		if(!(resultNode.isEpsilon() && child.prefixes == null)){
+			Tree result = resultNode.toTree(stack, depth);
+			if(result == null) return; // Rejected.
+			
+			IndexedStack<AbstractNode> listElementStack = new IndexedStack<AbstractNode>();
+			
+			if(resultNode.isContainer()) listElementStack.push(resultNode, 0);
+			gatherList(child, new Tree[]{result}, gatheredAlternatives, production, stack, depth, listElementStack, 1, new Stack<AbstractNode>());
+			if(resultNode.isContainer()) listElementStack.purge();
+		}else{
+			gatheredAlternatives.add(new Tree[]{}, production);
+		}
+	}
+	
+	private void gatherList(Link child, Tree[] postFix, DoubleArrayList<Tree[], Production> gatheredAlternatives, Production production, IndexedStack<AbstractNode> stack, int depth, IndexedStack<AbstractNode> listElementStack, int elementNr, Stack<AbstractNode> blackList){
+		ArrayList<Link> prefixes = child.prefixes;
+		if(prefixes == null){
+			gatheredAlternatives.add(postFix, production);
+			return;
+		}
+		
+		for(int i = prefixes.size() - 1; i >= 0; i--){
+			Link prefix = prefixes.get(i);
+			
+			if(prefix == null){
+				gatheredAlternatives.add(postFix, production);
+				continue;
+			}
+			
+			AbstractNode prefixNode = prefix.node;
+			
+			if(!prefixNode.isRejected()){
+				if(blackList.contains(prefixNode)) continue;
+				
+				int index = listElementStack.contains(prefixNode);
+				if(index != -1){
+					int length = postFix.length;
+					int repeatLength = elementNr - index;
+					
+					Tree[] newPostFix = new Tree[length - repeatLength + 1];
+					System.arraycopy(postFix, repeatLength, newPostFix, 1, length - repeatLength);
+					
+					List<Tree> subList = new java.util.ArrayList<Tree>();
+					for(int j = repeatLength - 1; j >= 0; j--){
+						subList.add(postFix[j]);
+					}
+					
+					List<Tree> cycleChildren = new java.util.ArrayList<Tree>();
+					Obj subListNode = new Obj();
+					subListNode.name = production.toString();
+					subListNode.args = subList;
+					
+					//subListNode = subListNode.setAnnotation(Factory.Location, vf.sourceLocation(input, offset, length, -1, -1, -1, -1));
+					cycleChildren.add(subListNode);
+					
+					Obj cycleNode = new Obj();
+					cycleNode.name = production.toString();
+					
+					cycleChildren.add(cycleNode);
+					
+					Amb ambSubListNode = new Amb();
+					ambSubListNode.alternatives = cycleChildren;
+					newPostFix[0] = ambSubListNode;
+					
+					blackList.push(prefixNode);
+					gatherList(prefix, newPostFix, gatheredAlternatives, production, stack, depth, listElementStack, elementNr + 1, blackList);
+					blackList.pop();
+				}else{
+					int length = postFix.length;
+					Tree[] newPostFix = new Tree[length + 1];
+					System.arraycopy(postFix, 0, newPostFix, 1, length);
+					
+					if(prefixNode.isContainer()) listElementStack.push(prefixNode, elementNr);
+					
+					Tree result = prefixNode.toTree(stack, depth);
+					if(result == null) return; // Rejected.
+					
+					newPostFix[0] = result;
+					gatherList(prefix, newPostFix, gatheredAlternatives, production, stack, depth, listElementStack, elementNr + 1, blackList);
+					
+					if(prefixNode.isContainer()) listElementStack.purge();
+				}
+			}
+		}
+	}
+	
+	private Tree buildAlternative(Production production, Tree[] children){		
+		Obj result = new Obj();
+		result.args = new java.util.ArrayList<Tree>();
+		for(int i = children.length - 1; i >= 0; i--){
+			result.args.add(children[i]);
+		}
+		// TEMPORARILY
+		result.name = production.toString();
+		return result;
+	}
+	
+	public Tree toTree(IndexedStack<AbstractNode> stack, int depth){
+		if(cachedResult != null) return cachedResult;
+		
+		if(rejected) return null;
+		
+		int index = stack.contains(this);
+		if(index != -1){ // Cycle found.
+			// TODO: make a direct link to stack[index]
+			Cycle cycle = new Cycle();
+			cycle.value = depth - index;
+			return (cachedResult = cycle);
+		}
+		
+		int childDepth = depth + 1;
+		
+		stack.push(this, depth); // Push.
+		
+		// Gather
+		DoubleArrayList<Tree[],Production> gatheredAlternatives = new DoubleArrayList<Tree[],Production>();
+		
+		if(!isListContainer){
+			gatherAlternatives(firstAlternative, gatheredAlternatives, firstProduction, stack, childDepth);
+			if(alternatives != null){
+				for(int i = alternatives.size() - 1; i >= 0; i--){
+					gatherAlternatives(alternatives.get(i), gatheredAlternatives, productions.get(i), stack, childDepth);
+				}
+			}
+		}else{
+			gatherListAlternatives(firstAlternative, gatheredAlternatives, firstProduction, stack, childDepth);
+			if(alternatives != null){
+				for(int i = alternatives.size() - 1; i >= 0; i--){
+					gatherListAlternatives(alternatives.get(i), gatheredAlternatives, productions.get(i), stack, childDepth);
+				}
+			}
+		}
+		
+		// Output.
+		Tree result;
+		
+		int nrOfAlternatives = gatheredAlternatives.size();
+		if(nrOfAlternatives == 1){ // Not ambiguous.
+			Production production = gatheredAlternatives.getSecond(0);
+			Tree[] alternative = gatheredAlternatives.getFirst(0);
+			result = buildAlternative(production, alternative);
+			if(input != null) {
+				Location loc = new Location();
+				loc.offset = offset;
+				loc.length = length;
+				// TODO: make loc field URI
+				loc.file = input.toString();
+				// TODO: locations on all trees
+			}
+			
+		}else if(nrOfAlternatives == 0){ // Filtered.
+			result = null;
+		}else{ // Ambiguous.
+			List<Tree> alts = new java.util.ArrayList<Tree>();
+			for(int i = nrOfAlternatives - 1; i >= 0; i--){
+				Production production = gatheredAlternatives.getSecond(i);
+				Tree[] kids = gatheredAlternatives.getFirst(i);
+				Obj alt = new Obj();
+				alt.name = production.toString();
+				// TODO: this makes them immutable(?)
+				alt.args = Arrays.asList(kids);
+				alts.add(alt);
+			}
+			
+			result = new Amb();
+			((Amb)result).alternatives = alts;
+		}
+		
+		stack.purge(); // Pop.
+		
+		return (cachedResult = result);
+	}
 	
 }

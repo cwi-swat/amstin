@@ -3,8 +3,9 @@
 entity Employee
 
   salary: int;
-  tax: int derived = salary * 3;
+  tax: int derived = salary * 0.3;
   name: str;
+  fired: bool default = true;
   manager: Employee optional;
   subordinates: Employee many inverse Employee.manager;
 

@@ -1,17 +1,17 @@
 start Tree
 
-Tree ::= [Obj] name:id "(" args:{Tree ","}* ")"
+Tree ::= [Obj] "appl" "(" name:id "," "[" args:{Tree ","}* "]" ")"
        | [List] "[" elements:{Tree ","}* "]"
-       | [True] "true" 
-       | [False] "false" 
+       | [Cycle] value:int
+       | [Amb] "{" alternatives:{Tree ","}* "}" 
        | [Arg] name:id ":" value:Tree?
-       | [Def] "&" name:id loc:Location?
-       | [Ref] "*" name:id "(" type:id ")" loc:Location?
+       | [Def] "def" "(" name:id ")" loc:Location?
+       | [Ref] "ref" "(" name:id "," type:id ")" loc:Location?
        | [Id] value:id loc:Location?
        | [Str] value:str loc:Location?
-       | [Lit] "'" value:str loc:Location?
-       | [Ws] "~" value:str loc:Location?
-       | [Comment] "#" value:str loc:Location?
+       | [Lit] "lit" "(" value:str ")" loc:Location?
+       | [Ws] "ws" "(" value:str ")" loc:Location?
+       | [Comment] "comment" "(" value:str ")" loc:Location?
        | [Int] value:int loc:Location?
        | [Real] value:real loc:Location?
        | [Bool] value:bool loc:Location?

@@ -1,6 +1,5 @@
 package amstin.models.grammar.parsing.gll;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -42,12 +41,20 @@ public class Parser extends SGLL {
 	
 	
 	
-	public static void main(String[] args) {
+	public static void main(String[] args) throws InterruptedException {
+//		String grammarSrc = amstin.models.grammar.parsing.mj.Parser.readPath("src/amstin/models/grammar/grammarBug.mdg");
+//		Grammar g = amstin.models.grammar.parsing.mj.Parser.parseGrammar(_Main.GRAMMAR_MDG);
 		Grammar g = amstin.models.grammar.parsing.mj.Parser.parseGrammar("src/amstin/models/grammar/parsing/gll/test.mdg");
-		String src = "+123+2";
+		String src = "a b c";
 		
 		Parser p = new Parser(g);
-		Tree tree = p.parse("Exp", src);
+		
+//		String trimmed = grammarSrc.trim();
+//		System.out.println(trimmed.substring(178));
+//		Tree tree = p.parse("Grammar", trimmed);
+		
+		Tree tree = p.parse("Stat", src);
+		
 		System.out.println(tree);
 	}
 	
@@ -72,12 +79,68 @@ public class Parser extends SGLL {
 	private final IReducableStackNode[] INT_RESTRICTIONS = new IReducableStackNode[] {INT_DIGIT};
 	private final Production INT_PROD = new Production(new Int());
 	
+	// [-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?
+	
+	private final CharStackNode REAL_SIGN = new CharStackNode(ids++, new char[][]{{'-', '-'}, {'+', '+'}});
+	private final OptionalStackNode REAL_SIGN_OPT = new OptionalStackNode(ids++, new Production("signopt"), REAL_SIGN);
+	private final CharStackNode REAL_DIGIT_PRE = new CharStackNode(ids++, new char[][]{{'0', '9'}});
+	private final ListStackNode REAL_DIGITS_PRE = new ListStackNode(ids++, new Production("digitstar"), REAL_DIGIT_PRE, false);
+	private final CharStackNode REAL_PERIOD = new CharStackNode(ids++, new char[][] {{'.', '.'}});
+	private final OptionalStackNode REAL_PERIOD_OPT = new OptionalStackNode(ids++, new Production("periodopt"), REAL_PERIOD);
+	private final CharStackNode REAL_DIGIT_POST = new CharStackNode(ids++, new char[][]{{'0', '9'}});
+	private final ListStackNode REAL_DIGITS_POST = new ListStackNode(ids++, new Production("digitstar"), REAL_DIGIT_POST, true);
+	private final Production REAL_PROD = new Production(new Real());
+	private final IReducableStackNode[] REAL_RESTRICTIONS = new IReducableStackNode[] {REAL_DIGIT_POST};
+	
+	
+	private final CharStackNode EXP_E = new CharStackNode(ids++, new char[][]{{'e', 'e'}, {'E', 'E'}});
+	private final CharStackNode EXP_SIGN = new CharStackNode(ids++, new char[][]{{'-', '-'}, {'+', '+'}});
+	private final OptionalStackNode EXP_SIGN_OPT = new OptionalStackNode(ids++, new Production("signopt"), EXP_SIGN);
+	private final CharStackNode EXP_DIGIT = new CharStackNode(ids++, new char[][]{{'0', '9'}});
+	private final ListStackNode EXP_DIGITS= new ListStackNode(ids++, new Production("digitstar"), EXP_DIGIT, true);
+	
+	// [\"]~[\"]*[\"]
+	private final CharStackNode STR_QUOTE_1 = new CharStackNode(ids++, new char[][] {{'"', '"'}});
+	private final CharStackNode STR_NOQUOTE = new CharStackNode(ids++, 
+			new char[][] {{0, '"' - 1}, {'"' + 1, (char) Character.MAX_CODE_POINT }});
+	private final ListStackNode STR_CONTENTS = new ListStackNode(ids++, new Production("contents"), STR_NOQUOTE, false); 
+	private final CharStackNode STR_QUOTE_2 = new CharStackNode(ids++, new char[][] {{'"', '"'}});
+	private final Production STR_PROD = new Production(new Str());
+	
+	// true|false
+	private final LiteralStackNode BOOL_TRUE = new LiteralStackNode(ids++, new Production("true"), "true".toCharArray());
+	private final LiteralStackNode BOOL_FALSE = new LiteralStackNode(ids++, new Production("false"), "false".toCharArray());
+	private final Production BOOL_PROD = new Production(new Bool());
+	private final CharStackNode BOOL_CHARS = new CharStackNode(ids++, new char[][]{{'a', 'z'}, {'A', 'Z'}, {'0', '9'}}); 
+	private final IReducableStackNode[] BOOL_RESTRICTIONS = new IReducableStackNode[] {BOOL_CHARS};
+	
+	// Id
+	private final Production KEY_PROD = new Production(new Key());
+	private final CharStackNode KEY_HEAD = new CharStackNode(ids++, new char[][]{{'a', 'z'}, {'A', 'Z'}}); 
+	private final CharStackNode KEY_TAIL_CHAR = new CharStackNode(ids++, new char[][]{{'a', 'z'}, {'A', 'Z'}, {'0', '9'}}); 
+	private final ListStackNode KEY_TAIL = new ListStackNode(ids++, new Production("tail"), KEY_TAIL_CHAR, false);
+	
+	private final Production REF_PROD = new Production(new Ref());
+	private final CharStackNode REF_HEAD = new CharStackNode(ids++, new char[][]{{'a', 'z'}, {'A', 'Z'}}); 
+	private final CharStackNode REF_TAIL_CHAR = new CharStackNode(ids++, new char[][]{{'a', 'z'}, {'A', 'Z'}, {'0', '9'}}); 
+	private final ListStackNode REF_TAIL = new ListStackNode(ids++, new Production("tail"), REF_TAIL_CHAR, false);
+	
+	
+	private final Production LAYOUT_PROD = new Production("layout");
+	private final CharStackNode LAYOUT_CHAR = new CharStackNode(ids++, new char[][]{
+				{' ', ' '}, 
+				{'\t', '\t'},
+				{'\n', '\n'}});
+	private final ListStackNode LAYOUT_CHARS = new ListStackNode(ids++, new Production("ws"), LAYOUT_CHAR, false);
+	private final IReducableStackNode[] LAYOUT_RESTRICTIONS = new IReducableStackNode[] {LAYOUT_CHAR};
+	
 	
 	public Parser(Grammar grammar) {
 		super();
 		this.grammar = grammar;
 		ID_REJECTS = keywordLiterals();
 	}
+	
 	
 	public Tree parse(String startSymbol, String src) {
 		NonTerminalStackNode start = new NonTerminalStackNode(ids++, startSymbol);
@@ -108,6 +171,7 @@ public class Parser extends SGLL {
 		}
 		
 		if (!expectations.containsKey(methodName)) {
+			System.out.println("Saving expectations for " + methodName);
 			saveExpectations(methodName);
 		}
 		
@@ -139,7 +203,46 @@ public class Parser extends SGLL {
 	private void expectInt() {
 		expect(INT_PROD, INT_RESTRICTIONS, INT_SIGN_OPT, INT_DIGITS);
 	}
+
+	// [-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?
+	@SuppressWarnings("unused")
+	private void expectReal() {
+		expect(REAL_PROD, REAL_RESTRICTIONS, REAL_SIGN_OPT, REAL_DIGITS_PRE, REAL_PERIOD_OPT, REAL_DIGITS_POST);
+		expect(REAL_PROD, REAL_RESTRICTIONS, REAL_SIGN_OPT, REAL_DIGITS_PRE, REAL_PERIOD_OPT, REAL_DIGITS_POST,
+				EXP_E, EXP_SIGN_OPT, EXP_DIGITS);
+	}
+
+
+	@SuppressWarnings("unused")
+	private void expectStr() {
+		expect(STR_PROD, STR_QUOTE_1, STR_CONTENTS, STR_QUOTE_2);
+	}
 	
+	@SuppressWarnings("unused")
+	private void expectBool() {
+		expect(BOOL_PROD, BOOL_RESTRICTIONS, BOOL_TRUE);
+		expect(BOOL_PROD, BOOL_RESTRICTIONS, BOOL_FALSE);
+	}
+
+	//[-+]?[0-9]+
+	@SuppressWarnings("unused")
+	private void expectRef() {
+		expect(REF_PROD, ID_RESTRICTIONS, REF_HEAD, REF_TAIL);
+	}
+
+	@SuppressWarnings("unused")
+	private void expectKey() {
+		expect(KEY_PROD, ID_RESTRICTIONS, KEY_HEAD, KEY_TAIL);
+	}
+
+	@SuppressWarnings("unused")
+	private void expectLayout() {
+		expect(LAYOUT_PROD, /*LAYOUT_RESTRICTIONS,*/ LAYOUT_CHARS);
+	}
+
+	
+
+
 	private AbstractStackNode[] keywordLiterals() {
 		Set<String> keywords = grammar.reservedKeywords();
 		AbstractStackNode[] result = new AbstractStackNode[keywords.size()];
@@ -175,13 +278,9 @@ public class Parser extends SGLL {
 		}
 		return result;
 	}
-
-	private ListStackNode makeLayout() {
-		CharStackNode whitespace = new CharStackNode(ids++, new char[][]{
-				{' ', ' '}, 
-				{'\t', '\t'},
-				{'\n', '\n'}});
-		return new ListStackNode(ids++, new Production("layout"), whitespace, false);
+	
+	private NonTerminalStackNode makeLayout() {
+		return new NonTerminalStackNode(ids++, terminalName("Layout"));
 	}
 
 	private AbstractStackNode makeStackNodeForSymbol(Symbol symbol) {
@@ -201,28 +300,34 @@ public class Parser extends SGLL {
 		if (symbol instanceof Iter) {
 			Symbol arg = ((Iter)symbol).arg;
 			AbstractStackNode node = makeStackNodeForSymbol(arg);
-			return new ListStackNode(ids++, new Production(symbol), node, true);
+			return new SeparatedListStackNode(ids++, new Production(symbol), node, new AbstractStackNode[]{
+				makeLayout()}, true);
 		}
 		if (symbol instanceof IterStar) {
 			Symbol arg = ((IterStar)symbol).arg;
 			AbstractStackNode node = makeStackNodeForSymbol(arg);
-			return new ListStackNode(ids++, new Production(symbol), node, false);			
+			return new SeparatedListStackNode(ids++, new Production(symbol), node, new AbstractStackNode[]{
+				makeLayout()}, false);
 		}
 		if (symbol instanceof IterSep) {
 			Symbol arg = ((IterSep)symbol).arg;
 			String sep = ((IterSep)symbol).sep;
 			AbstractStackNode node = makeStackNodeForSymbol(arg);
-			LiteralStackNode sepNode = new LiteralStackNode(ids++, null, sep.toCharArray());
-			//public SeparatedListStackNode(int id, Production production, AbstractStackNode child, AbstractStackNode[] separators, boolean isPlusList){
-
-			return new SeparatedListStackNode(ids++, new Production(symbol), node, new AbstractStackNode[]{sepNode}, true);
+			LiteralStackNode sepNode = new LiteralStackNode(ids++, new Production(sep), sep.toCharArray());
+			return new SeparatedListStackNode(ids++, new Production(symbol), node, new AbstractStackNode[]{
+				makeLayout(),
+				sepNode,
+				makeLayout()}, true);
 		}
 		if (symbol instanceof IterSepStar) {
 			Symbol arg = ((IterSepStar)symbol).arg;
 			String sep = ((IterSepStar)symbol).sep;
 			AbstractStackNode node = makeStackNodeForSymbol(arg);
-			LiteralStackNode sepNode = new LiteralStackNode(ids++, null, sep.toCharArray());
-			return new SeparatedListStackNode(ids++, new Production(symbol), node, new AbstractStackNode[]{sepNode}, false);			
+			LiteralStackNode sepNode = new LiteralStackNode(ids++, new Production(sep), sep.toCharArray());
+			return new SeparatedListStackNode(ids++, new Production(symbol), node, new AbstractStackNode[]{
+				makeLayout(),
+				sepNode,
+				makeLayout()}, false);			
 		}
 		if (symbol instanceof Opt) {
 			Symbol arg = ((Opt)symbol).arg;
@@ -237,7 +342,12 @@ public class Parser extends SGLL {
 	}
 
 	private String terminalName(Symbol symbol) {
-		return TERMINAL_SIGIL + symbol.getClass().getSimpleName();
+		return terminalName(symbol.getClass().getSimpleName());
 	}
+	
+	private String terminalName(String name) {
+		return TERMINAL_SIGIL + name;
+	}
+
 	
 }

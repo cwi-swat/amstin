@@ -1,13 +1,8 @@
 
-start S
+start Stat
 
+Stat ::= A? B? C
 
-S ::= A
-A ::= A "a" | "a"
-
-Exp ::= [Add] lhs:Exp "+" rhs:Exp
-     |  [Mul] lhs:Exp "*" rhs:Exp
-     |  [Pi] "pi"
-     |  [Jux] lhs:Exp rhs:Exp
-     |  [Num] value:int
-     |  [Var] name:id 
+A ::= "a"
+B ::= "b"
+C ::= "c"

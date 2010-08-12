@@ -1,5 +1,7 @@
 package amstin.models.grammar.parsing.gll.result;
 
+import amstin.models.ast.Lit;
+import amstin.models.ast.Tree;
 import amstin.models.grammar.parsing.gll.Production;
 import amstin.models.grammar.parsing.gll.result.struct.Link;
 import amstin.models.grammar.parsing.gll.util.IndexedStack;
@@ -56,6 +58,13 @@ public class LiteralNode extends AbstractNode{
 	@Override
 	public String toString(IndexedStack<AbstractNode> stack, int depth) {
 		return toString();
+	}
+
+	@Override
+	public Tree toTree(IndexedStack<AbstractNode> stack, int depth) {
+		Lit lit = new Lit();
+		lit.value = new String(content);
+		return lit;
 	}
 	
 	

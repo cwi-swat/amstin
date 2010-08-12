@@ -1,13 +1,9 @@
-
 package amstin.models.entity;
 
+public class RealValue extends Value {
 
-public class BoolValue
-    extends Value
-{
-
-    public Boolean value;
-
+	public Double value;
+	
 	@Override
 	public Object eval() {
 		return value;

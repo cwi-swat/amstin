@@ -9,7 +9,7 @@ import java.util.List;
 import amstin.Config;
 import amstin.models.ast.Tree;
 import amstin.models.grammar.Grammar;
-import amstin.models.grammar.parsing.Parser;
+import amstin.models.grammar.parsing.mj.Parser;
 import amstin.models.meta.MetaModel;
 import amstin.tools.CheckModel;
 import amstin.tools.ModelToJava;

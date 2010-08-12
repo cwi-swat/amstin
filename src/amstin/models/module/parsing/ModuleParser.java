@@ -8,7 +8,7 @@ import java.util.regex.Pattern;
 
 
 import amstin.Config;
-import amstin.models.grammar.parsing.Parser;
+import amstin.models.grammar.parsing.mj.Parser;
 
 public class ModuleParser {
 	

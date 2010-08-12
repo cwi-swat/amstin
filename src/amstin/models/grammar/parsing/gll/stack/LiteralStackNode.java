@@ -1,9 +1,8 @@
 package amstin.models.grammar.parsing.gll.stack;
 
-import amstin.models.grammar.Symbol;
 import amstin.models.grammar.parsing.gll.Production;
-import amstin.models.grammar.parsing.gll.result.ContainerNode;
 import amstin.models.grammar.parsing.gll.result.AbstractNode;
+import amstin.models.grammar.parsing.gll.result.ContainerNode;
 import amstin.models.grammar.parsing.gll.result.LiteralNode;
 import amstin.models.grammar.parsing.gll.result.struct.Link;
 import amstin.models.grammar.parsing.gll.util.ArrayList;
@@ -32,7 +31,6 @@ public final class LiteralStackNode extends AbstractStackNode implements IReduca
 	
 	private LiteralStackNode(LiteralStackNode original, LinearIntegerKeyedMap<ArrayList<Link>> prefixes){
 		super(original, prefixes);
-		
 		literal = original.literal;
 		
 		result = original.result;

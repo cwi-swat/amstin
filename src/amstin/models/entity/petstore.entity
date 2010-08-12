@@ -1,0 +1,54 @@
+
+
+   
+entity Item
+   name: str;
+   description: str;
+   imageURL: str;
+   imageThumbURL: str;
+   price: real;
+   address: Address;
+   contactInfo: SellerContactInfo;
+   totalScore: int;
+   numberOfVotes: int;
+   disabled: int;
+   tags: Tag many inverse Tag.items;   
+end
+
+entity Address
+  street1: str;
+  street2: str;
+  city: str;
+  state: str;
+  zip: str;
+  latitude: real;
+  longitude: real;
+end
+
+entity SellerContactInfo
+  lastName: str;
+  firstName: str;
+  email: str;
+end
+
+entity Category
+  name: str;
+  description: str;
+  imageURL: str;
+  products: Product many inverse Product.category;
+end
+
+entity Product
+  name: str;
+  description: str;
+  imageURL: str;
+  category: Category inverse Category.products;
+end
+
+entity Tag
+  items: Item many inverse Item.tags;
+  tag: str;
+  refCount: int default = 0;
+end
+        
+

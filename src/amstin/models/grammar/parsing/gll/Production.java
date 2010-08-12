@@ -3,8 +3,13 @@ package amstin.models.grammar.parsing.gll;
 import amstin.models.grammar.Alt;
 import amstin.models.grammar.Id;
 import amstin.models.grammar.Int;
+import amstin.models.grammar.Iter;
+import amstin.models.grammar.IterSep;
+import amstin.models.grammar.IterSepStar;
+import amstin.models.grammar.IterStar;
 import amstin.models.grammar.Key;
 import amstin.models.grammar.Lit;
+import amstin.models.grammar.Opt;
 import amstin.models.grammar.Real;
 import amstin.models.grammar.Ref;
 import amstin.models.grammar.Rule;
@@ -67,6 +72,21 @@ public class Production {
 			}
 			if (symbol instanceof Lit) {
 				return "lit";
+			}
+			if (symbol instanceof Opt) {
+				return "opt";
+			}
+			if (symbol instanceof Iter) {
+				return "iter";
+			}
+			if (symbol instanceof IterSep) {
+				return "iter-sep";
+			}
+			if (symbol instanceof IterStar) {
+				return "iter-star";
+			}
+			if (symbol instanceof IterSepStar) {
+				return "iter-sep-star";
 			}
 			throw new IllegalArgumentException("Invalid symbol: " + symbol);
 		}

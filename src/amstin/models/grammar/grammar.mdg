@@ -27,4 +27,3 @@
           | [Opt] arg:Symbol "?"
           | [IterSepStar] "{" arg:Symbol sep:str "}" "*"
           | [IterSep] "{" arg:Symbol sep:str "}" "+"
-          

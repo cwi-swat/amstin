@@ -9,6 +9,7 @@ start Entities
   Type ::= [IntType] "int"
   	    | [StrType] "str"
   	    | [BoolType] "bool"
+  	    | [RealType] "real"
   	    | [AssocType] entity:Entity^   
   
   Modifier ::= [Default] "default" "=" value:Value
@@ -22,6 +23,7 @@ start Entities
   Value ::= [IntValue] value:int 
   	     |  [StrValue] value:str
   	     |  [BoolValue] value:bool
+  	     |  [RealValue] value:real
   	     
 
   Expression ::= [Const] value:Value 

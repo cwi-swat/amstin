@@ -1,4 +1,4 @@
 
 
-Add(lhs: Var(value: \loc), '"literal", rhs: Num(value: 3 @<"example.ast", 2, 2>))
+appl(Add, [lhs: appl(Var, [value: \appl]), lit("literal"), rhs: appl(Num, [value: 3 @<"example.ast", 2, 2>])])
 
