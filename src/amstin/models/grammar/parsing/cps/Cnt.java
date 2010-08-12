@@ -1,4 +1,4 @@
-package amstin.models.grammar.parsing.mj;
+package amstin.models.grammar.parsing.cps;
 
 import amstin.models.ast.Tree;
 

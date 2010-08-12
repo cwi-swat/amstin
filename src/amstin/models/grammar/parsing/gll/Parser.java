@@ -26,6 +26,10 @@ import amstin.models.grammar.Rule;
 import amstin.models.grammar.Str;
 import amstin.models.grammar.Sym;
 import amstin.models.grammar.Symbol;
+import amstin.models.grammar.parsing.gll.prods.Anon;
+import amstin.models.grammar.parsing.gll.prods.Appl;
+import amstin.models.grammar.parsing.gll.prods.Production;
+import amstin.models.grammar.parsing.gll.prods.Terminal;
 import amstin.models.grammar.parsing.gll.stack.AbstractStackNode;
 import amstin.models.grammar.parsing.gll.stack.CharStackNode;
 import amstin.models.grammar.parsing.gll.stack.IReducableStackNode;
@@ -44,7 +48,7 @@ public class Parser extends SGLL {
 	public static void main(String[] args) throws InterruptedException {
 //		String grammarSrc = amstin.models.grammar.parsing.mj.Parser.readPath("src/amstin/models/grammar/grammarBug.mdg");
 //		Grammar g = amstin.models.grammar.parsing.mj.Parser.parseGrammar(_Main.GRAMMAR_MDG);
-		Grammar g = amstin.models.grammar.parsing.mj.Parser.parseGrammar("src/amstin/models/grammar/parsing/gll/test.mdg");
+		Grammar g = amstin.models.grammar.parsing.cps.Parser.parseGrammar("src/amstin/models/grammar/parsing/gll/test.mdg");
 		String src = "a b c";
 		
 		Parser p = new Parser(g);
@@ -66,72 +70,72 @@ public class Parser extends SGLL {
 	// TODO: [\\\\]?[a-zA-Z_$][a-zA-Z_$0-9]*
 	private final CharStackNode ID_HEAD = new CharStackNode(ids++, new char[][]{{'a', 'z'}, {'A', 'Z'}}); 
 	private final CharStackNode ID_TAIL_CHAR = new CharStackNode(ids++, new char[][]{{'a', 'z'}, {'A', 'Z'}, {'0', '9'}}); 
-	private final ListStackNode ID_TAIL = new ListStackNode(ids++, new Production("tail"), ID_TAIL_CHAR, false);
-	private final Production ID_PROD = new Production(new Id());
+	private final ListStackNode ID_TAIL = new ListStackNode(ids++, new Anon(), ID_TAIL_CHAR, false);
+	private final Production ID_PROD = new Terminal(new Id());
 	private final IReducableStackNode[] ID_RESTRICTIONS = new IReducableStackNode[] {ID_TAIL_CHAR};
 	private final AbstractStackNode[] ID_REJECTS;
 	
 	//[-+]?[0-9]+
 	private final CharStackNode INT_SIGN = new CharStackNode(ids++, new char[][]{{'-', '-'}, {'+', '+'}});
-	private final OptionalStackNode INT_SIGN_OPT = new OptionalStackNode(ids++, new Production("signopt"), INT_SIGN);
+	private final OptionalStackNode INT_SIGN_OPT = new OptionalStackNode(ids++, new Anon(), INT_SIGN);
 	private final CharStackNode INT_DIGIT = new CharStackNode(ids++, new char[][]{{'0', '9'}}); 
-	private final ListStackNode INT_DIGITS = new ListStackNode(ids++, new Production("digits"), INT_DIGIT, true);
+	private final ListStackNode INT_DIGITS = new ListStackNode(ids++, new Anon(), INT_DIGIT, true);
 	private final IReducableStackNode[] INT_RESTRICTIONS = new IReducableStackNode[] {INT_DIGIT};
-	private final Production INT_PROD = new Production(new Int());
+	private final Production INT_PROD = new Terminal(new Int());
 	
 	// [-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?
 	
 	private final CharStackNode REAL_SIGN = new CharStackNode(ids++, new char[][]{{'-', '-'}, {'+', '+'}});
-	private final OptionalStackNode REAL_SIGN_OPT = new OptionalStackNode(ids++, new Production("signopt"), REAL_SIGN);
+	private final OptionalStackNode REAL_SIGN_OPT = new OptionalStackNode(ids++, new Anon(), REAL_SIGN);
 	private final CharStackNode REAL_DIGIT_PRE = new CharStackNode(ids++, new char[][]{{'0', '9'}});
-	private final ListStackNode REAL_DIGITS_PRE = new ListStackNode(ids++, new Production("digitstar"), REAL_DIGIT_PRE, false);
+	private final ListStackNode REAL_DIGITS_PRE = new ListStackNode(ids++, new Anon(), REAL_DIGIT_PRE, false);
 	private final CharStackNode REAL_PERIOD = new CharStackNode(ids++, new char[][] {{'.', '.'}});
-	private final OptionalStackNode REAL_PERIOD_OPT = new OptionalStackNode(ids++, new Production("periodopt"), REAL_PERIOD);
+	private final OptionalStackNode REAL_PERIOD_OPT = new OptionalStackNode(ids++, new Anon(), REAL_PERIOD);
 	private final CharStackNode REAL_DIGIT_POST = new CharStackNode(ids++, new char[][]{{'0', '9'}});
-	private final ListStackNode REAL_DIGITS_POST = new ListStackNode(ids++, new Production("digitstar"), REAL_DIGIT_POST, true);
-	private final Production REAL_PROD = new Production(new Real());
+	private final ListStackNode REAL_DIGITS_POST = new ListStackNode(ids++, new Anon(), REAL_DIGIT_POST, true);
+	private final Production REAL_PROD = new Terminal(new Real());
 	private final IReducableStackNode[] REAL_RESTRICTIONS = new IReducableStackNode[] {REAL_DIGIT_POST};
 	
 	
 	private final CharStackNode EXP_E = new CharStackNode(ids++, new char[][]{{'e', 'e'}, {'E', 'E'}});
 	private final CharStackNode EXP_SIGN = new CharStackNode(ids++, new char[][]{{'-', '-'}, {'+', '+'}});
-	private final OptionalStackNode EXP_SIGN_OPT = new OptionalStackNode(ids++, new Production("signopt"), EXP_SIGN);
+	private final OptionalStackNode EXP_SIGN_OPT = new OptionalStackNode(ids++, new Anon(), EXP_SIGN);
 	private final CharStackNode EXP_DIGIT = new CharStackNode(ids++, new char[][]{{'0', '9'}});
-	private final ListStackNode EXP_DIGITS= new ListStackNode(ids++, new Production("digitstar"), EXP_DIGIT, true);
+	private final ListStackNode EXP_DIGITS= new ListStackNode(ids++, new Anon(), EXP_DIGIT, true);
 	
 	// [\"]~[\"]*[\"]
 	private final CharStackNode STR_QUOTE_1 = new CharStackNode(ids++, new char[][] {{'"', '"'}});
 	private final CharStackNode STR_NOQUOTE = new CharStackNode(ids++, 
 			new char[][] {{0, '"' - 1}, {'"' + 1, (char) Character.MAX_CODE_POINT }});
-	private final ListStackNode STR_CONTENTS = new ListStackNode(ids++, new Production("contents"), STR_NOQUOTE, false); 
+	private final ListStackNode STR_CONTENTS = new ListStackNode(ids++, new Anon(), STR_NOQUOTE, false); 
 	private final CharStackNode STR_QUOTE_2 = new CharStackNode(ids++, new char[][] {{'"', '"'}});
-	private final Production STR_PROD = new Production(new Str());
+	private final Production STR_PROD = new Terminal(new Str());
 	
 	// true|false
-	private final LiteralStackNode BOOL_TRUE = new LiteralStackNode(ids++, new Production("true"), "true".toCharArray());
-	private final LiteralStackNode BOOL_FALSE = new LiteralStackNode(ids++, new Production("false"), "false".toCharArray());
-	private final Production BOOL_PROD = new Production(new Bool());
+	private final LiteralStackNode BOOL_TRUE = new LiteralStackNode(ids++, new Anon(), "true".toCharArray());
+	private final LiteralStackNode BOOL_FALSE = new LiteralStackNode(ids++, new Anon(), "false".toCharArray());
+	private final Production BOOL_PROD = new Terminal(new Bool());
 	private final CharStackNode BOOL_CHARS = new CharStackNode(ids++, new char[][]{{'a', 'z'}, {'A', 'Z'}, {'0', '9'}}); 
 	private final IReducableStackNode[] BOOL_RESTRICTIONS = new IReducableStackNode[] {BOOL_CHARS};
 	
 	// Id
-	private final Production KEY_PROD = new Production(new Key());
+	private final Production KEY_PROD = new Terminal(new Key());
 	private final CharStackNode KEY_HEAD = new CharStackNode(ids++, new char[][]{{'a', 'z'}, {'A', 'Z'}}); 
 	private final CharStackNode KEY_TAIL_CHAR = new CharStackNode(ids++, new char[][]{{'a', 'z'}, {'A', 'Z'}, {'0', '9'}}); 
-	private final ListStackNode KEY_TAIL = new ListStackNode(ids++, new Production("tail"), KEY_TAIL_CHAR, false);
+	private final ListStackNode KEY_TAIL = new ListStackNode(ids++, new Anon(), KEY_TAIL_CHAR, false);
 	
-	private final Production REF_PROD = new Production(new Ref());
+	private final Production REF_PROD = new Terminal(new Ref());
 	private final CharStackNode REF_HEAD = new CharStackNode(ids++, new char[][]{{'a', 'z'}, {'A', 'Z'}}); 
 	private final CharStackNode REF_TAIL_CHAR = new CharStackNode(ids++, new char[][]{{'a', 'z'}, {'A', 'Z'}, {'0', '9'}}); 
-	private final ListStackNode REF_TAIL = new ListStackNode(ids++, new Production("tail"), REF_TAIL_CHAR, false);
+	private final ListStackNode REF_TAIL = new ListStackNode(ids++, new Anon(), REF_TAIL_CHAR, false);
 	
 	
-	private final Production LAYOUT_PROD = new Production("layout");
+	private final Production LAYOUT_PROD = new Anon();
 	private final CharStackNode LAYOUT_CHAR = new CharStackNode(ids++, new char[][]{
 				{' ', ' '}, 
 				{'\t', '\t'},
 				{'\n', '\n'}});
-	private final ListStackNode LAYOUT_CHARS = new ListStackNode(ids++, new Production("ws"), LAYOUT_CHAR, false);
+	private final ListStackNode LAYOUT_CHARS = new ListStackNode(ids++, new Anon(), LAYOUT_CHAR, false);
 	private final IReducableStackNode[] LAYOUT_RESTRICTIONS = new IReducableStackNode[] {LAYOUT_CHAR};
 	
 	
@@ -248,7 +252,7 @@ public class Parser extends SGLL {
 		AbstractStackNode[] result = new AbstractStackNode[keywords.size()];
 		int i = 0;
 		for (String s: keywords) {
-			result[i] = new LiteralStackNode(ids++, new Production(s), s.toCharArray());
+			result[i] = new LiteralStackNode(ids++, new Anon(), s.toCharArray());
 			i++;
 		}
 		return result;
@@ -274,7 +278,7 @@ public class Parser extends SGLL {
 					nodes[i+1] = makeLayout();
 				}
 			}
-			result.add(new Expectation(new Production(rule, alt), nodes));
+			result.add(new Expectation(new Appl(rule, alt), nodes));
 		}
 		return result;
 	}
@@ -300,21 +304,21 @@ public class Parser extends SGLL {
 		if (symbol instanceof Iter) {
 			Symbol arg = ((Iter)symbol).arg;
 			AbstractStackNode node = makeStackNodeForSymbol(arg);
-			return new SeparatedListStackNode(ids++, new Production(symbol), node, new AbstractStackNode[]{
+			return new SeparatedListStackNode(ids++, new Anon(), node, new AbstractStackNode[]{
 				makeLayout()}, true);
 		}
 		if (symbol instanceof IterStar) {
 			Symbol arg = ((IterStar)symbol).arg;
 			AbstractStackNode node = makeStackNodeForSymbol(arg);
-			return new SeparatedListStackNode(ids++, new Production(symbol), node, new AbstractStackNode[]{
+			return new SeparatedListStackNode(ids++, new Anon(), node, new AbstractStackNode[]{
 				makeLayout()}, false);
 		}
 		if (symbol instanceof IterSep) {
 			Symbol arg = ((IterSep)symbol).arg;
 			String sep = ((IterSep)symbol).sep;
 			AbstractStackNode node = makeStackNodeForSymbol(arg);
-			LiteralStackNode sepNode = new LiteralStackNode(ids++, new Production(sep), sep.toCharArray());
-			return new SeparatedListStackNode(ids++, new Production(symbol), node, new AbstractStackNode[]{
+			LiteralStackNode sepNode = new LiteralStackNode(ids++, new Anon(), sep.toCharArray());
+			return new SeparatedListStackNode(ids++, new Anon(), node, new AbstractStackNode[]{
 				makeLayout(),
 				sepNode,
 				makeLayout()}, true);
@@ -323,8 +327,8 @@ public class Parser extends SGLL {
 			Symbol arg = ((IterSepStar)symbol).arg;
 			String sep = ((IterSepStar)symbol).sep;
 			AbstractStackNode node = makeStackNodeForSymbol(arg);
-			LiteralStackNode sepNode = new LiteralStackNode(ids++, new Production(sep), sep.toCharArray());
-			return new SeparatedListStackNode(ids++, new Production(symbol), node, new AbstractStackNode[]{
+			LiteralStackNode sepNode = new LiteralStackNode(ids++, new Anon(), sep.toCharArray());
+			return new SeparatedListStackNode(ids++, new Anon(), node, new AbstractStackNode[]{
 				makeLayout(),
 				sepNode,
 				makeLayout()}, false);			
@@ -332,11 +336,11 @@ public class Parser extends SGLL {
 		if (symbol instanceof Opt) {
 			Symbol arg = ((Opt)symbol).arg;
 			AbstractStackNode node = makeStackNodeForSymbol(arg);
-			return new OptionalStackNode(ids++, new Production(symbol), node);
+			return new OptionalStackNode(ids++, new Anon(), node);
 		}
 		if (symbol instanceof Lit) {
 			String lit = ((Lit)symbol).value;
-			return new LiteralStackNode(ids++, new Production(symbol), lit.toCharArray());
+			return new LiteralStackNode(ids++, new Anon(), lit.toCharArray());
 		}
 		throw new RuntimeException("Invalid symbol: " + symbol);
 	}

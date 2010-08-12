@@ -10,7 +10,7 @@ import amstin.models.ast.Cycle;
 import amstin.models.ast.Location;
 import amstin.models.ast.Obj;
 import amstin.models.ast.Tree;
-import amstin.models.grammar.parsing.gll.Production;
+import amstin.models.grammar.parsing.gll.prods.Production;
 import amstin.models.grammar.parsing.gll.result.struct.Link;
 import amstin.models.grammar.parsing.gll.util.ArrayList;
 import amstin.models.grammar.parsing.gll.util.DoubleArrayList;
@@ -416,17 +416,13 @@ public class ContainerNode extends AbstractNode{
 		
 		if(!isListContainer){
 			gatherAlternatives(firstAlternative, gatheredAlternatives, firstProduction, stack, childDepth);
-			if(alternatives != null){
-				for(int i = alternatives.size() - 1; i >= 0; i--){
-					gatherAlternatives(alternatives.get(i), gatheredAlternatives, productions.get(i), stack, childDepth);
-				}
-			}
 		}else{
 			gatherListAlternatives(firstAlternative, gatheredAlternatives, firstProduction, stack, childDepth);
-			if(alternatives != null){
-				for(int i = alternatives.size() - 1; i >= 0; i--){
-					gatherListAlternatives(alternatives.get(i), gatheredAlternatives, productions.get(i), stack, childDepth);
-				}
+		}
+		
+		if(alternatives != null){
+			for(int i = alternatives.size() - 1; i >= 0; i--){
+				gatherListAlternatives(alternatives.get(i), gatheredAlternatives, productions.get(i), stack, childDepth);
 			}
 		}
 		

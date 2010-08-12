@@ -1,6 +1,6 @@
 package amstin.models.grammar.parsing.gll.stack;
 
-import amstin.models.grammar.parsing.gll.Production;
+import amstin.models.grammar.parsing.gll.prods.Production;
 import amstin.models.grammar.parsing.gll.result.AbstractNode;
 import amstin.models.grammar.parsing.gll.result.ContainerNode;
 import amstin.models.grammar.parsing.gll.result.struct.Link;

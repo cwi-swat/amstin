@@ -2,7 +2,7 @@ package amstin.models.grammar.parsing.gll.result;
 
 import amstin.models.ast.Lit;
 import amstin.models.ast.Tree;
-import amstin.models.grammar.parsing.gll.Production;
+import amstin.models.grammar.parsing.gll.prods.Production;
 import amstin.models.grammar.parsing.gll.result.struct.Link;
 import amstin.models.grammar.parsing.gll.util.IndexedStack;
 

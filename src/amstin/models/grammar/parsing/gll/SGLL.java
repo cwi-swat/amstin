@@ -11,6 +11,7 @@ import java.lang.reflect.Method;
 import java.net.URI;
 
 import amstin.models.ast.Tree;
+import amstin.models.grammar.parsing.gll.prods.Production;
 import amstin.models.grammar.parsing.gll.result.AbstractNode;
 import amstin.models.grammar.parsing.gll.result.ContainerNode;
 import amstin.models.grammar.parsing.gll.result.struct.Link;
@@ -237,10 +238,10 @@ public abstract class SGLL implements IGLL{
 		}
 		
 		//ProductionAdapter.getRhs(production);
-		ContainerNode resultStore = resultStoreCache.get(production.getKey(), startLocation);
+		ContainerNode resultStore = resultStoreCache.get(production, startLocation);
 		if(resultStore == null){
 			resultStore = new ContainerNode(inputURI, startLocation, location - startLocation, node.isList());
-			resultStoreCache.unsafePut(production.getKey(), startLocation, resultStore);
+			resultStoreCache.unsafePut(production, startLocation, resultStore);
 			node.markAsWithResults();
 			
 			resultStore.addAlternative(production, new Link(prefixes, result));
