@@ -4,13 +4,13 @@ import java.net.URI;
 import java.util.Arrays;
 import java.util.List;
 
-
 import amstin.models.ast.Amb;
 import amstin.models.ast.Cycle;
 import amstin.models.ast.Location;
 import amstin.models.ast.Obj;
 import amstin.models.ast.Tree;
 import amstin.models.grammar.parsing.gll.prods.Production;
+import amstin.models.grammar.parsing.gll.prods.Terminal;
 import amstin.models.grammar.parsing.gll.result.struct.Link;
 import amstin.models.grammar.parsing.gll.util.ArrayList;
 import amstin.models.grammar.parsing.gll.util.DoubleArrayList;
@@ -74,7 +74,92 @@ public class ContainerNode extends AbstractNode{
 		return rejected;
 	}
 	
+	private void yieldAlternatives(Link child, ArrayList<String[]> gatheredAlternatives, IndexedStack<AbstractNode> stack, int depth){
+//		String result = child.node.yield(stack, depth);
+//		yieldProduction(child, new String[]{result}, gatheredAlternatives, stack, depth);
+	}
 	
+	private void yieldProduction(Link child, String[] postFix, ArrayList<String[]> gatheredAlternatives, IndexedStack<AbstractNode> stack, int depth){
+		ArrayList<Link> prefixes = child.prefixes;
+		if(prefixes == null){
+			gatheredAlternatives.add(postFix);
+			return;
+		}
+		
+		for(int i = prefixes.size() - 1; i >= 0; i--){
+			Link prefix = prefixes.get(i);
+			
+			int length = postFix.length;
+			String[] newPostFix = new String[length + 1];
+			System.arraycopy(postFix, 0, newPostFix, 1, length);
+//			newPostFix[0] = prefix.node.yield(stack, depth);
+			yieldProduction(prefix, newPostFix, gatheredAlternatives, stack, depth);
+		}
+	}
+	
+	private void yieldListAlternatives(Link child, ArrayList<String[]> gatheredAlternatives, IndexedStack<AbstractNode> stack, int depth){
+		AbstractNode childNode = child.node;
+		String result = childNode.toString(stack, depth);
+		
+		IndexedStack<AbstractNode> listElementStack = new IndexedStack<AbstractNode>();
+		
+		if(childNode.isContainer()) listElementStack.push(childNode, 0);
+		yieldList(child, new String[]{result}, gatheredAlternatives, stack, depth, listElementStack, 1, new Stack<AbstractNode>());
+		if(childNode.isContainer()) listElementStack.pop();
+	}
+	
+	private void yieldList(Link child, String[] postFix, ArrayList<String[]> gatheredAlternatives, IndexedStack<AbstractNode> stack, int depth, IndexedStack<AbstractNode> listElementStack, int elementNr, Stack<AbstractNode> blackList){
+		ArrayList<Link> prefixes = child.prefixes;
+		if(prefixes == null){
+			gatheredAlternatives.add(postFix);
+			return;
+		}
+		
+		for(int i = prefixes.size() - 1; i >= 0; i--){
+			Link prefix = prefixes.get(i);
+			
+			if(prefix == null){
+				gatheredAlternatives.add(postFix);
+				continue;
+			}
+			
+			AbstractNode prefixNode = prefix.node;
+			
+			if(blackList.contains(prefixNode)) continue;
+			
+			int index = listElementStack.contains(prefixNode);
+			if(index != -1){
+				int length = postFix.length;
+				int repeatLength = elementNr - index;
+				
+				String[] newPostFix = new String[length - repeatLength + 1];
+				System.arraycopy(postFix, repeatLength, newPostFix, 1, length - repeatLength);
+				
+				StringBuilder buffer = new StringBuilder();
+				buffer.append("repeat(");
+				for(int j = 0; j < repeatLength; j++){
+					buffer.append(postFix[j]);
+				}
+				buffer.append(')');
+				newPostFix[0] = buffer.toString();
+				
+				blackList.push(prefixNode);
+				gatherList(prefix, newPostFix, gatheredAlternatives, stack, depth, listElementStack, elementNr + 1, blackList);
+				blackList.pop();
+			}else{
+				int length = postFix.length;
+				String[] newPostFix = new String[length + 1];
+				System.arraycopy(postFix, 0, newPostFix, 1, length);
+				
+				if(prefixNode.isContainer()) listElementStack.push(prefixNode, elementNr);
+				
+				newPostFix[0] = prefixNode.toString(stack, depth);
+				gatherList(prefix, newPostFix, gatheredAlternatives, stack, depth, listElementStack, elementNr + 1, blackList);
+				
+				if(prefixNode.isContainer()) listElementStack.pop();
+			}
+		}
+	}
 	
 	
 	private void gatherAlternatives(Link child, ArrayList<String[]> gatheredAlternatives, IndexedStack<AbstractNode> stack, int depth){
@@ -383,7 +468,7 @@ public class ContainerNode extends AbstractNode{
 		}
 	}
 	
-	private Tree buildAlternative(Production production, Tree[] children){		
+	private Tree buildAlternative(Production production, Tree[] children){
 		Obj result = new Obj();
 		result.args = new java.util.ArrayList<Tree>();
 		for(int i = children.length - 1; i >= 0; i--){
@@ -394,8 +479,19 @@ public class ContainerNode extends AbstractNode{
 		return result;
 	}
 	
+	@Override
+	public String yield() {
+		firstAlternative.node.yield();
+		return ""; // TODO
+	}
+	
 	public Tree toTree(IndexedStack<AbstractNode> stack, int depth){
 		if(cachedResult != null) return cachedResult;
+		
+		
+		if (firstProduction instanceof Terminal) {
+			return ((Terminal)firstProduction).makeTree(yield());
+		}
 		
 		if(rejected) return null;
 		

@@ -24,4 +24,6 @@ public abstract class AbstractNode{
 	public abstract String toString(IndexedStack<AbstractNode> stack, int depth);
 
 	public abstract Tree toTree(IndexedStack<AbstractNode> stack, int depth);
+
+	public abstract String yield();
 }

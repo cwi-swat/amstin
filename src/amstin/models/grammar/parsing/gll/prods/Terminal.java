@@ -1,5 +1,6 @@
 package amstin.models.grammar.parsing.gll.prods;
 
+import amstin.models.ast.Tree;
 import amstin.models.grammar.Id;
 import amstin.models.grammar.Int;
 import amstin.models.grammar.Key;
@@ -41,6 +42,40 @@ public class Terminal extends Production {
 			return "lit";
 		}
 		throw new IllegalArgumentException("Invalid terminal symbol: " + symbol);
+	}
+	
+	public Tree makeTree(String value) {
+		if (symbol instanceof Id) {
+			amstin.models.ast.Id x = new amstin.models.ast.Id();
+			x.value = value;
+			return x;
+		}
+		if (symbol instanceof Real) {
+			amstin.models.ast.Real x = new amstin.models.ast.Real();
+			x.value = Double.parseDouble(value);
+			return x;
+		}
+		if (symbol instanceof Int) {
+			amstin.models.ast.Int x = new amstin.models.ast.Int();
+			x.value = Integer.parseInt(value);
+			return x;
+		}
+		if (symbol instanceof Ref) {
+			amstin.models.ast.Ref x = new amstin.models.ast.Ref();
+			x.name = value;
+			return x;
+		}
+		if (symbol instanceof Key) {
+			amstin.models.ast.Def x = new amstin.models.ast.Def();
+			x.name = value;
+			return x;
+		}
+		if (symbol instanceof Str) {
+			amstin.models.ast.Str x = new amstin.models.ast.Str();
+			x.value = value.substring(1, value.length() - 1);
+			return x;
+		}
+		throw new IllegalArgumentException("Invalx terminal symbol: " + symbol);
 	}
 	
 }

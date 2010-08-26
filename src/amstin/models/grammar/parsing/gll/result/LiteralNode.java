@@ -66,6 +66,11 @@ public class LiteralNode extends AbstractNode{
 		lit.value = new String(content);
 		return lit;
 	}
+
+	@Override
+	public String yield() {
+		return new String(content);
+	}
 	
 	
 }

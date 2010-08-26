@@ -1,8 +1,12 @@
 
-start Stat
+start Seq
 
-Stat ::= A? B? C
+Seq ::= xs:X*
 
-A ::= "a"
-B ::= "b"
-C ::= "c"
+X ::= [A] "a" | [Id] name:id
+
+Stat ::= exp:Exp
+
+Exp ::= [Add] lhs:Exp "+" rhs:Exp
+     |  [Mul] lhs:Exp "*" rhs:Exp
+     |  [Var] name:id

@@ -12,7 +12,7 @@ import java.util.Set;
 
 
 import amstin.models.grammar.Grammar;
-import amstin.models.grammar.parsing.Parser;
+import amstin.models.grammar.parsing.cps.Parser;
 import amstin.models.meta.Bool;
 import amstin.models.meta.Class;
 import amstin.models.meta.Field;

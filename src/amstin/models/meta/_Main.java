@@ -8,7 +8,7 @@ import java.util.List;
 
 import amstin.Config;
 import amstin.models.grammar.Grammar;
-import amstin.models.grammar.parsing.mj.Parser;
+import amstin.models.grammar.parsing.cps.Parser;
 import amstin.tools.CheckModel;
 import amstin.tools.ModelToJava;
 import amstin.tools.ModelEquality;

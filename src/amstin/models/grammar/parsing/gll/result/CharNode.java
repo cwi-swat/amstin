@@ -52,4 +52,9 @@ public class CharNode extends AbstractNode{
 	public String toString(IndexedStack<AbstractNode> stack, int depth){
 		return toString();
 	}
+
+	@Override
+	public String yield() {
+		return new Character(character).toString();
+	}
 }

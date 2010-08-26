@@ -39,4 +39,9 @@ public class EpsilonNode extends AbstractNode{
 	public Tree toTree(IndexedStack<AbstractNode> stack, int depth) {
 		throw new AssertionError("should not happen");
 	}
+
+	@Override
+	public String yield() {
+		return "";
+	}
 }

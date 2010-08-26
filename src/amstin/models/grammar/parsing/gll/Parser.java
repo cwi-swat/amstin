@@ -29,6 +29,7 @@ import amstin.models.grammar.Symbol;
 import amstin.models.grammar.parsing.gll.prods.Anon;
 import amstin.models.grammar.parsing.gll.prods.Appl;
 import amstin.models.grammar.parsing.gll.prods.Production;
+import amstin.models.grammar.parsing.gll.prods.Regular;
 import amstin.models.grammar.parsing.gll.prods.Terminal;
 import amstin.models.grammar.parsing.gll.stack.AbstractStackNode;
 import amstin.models.grammar.parsing.gll.stack.CharStackNode;
@@ -304,13 +305,13 @@ public class Parser extends SGLL {
 		if (symbol instanceof Iter) {
 			Symbol arg = ((Iter)symbol).arg;
 			AbstractStackNode node = makeStackNodeForSymbol(arg);
-			return new SeparatedListStackNode(ids++, new Anon(), node, new AbstractStackNode[]{
+			return new SeparatedListStackNode(ids++, new Regular(symbol), node, new AbstractStackNode[]{
 				makeLayout()}, true);
 		}
 		if (symbol instanceof IterStar) {
 			Symbol arg = ((IterStar)symbol).arg;
 			AbstractStackNode node = makeStackNodeForSymbol(arg);
-			return new SeparatedListStackNode(ids++, new Anon(), node, new AbstractStackNode[]{
+			return new SeparatedListStackNode(ids++, new Regular(symbol), node, new AbstractStackNode[]{
 				makeLayout()}, false);
 		}
 		if (symbol instanceof IterSep) {
@@ -318,7 +319,7 @@ public class Parser extends SGLL {
 			String sep = ((IterSep)symbol).sep;
 			AbstractStackNode node = makeStackNodeForSymbol(arg);
 			LiteralStackNode sepNode = new LiteralStackNode(ids++, new Anon(), sep.toCharArray());
-			return new SeparatedListStackNode(ids++, new Anon(), node, new AbstractStackNode[]{
+			return new SeparatedListStackNode(ids++, new Regular(symbol), node, new AbstractStackNode[]{
 				makeLayout(),
 				sepNode,
 				makeLayout()}, true);
@@ -328,7 +329,7 @@ public class Parser extends SGLL {
 			String sep = ((IterSepStar)symbol).sep;
 			AbstractStackNode node = makeStackNodeForSymbol(arg);
 			LiteralStackNode sepNode = new LiteralStackNode(ids++, new Anon(), sep.toCharArray());
-			return new SeparatedListStackNode(ids++, new Anon(), node, new AbstractStackNode[]{
+			return new SeparatedListStackNode(ids++, new Regular(symbol), node, new AbstractStackNode[]{
 				makeLayout(),
 				sepNode,
 				makeLayout()}, false);			
@@ -336,11 +337,11 @@ public class Parser extends SGLL {
 		if (symbol instanceof Opt) {
 			Symbol arg = ((Opt)symbol).arg;
 			AbstractStackNode node = makeStackNodeForSymbol(arg);
-			return new OptionalStackNode(ids++, new Anon(), node);
+			return new OptionalStackNode(ids++, new Regular(symbol), node);
 		}
 		if (symbol instanceof Lit) {
 			String lit = ((Lit)symbol).value;
-			return new LiteralStackNode(ids++, new Anon(), lit.toCharArray());
+			return new LiteralStackNode(ids++, new amstin.models.grammar.parsing.gll.prods.Lit(lit), lit.toCharArray());
 		}
 		throw new RuntimeException("Invalid symbol: " + symbol);
 	}

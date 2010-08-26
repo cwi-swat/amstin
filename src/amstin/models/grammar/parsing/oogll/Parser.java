@@ -13,7 +13,6 @@ import oogll.sppf.Node;
 import oogll.symbol.NonTerminal;
 import oogll.symbol.RegExp;
 import oogll.symbol.Symbol;
-import oogll.symbol.Terminal;
 import amstin.models.grammar.Alt;
 import amstin.models.grammar.Bool;
 import amstin.models.grammar.Grammar;

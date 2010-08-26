@@ -6,6 +6,9 @@ Tree ::= [Obj] "appl" "(" name:id "," "[" args:{Tree ","}* "]" ")"
        | [Amb] "{" alternatives:{Tree ","}* "}" 
        | [Arg] name:id ":" value:Tree?
        | [Def] "def" "(" name:id ")" loc:Location?
+       
+       // What is type here?
+       
        | [Ref] "ref" "(" name:id "," type:id ")" loc:Location?
        | [Id] value:id loc:Location?
        | [Str] value:str loc:Location?

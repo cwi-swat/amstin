@@ -26,7 +26,7 @@ import amstin.models.grammar.Rule;
 import amstin.models.grammar.Str;
 import amstin.models.grammar.Sym;
 import amstin.models.grammar.Symbol;
-import amstin.models.grammar.parsing.Parser;
+import amstin.models.grammar.parsing.cps.Parser;
 import amstin.models.meta.Boot;
 import amstin.models.meta.Class;
 import amstin.models.meta.Field;
