@@ -6,13 +6,11 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import oogll.GLL;
-import oogll.Test;
-import oogll.forest.Flattener;
-import oogll.sppf.Node;
-import oogll.symbol.NonTerminal;
-import oogll.symbol.RegExp;
-import oogll.symbol.Symbol;
+import amstin.models.grammar.parsing.oogll.forest.Flattener;
+import amstin.models.grammar.parsing.oogll.sppf.Node;
+import amstin.models.grammar.parsing.oogll.symbol.NonTerminal;
+import amstin.models.grammar.parsing.oogll.symbol.RegExp;
+import amstin.models.grammar.parsing.oogll.symbol.Symbol;
 import amstin.models.grammar.Alt;
 import amstin.models.grammar.Bool;
 import amstin.models.grammar.Grammar;
@@ -31,7 +29,7 @@ import amstin.models.grammar.Rule;
 import amstin.models.grammar.Str;
 import amstin.models.grammar.Sym;
 
-public class Parser {
+public class MDGParser {
 
 	private static final String ID_REGEX = "[\\\\]?[a-zA-Z_$][a-zA-Z_$0-9]*";
 	private static final String REF_REGEX = "(" + ID_REGEX + ")" + "(\\."  + ID_REGEX + ")*";
@@ -105,7 +103,7 @@ public class Parser {
 //		String grammarSrc = amstin.models.grammar.parsing.cps.Parser.readPath("src/amstin/models/grammar/parsing/gll/test.mdg");
 		String src = "ac";
 		
-		Parser p = new Parser(g);
+		MDGParser p = new MDGParser(g);
 		
 		String trimmed = src.trim();
 		System.out.println(trimmed);
@@ -121,7 +119,7 @@ public class Parser {
 	private final GLL gll;
 	
 	
-	public Parser(Grammar grammar) {
+	public MDGParser(Grammar grammar) {
 		ID = new IdToken(grammar.reservedKeywords());
 		
 		for (Rule rule: grammar.rules) {
@@ -143,14 +141,14 @@ public class Parser {
 	private void convertRule(Rule rule, NonTerminal nt) {
 		for (Alt alt: rule.alts) {
 			int size = alt.elements.size();
-			oogll.symbol.Symbol elts[] = new oogll.symbol.Symbol[size * 2 - 1];
+			amstin.models.grammar.parsing.oogll.symbol.Symbol elts[] = new amstin.models.grammar.parsing.oogll.symbol.Symbol[size * 2 - 1];
 			for (int i = 0; i < size * 2 - 1; i += 2) {
 				elts[i] = convertSymbol(alt.elements.get(i / 2).symbol);
 				if (i < elts.length - 1) {
 					elts[i+1] = LAYOUT;
 				}
 			}
-			nt.addAlt(new oogll.Alt(elts));
+			nt.addAlt(new amstin.models.grammar.parsing.oogll.Alt(elts));
 		}
 	}
 
@@ -181,28 +179,28 @@ public class Parser {
 		}
 		if (symbol instanceof Iter) {
 			Symbol arg = convertSymbol(((Iter)symbol).arg);
-			return new oogll.symbol.IterSep(arg, LAYOUT);
+			return new amstin.models.grammar.parsing.oogll.symbol.IterSep(arg, LAYOUT);
 		}
 		if (symbol instanceof IterStar) {
 			Symbol arg = convertSymbol(((IterStar)symbol).arg);
-			return new oogll.symbol.IterSepStar(arg, LAYOUT);
+			return new amstin.models.grammar.parsing.oogll.symbol.IterSepStar(arg, LAYOUT);
 		}
 		if (symbol instanceof IterSep) {
 			String sep = ((IterSep)symbol).sep;
 			Symbol node = convertSymbol(((IterSep)symbol).arg);
-			Symbol sepNode = new oogll.symbol.Lit(sep);
-			return new oogll.symbol.IterSep(node, LAYOUT, sepNode, LAYOUT);
+			Symbol sepNode = new amstin.models.grammar.parsing.oogll.symbol.Lit(sep);
+			return new amstin.models.grammar.parsing.oogll.symbol.IterSep(node, LAYOUT, sepNode, LAYOUT);
 		}
 		if (symbol instanceof IterSepStar) {
 			String sep = ((IterSep)symbol).sep;
 			Symbol node = convertSymbol(((IterSep)symbol).arg);
-			Symbol sepNode = new oogll.symbol.Lit(sep);
-			return new oogll.symbol.IterSepStar(node, LAYOUT, sepNode, LAYOUT);
+			Symbol sepNode = new amstin.models.grammar.parsing.oogll.symbol.Lit(sep);
+			return new amstin.models.grammar.parsing.oogll.symbol.IterSepStar(node, LAYOUT, sepNode, LAYOUT);
 		}
 
 		if (symbol instanceof Opt) {
 			Symbol node = convertSymbol(((Opt)symbol).arg);
-			return new oogll.symbol.Opt(node);
+			return new amstin.models.grammar.parsing.oogll.symbol.Opt(node);
 		}
 		if (symbol instanceof Lit) {
 			return new LitToken(((Lit)symbol).value);
