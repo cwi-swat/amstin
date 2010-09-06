@@ -1,0 +1,32 @@
+digraph forest {
+	graph [ordering=out];
+//	node [label="\N"];
+	graph [bb="0,0,298,756",
+		_draw_="c 5 -white C 5 -white P 4 0 0 0 756 298 756 298 0 ",
+		xdotversion="1.2"];
+	node1 [label="START'", shape=box, pos="149,738", width="1.00", height="0.50", _draw_="c 5 -black p 4 185 756 113 756 113 720 185 720 ", _ldraw_="F 14.000000 11 -Times-Roman c 5 -black T 149 733 0 57 6 -START' "];
+	node2 [label="START'::=[<layout>, Seq, <layout>]", shape=ellipse, pos="149,666", width="4.14", height="0.50", _draw_="c 5 -black e 149 666 149 18 ", _ldraw_="F 14.000000 11 -Times-Roman c 5 -black T 149 661 0 272 34 -START'::=[<layout>, Seq, <layout>] "];
+	node3 [label="<layout>:  ", shape=plaintext, pos="55,594", width="1.36", height="0.50", _ldraw_="F 14.000000 11 -Times-Roman c 5 -black T 55 589 0 82 11 -<layout>:   "];
+	node4 [label=Seq, shape=box, pos="149,594", width="0.75", height="0.50", _draw_="c 5 -black p 4 176 612 122 612 122 576 176 576 ", _ldraw_="F 14.000000 11 -Times-Roman c 5 -black T 149 589 0 27 3 -Seq "];
+	node5 [label="Seq::=[X<layout>*]", shape=ellipse, pos="149,522", width="2.36", height="0.50", _draw_="c 5 -black e 149 522 85 18 ", _ldraw_="F 14.000000 11 -Times-Roman c 5 -black T 149 517 0 145 18 -Seq::=[X<layout>*] "];
+	node6 [label="X<layout>*", shape=box, pos="149,450", width="1.42", height="0.50", _draw_="c 5 -black p 4 200 468 98 468 98 432 200 432 ", _ldraw_="F 14.000000 11 -Times-Roman c 5 -black T 149 445 0 86 10 -X<layout>* "];
+	node7 [label="X<layout>*::=[X<layout>+]", shape=ellipse, pos="149,378", width="3.25", height="0.50", _draw_="c 5 -black e 149 378 117 18 ", _ldraw_="F 14.000000 11 -Times-Roman c 5 -black T 149 373 0 208 25 -X<layout>*::=[X<layout>+] "];
+	node8 [label="X<layout>+", shape=box, pos="149,306", width="1.47", height="0.50", _draw_="c 5 -black p 4 202 324 96 324 96 288 202 288 ", _ldraw_="F 14.000000 11 -Times-Roman c 5 -black T 149 301 0 90 10 -X<layout>+ "];
+	node9 [label="X<layout>+::=[X]", shape=ellipse, pos="149,234", width="2.19", height="0.50", _draw_="c 5 -black e 149 234 79 18 ", _ldraw_="F 14.000000 11 -Times-Roman c 5 -black T 149 229 0 132 16 -X<layout>+::=[X] "];
+	node10 [label=X, shape=box, pos="149,162", width="0.75", height="0.50", _draw_="c 5 -black p 4 176 180 122 180 122 144 176 144 ", _ldraw_="F 14.000000 11 -Times-Roman c 5 -black T 149 157 0 10 1 -X "];
+	node11 [label="X::=[<id>]", shape=ellipse, pos="149,90", width="1.44", height="0.50", _draw_="c 5 -black e 149 90 52 18 ", _ldraw_="F 14.000000 11 -Times-Roman c 5 -black T 149 85 0 78 10 -X::=[<id>] "];
+	node12 [label="<id>: ac", shape=plaintext, pos="149,18", width="1.08", height="0.50", _ldraw_="F 14.000000 11 -Times-Roman c 5 -black T 149 13 0 62 8 -<id>: ac "];
+	node13 [label="<layout>:  ", shape=plaintext, pos="243,594", width="1.36", height="0.50", _ldraw_="F 14.000000 11 -Times-Roman c 5 -black T 243 589 0 82 11 -<layout>:   "];
+	node2 -> node3 [pos="e,79,612 126,648 115,639 100,628 87,618", _draw_="c 5 -black B 4 126 648 115 639 100 628 87 618 ", _hdraw_="S 5 -solid S 15 -setlinewidth(1) c 5 -black C 5 -black P 3 89 615 79 612 85 621 "];
+	node11 -> node12 [pos="e,149,36 149,72 149,64 149,55 149,46", _draw_="c 5 -black B 4 149 72 149 64 149 55 149 46 ", _hdraw_="S 5 -solid S 15 -setlinewidth(1) c 5 -black C 5 -black P 3 153 46 149 36 146 46 "];
+	node10 -> node11 [pos="e,149,108 149,144 149,136 149,127 149,118", _draw_="c 5 -black B 4 149 144 149 136 149 127 149 118 ", _hdraw_="S 5 -solid S 15 -setlinewidth(1) c 5 -black C 5 -black P 3 153 118 149 108 146 118 "];
+	node9 -> node10 [pos="e,149,180 149,216 149,208 149,199 149,190", _draw_="c 5 -black B 4 149 216 149 208 149 199 149 190 ", _hdraw_="S 5 -solid S 15 -setlinewidth(1) c 5 -black C 5 -black P 3 153 190 149 180 146 190 "];
+	node8 -> node9 [pos="e,149,252 149,288 149,280 149,271 149,262", _draw_="c 5 -black B 4 149 288 149 280 149 271 149 262 ", _hdraw_="S 5 -solid S 15 -setlinewidth(1) c 5 -black C 5 -black P 3 153 262 149 252 146 262 "];
+	node7 -> node8 [pos="e,149,324 149,360 149,352 149,343 149,334", _draw_="c 5 -black B 4 149 360 149 352 149 343 149 334 ", _hdraw_="S 5 -solid S 15 -setlinewidth(1) c 5 -black C 5 -black P 3 153 334 149 324 146 334 "];
+	node6 -> node7 [pos="e,149,396 149,432 149,424 149,415 149,406", _draw_="c 5 -black B 4 149 432 149 424 149 415 149 406 ", _hdraw_="S 5 -solid S 15 -setlinewidth(1) c 5 -black C 5 -black P 3 153 406 149 396 146 406 "];
+	node5 -> node6 [pos="e,149,468 149,504 149,496 149,487 149,478", _draw_="c 5 -black B 4 149 504 149 496 149 487 149 478 ", _hdraw_="S 5 -solid S 15 -setlinewidth(1) c 5 -black C 5 -black P 3 153 478 149 468 146 478 "];
+	node4 -> node5 [pos="e,149,540 149,576 149,568 149,559 149,550", _draw_="c 5 -black B 4 149 576 149 568 149 559 149 550 ", _hdraw_="S 5 -solid S 15 -setlinewidth(1) c 5 -black C 5 -black P 3 153 550 149 540 146 550 "];
+	node2 -> node4 [pos="e,149,612 149,648 149,640 149,631 149,622", _draw_="c 5 -black B 4 149 648 149 640 149 631 149 622 ", _hdraw_="S 5 -solid S 15 -setlinewidth(1) c 5 -black C 5 -black P 3 153 622 149 612 146 622 "];
+	node2 -> node13 [pos="e,219,612 172,648 183,639 198,628 211,618", _draw_="c 5 -black B 4 172 648 183 639 198 628 211 618 ", _hdraw_="S 5 -solid S 15 -setlinewidth(1) c 5 -black C 5 -black P 3 213 621 219 612 209 615 "];
+	node1 -> node2 [pos="e,149,684 149,720 149,712 149,703 149,694", _draw_="c 5 -black B 4 149 720 149 712 149 703 149 694 ", _hdraw_="S 5 -solid S 15 -setlinewidth(1) c 5 -black C 5 -black P 3 153 694 149 684 146 694 "];
+}

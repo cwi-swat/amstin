@@ -1,0 +1,17 @@
+start Graph
+
+Graph ::= "digraph" name:id "{" statements:Stat* "}"
+
+Stat ::= [Directive] "graph" attributes:Attributes ";"
+       | [NodeStat] node:Node attributes:Attributes ";"
+       | [EdgeStat] from:Node^ "->" to:Node^ attributes:Attributes ";"
+
+Node ::= name:key 
+
+Attr ::= name:id "=" value:Value
+
+Value ::= [Str] value:str  
+       |  [Id] value:id
+
+Attributes ::= "[" attrs:{Attr ","}* "]"
+
