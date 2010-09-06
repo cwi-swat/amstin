@@ -101,14 +101,11 @@ public class MDGParser {
 //		Grammar g = amstin.models.grammar.parsing.cps.Parser.parseGrammar(_Main.GRAMMAR_MDG);
 		Grammar g = amstin.models.grammar.parsing.cps.Parser.parseGrammar("src/amstin/models/grammar/parsing/gll/test.mdg");
 //		String grammarSrc = amstin.models.grammar.parsing.cps.Parser.readPath("src/amstin/models/grammar/parsing/gll/test.mdg");
-		String src = "ac";
+		String src = " ac ";
 		
 		MDGParser p = new MDGParser(g);
 		
-		String trimmed = src.trim();
-		System.out.println(trimmed);
-		
-		Node tree = p.parse(trimmed);
+		Node tree = p.parse(src);
 		Test.writeDot("test.dot", Flattener.flatten(tree).toDot());
 		System.out.println(tree.toDot());
 	}
@@ -128,7 +125,10 @@ public class MDGParser {
 		for (Rule rule: grammar.rules) {
 			convertRule(rule, rules.get(rule));
 		}
-		this.gll = new GLL(rules.get(grammar.startSymbol));
+		NonTerminal startSymbol = rules.get(grammar.startSymbol);
+		NonTerminal startPrime = new NonTerminal("START'");
+		startPrime.addAlt(new amstin.models.grammar.parsing.oogll.Alt(LAYOUT, startSymbol, LAYOUT));
+		this.gll = new GLL(startPrime);
 	}
 	
 	private Node parse(String src) {
