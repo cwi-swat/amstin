@@ -30,7 +30,7 @@ import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JMods;
 import com.sun.codemodel.JPackage;
-import com.sun.codemodel.internal.JMod;
+import com.sun.codemodel.JMod;
 
 public class MetaModelToJava {
 	

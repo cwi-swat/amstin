@@ -107,7 +107,6 @@ public class GrammarToMetaModel {
 				}
 			}
 		}
-
 	}
 	
 	private void addFields(Class klass, Alt alt) {
