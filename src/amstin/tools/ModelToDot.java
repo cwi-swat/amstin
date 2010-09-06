@@ -106,12 +106,12 @@ public class ModelToDot {
 
 	private void writeEdgeToPrimitive(Object o, Object elt, String label) throws IOException {
 		String id = "primNode" + primId++;
-		output.write(id + " [shape=plaintext, label=\"" + elt.toString() + "\"]\n");		
-		output.write(nodeId(o) + " -> " + id + " [label=\"" + label + "\"]\n");		
+		output.write(id + " [shape=plaintext, label=\"" + dotEscape(elt.toString()) + "\"]\n");		
+		output.write(nodeId(o) + " -> " + id + " [label=\"" + dotEscape(label) + "\"]\n");		
 	}
 
 	private void writeEdge(Object o, Object elt, String label) throws IOException {
-		output.write(nodeId(o) + " -> " + nodeId(elt) + " [label=\"" + label + "\"]\n");
+		output.write(nodeId(o) + " -> " + nodeId(elt) + " [label=\"" + dotEscape(label) + "\"]\n");
 	}
 
 	private void nodes() throws IOException {
@@ -154,15 +154,16 @@ public class ModelToDot {
 
 	private static String dotEscape(String string) {
 		return string
-		.replaceAll("\\|", "\\|")
-		.replaceAll("\\n", "\\n")
-		.replaceAll("\\t", "\\t")
-		.replaceAll("\\f", "\\f")
-		.replaceAll("\\r", "\\r")
-		.replaceAll("\\{", "\\{") // these two don't work???
-		.replaceAll("\\}", "\\}")
-		.replaceAll("<", "\\<")
-		.replaceAll(">", "\\>");
+		.replaceAll("\\|", "\\\\|")
+		.replaceAll("\n", "\\n")
+		.replaceAll("\t", "\\t")
+		.replaceAll("\f", "\\f")
+		.replaceAll("\r", "\\r")
+		.replaceAll("\"", "\\\"")
+		.replaceAll("\\}", "\\\\}")
+		.replaceAll("\\{", "\\\\{") // these two don't work???
+		.replaceAll("<", "\\\\<")
+		.replaceAll(">", "\\\\>");
 	}
 
 	
