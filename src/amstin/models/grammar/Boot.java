@@ -392,7 +392,6 @@ obj24.elements.add(obj38);
 obj110.name = "arg";
 obj146.value = "}";
 obj148.value = "+";
-obj0.name = null;
 obj0.startSymbol = obj1;
 obj0.rules = new ArrayList<amstin.models.grammar.Rule>();
 obj0.rules.add(obj1);

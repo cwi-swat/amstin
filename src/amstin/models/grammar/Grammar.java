@@ -6,7 +6,6 @@ import java.util.Set;
 
 public class Grammar {
 
-	public String name;
 	public Rule startSymbol;
 	public List<Rule> rules;
 	
