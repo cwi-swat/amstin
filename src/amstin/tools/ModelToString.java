@@ -30,9 +30,6 @@ import amstin.models.grammar.Symbol;
 @SuppressWarnings("unchecked")
 public class ModelToString {
 
-	// TODO: there is no support for nested keys and path references currently,
-	// so the unparsed result is incorrect if there are duplicate keys.
-	
 	public static void unparse(Grammar grammar, Object obj, Writer writer) {
 		ModelToString unp = new ModelToString(grammar, obj, writer);
 		try {
@@ -59,8 +56,7 @@ public class ModelToString {
 	
 	private void unparse() throws IOException {
 		Symbol sym = inferSymbol(root);
-		String dummy[] = {null};
-		collectRec(sym, root, dummy);
+		collectRec(sym, root, null);
 		unparseRec(sym, root);
 	}
 	
@@ -75,28 +71,48 @@ public class ModelToString {
 		return null;
 	}
 
-	private void collectRec(Symbol sym, Object obj, String key[]) {
-		if (sym instanceof Key) {
-			// mimicking "out" variables
-			key[0] = (String)obj;
-		}
-		else if (sym instanceof Opt && obj == null) {
+	private void collectRec(Symbol sym, Object obj, String label) {
+		if (sym instanceof Opt && obj == null) {
 			return;
 		}
 		else if (sym instanceof Opt) {
-			collectRec(((Opt)sym).arg, obj, key);
+			collectRec(((Opt)sym).arg, obj, label);
 		}
 		else if (obj instanceof List) {
-			collectInList(sym, (List) obj, key);
+			collectInList(sym, (List) obj, label);
 		}
 		else if (sym instanceof Sym){
-			collectInCons(((Sym)sym).rule, obj, key);
+			collectInCons(((Sym)sym).rule, obj, label);
 		}
 
 	}
 	
-	private void collectInCons(Rule rule, Object obj, String[] key) {
+	private void collectInCons(Rule rule, Object obj, String label) {
 		Alt alt = findAlt(rule, obj); 
+		
+		// Scan for a key element, and use that as the label of the
+		// current obj
+		for (int i = 0; i < alt.elements.size(); i++) {
+			Element elt = alt.elements.get(i);
+			Symbol sym = elt.symbol;
+			if (elt.label == null) {
+				continue;
+			}
+			if (sym instanceof Key) {
+				String fieldName = elt.label.name;
+				Class<?> klz = obj.getClass();
+				try {
+					Field f = klz.getField(fieldName);
+					String myLabel = (String)f.get(obj);
+					label = label == null ? myLabel : label + "." + myLabel ;
+					labels.put(obj, label);
+					break;
+				} catch (Exception e) {
+					throw new RuntimeException(e);
+				}
+			}
+		}
+		
 		for (int i = 0; i < alt.elements.size(); i++) {
 			Element elt = alt.elements.get(i);
 			Symbol sym = elt.symbol;
@@ -108,24 +124,14 @@ public class ModelToString {
 			try {
 				Field f = klz.getField(fieldName);
 				Object value = f.get(obj);
-				String myKey[] = {null};
-				collectRec(sym, value, myKey);
-				if (myKey[0] != null) {
-					labels.put(obj, myKey[0]);
-				}
-			} catch (SecurityException e) {
-				throw new RuntimeException(e);
-			} catch (NoSuchFieldException e) {
-				throw new RuntimeException(e);
-			} catch (IllegalArgumentException e) {
-				throw new RuntimeException(e);
-			} catch (IllegalAccessException e) {
+				collectRec(sym, value, label);
+			} catch (Exception e) {
 				throw new RuntimeException(e);
 			}
 		}
 	}
 
-	private void collectInList(Symbol sym, List l, String[] key) {
+	private void collectInList(Symbol sym, List l, String label) {
 		Symbol arg = null;
 		if (sym instanceof Iter) {
 			arg = ((Iter)sym).arg;
@@ -146,7 +152,7 @@ public class ModelToString {
 		}
 		
 		for (Object o: l) {
-			collectRec(arg, o, key);
+			collectRec(arg, o, label);
 		}		
 	}
 	
@@ -248,6 +254,7 @@ public class ModelToString {
 
 	private void unparseUsingAlt(Rule rule, Object obj) throws IOException {
 		Alt alt = findAlt(rule, obj); 
+				
 		for (int i = 0; i < alt.elements.size(); i++) {
 			Element elt = alt.elements.get(i);
 			Symbol sym = elt.symbol;
@@ -263,16 +270,11 @@ public class ModelToString {
 					Field f = klz.getField(fieldName);
 					Object value = f.get(obj);
 					unparseRec(sym, value);
-				} catch (SecurityException e) {
-					throw new RuntimeException(e);
-				} catch (NoSuchFieldException e) {
-					throw new RuntimeException(e);
-				} catch (IllegalArgumentException e) {
-					throw new RuntimeException(e);
-				} catch (IllegalAccessException e) {
+				} catch (Exception e) {
 					throw new RuntimeException(e);
 				}
 			}
+			
 			if (i < alt.elements.size() - 1) {
 				space();
 			}
@@ -283,14 +285,6 @@ public class ModelToString {
 		writer.write(" ");
 	}
 
-	private boolean isInjection(Rule rule) {
-		boolean isInjection = true;
-		for (Alt alt: rule.alts) {
-			isInjection &= alt.elements.size() == 1 && (alt.elements.get(0).symbol instanceof Sym);
-		}
-		return isInjection;
-	}
-	
 	private Alt findAlt(Rule rule, Object obj) {
 		if (obj == null) {
 			// find the empty alternative
@@ -302,9 +296,8 @@ public class ModelToString {
 			throw new RuntimeException("No empty alternative found in rule: " + rule.name);
 		}
 
-		// TODO: use rule.isInjection()
 
-		if (!isInjection(rule)) {
+		if (!rule.isInjection()) {
 			String name = obj.getClass().getSimpleName();
 			for (Alt alt: rule.alts) {
 				if (alt.type != null && alt.type.name.equals(name)) {
@@ -318,7 +311,7 @@ public class ModelToString {
 		}
 
 		// if injection look over them
-		if (isInjection(rule)) {
+		if (rule.isInjection()) {
 			for (Alt alt: rule.alts) {
 				Sym sym = (Sym) alt.elements.get(0).symbol;
 				Alt result = findAlt(sym.rule, obj);
