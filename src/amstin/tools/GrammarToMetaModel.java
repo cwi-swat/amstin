@@ -65,7 +65,13 @@ public class GrammarToMetaModel {
 		inf.infer();
 		return inf.metaModel;
 	}
-	
+
+	public static MetaModel infer(Grammar grammar) {
+		GrammarToMetaModel inf = new GrammarToMetaModel(grammar.startSymbol.name, grammar);
+		inf.infer();
+		return inf.metaModel;
+	}
+
 	private Grammar grammar;
 	private MetaModel metaModel;
 	private Map<String, Class> table;

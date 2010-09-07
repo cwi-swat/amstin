@@ -1,0 +1,27 @@
+
+start Graph
+
+Graph ::= "graph" "{" statements:Stat* "}"
+
+Stat ::= [NodeStat] node:Node
+      |  [EdgeStat] edge:Edge 
+
+Node ::= [Simple] "node" name:key attributes:Attributes? ";"
+       | [Record] "record" name:key attributes:Attributes? "{" fields:{Field ","}* "}"
+       
+Field ::= [Struct] "{" fields:{Field ","}* "}"
+       | [Port] port:key label:str
+
+// It's a pity it has to be this way...
+Edge ::= [Node2Node] from:Node^ "->" to:Node^ ";"
+       | [Field2Field] from:Field^ "-->" to:Field^ ";"
+
+Attributes ::= "[" {Attr ","}* "]"
+
+Attr ::= name:id "=" value:Value
+
+Value ::= [Int] value:int
+       |  [Str] value:str
+       |  [Id] value:id
+
+

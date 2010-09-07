@@ -1,0 +1,15 @@
+
+graph {
+
+  node n1;
+  node n2;
+  
+  record bla {
+    f1 "Field 1", f2 "Field 2"
+  }
+  
+  n1 -> n2;
+
+  bla.f1 --> bla.f2;
+
+}
