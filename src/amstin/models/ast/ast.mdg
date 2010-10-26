@@ -1,4 +1,6 @@
-start Tree
+start ParseTree
+
+ParseTree ::= "parseTree" "(" preLayout:Tree "," top:Tree "," postLayout:Tree ")"
 
 Tree ::= [Obj] "appl" "(" name:id "," "[" args:{Tree ","}* "]" ")"
        | [List] "[" elements:{Tree ","}* "]"

@@ -7,6 +7,7 @@ import java.io.PrintWriter;
 import java.util.List;
 
 import amstin.Config;
+import amstin.models.ast.ParseTree;
 import amstin.models.ast.Tree;
 import amstin.models.grammar.Grammar;
 import amstin.models.grammar.parsing.cps.Parser;
@@ -34,13 +35,13 @@ public class _Main {
 		System.out.println(stm);
 		String grant = Parser.readPath(GRANT_STM);
 		Parser stmParser = new Parser(stm);
-		Tree obj = stmParser.parse(grant);
+		ParseTree obj = stmParser.parse(grant);
 		System.out.println(obj);
 		StateMachine grantStm = (StateMachine) ASTtoModel.instantiate(STATEMACHINE_PKG, obj);
 		System.out.println(grantStm);
 		
 		PrintWriter out = new PrintWriter(System.out);
-		ModelToJava.script("a2mtk.models.stm", "Grant", grantStm, out);
+		ModelToJava.script("amstin.models.stm", "Grant", grantStm, out);
 		out.flush();
 		
 		

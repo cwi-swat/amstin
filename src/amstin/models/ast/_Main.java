@@ -40,7 +40,7 @@ public class _Main {
 		String example = Parser.readPath(EXAMPLE_AST);
 		Parser astParser = new Parser(astGrammar);
 		
-		Tree exampleAST = astParser.parse(example);
+		ParseTree exampleAST = astParser.parse(example);
 		
 		System.out.println("AST = " + ASTtoString.astToString(exampleAST));
 		

@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 import amstin.Config;
+import amstin.models.ast.ParseTree;
 import amstin.models.ast.Tree;
 import amstin.models.grammar.Grammar;
 import amstin.models.grammar.parsing.cps.Parser;
@@ -43,7 +44,7 @@ public class _Main {
 		String example = Parser.readPath(EXAMPLE_GRAPH);
 		Parser graphParser = new Parser(graphGrammar);
 		
-		Tree tree = graphParser.parse(example);
+		ParseTree tree = graphParser.parse(example);
 		System.out.println("YIELD:\n" +ASTtoString.astToString(tree));
 		Object exampleModel = graphParser.parse(GRAPH_PKG, example);
 		ModelToString.unparse(graphGrammar, exampleModel, writer);

@@ -16,11 +16,10 @@ import java.util.regex.Pattern;
 
 import amstin.models.ast.Arg;
 import amstin.models.ast.Def;
-import amstin.models.ast.False;
 import amstin.models.ast.Location;
 import amstin.models.ast.Obj;
+import amstin.models.ast.ParseTree;
 import amstin.models.ast.Tree;
-import amstin.models.ast.True;
 import amstin.models.ast.Ws;
 import amstin.models.grammar.Alt;
 import amstin.models.grammar.Bool;
@@ -35,6 +34,7 @@ import amstin.models.grammar.IterSepStar;
 import amstin.models.grammar.IterStar;
 import amstin.models.grammar.Key;
 import amstin.models.grammar.Klass;
+import amstin.models.grammar.Label;
 import amstin.models.grammar.Lit;
 import amstin.models.grammar.Opt;
 import amstin.models.grammar.Real;
@@ -74,8 +74,8 @@ public class Parser {
 		String src = readPath(path);
 		Grammar grammar = Boot.instance;
 		Parser parser = new Parser(grammar);
-		Tree ast = parser.parse(src);
-		return (Grammar) ASTtoModel.instantiate(amstin.models.grammar._Main.GRAMMAR_PKG, ast);
+		ParseTree pt = parser.parse(src);
+		return (Grammar) ASTtoModel.instantiate(amstin.models.grammar._Main.GRAMMAR_PKG, pt);
 	}
 
 	
@@ -103,92 +103,124 @@ public class Parser {
 	
 	
 	public Object parse(String pkg, String src) {
-		Tree ast = parseAsPath("-", src);
-		return ASTtoModel.instantiate(pkg, ast);
+		ParseTree pt = parseAsPath("-", src);
+		return ASTtoModel.instantiate(pkg, pt);
 	}
 	
-	public Tree parse(File file) {
+	public ParseTree parse(File file) {
 		String path = file.getAbsolutePath();
 		return parseAsPath(path, readPath(path));
 	}
 
-	public Tree parse(String src) {
+	public ParseTree parse(String src) {
 		return parseAsPath("-", src);
 	}
 	
-	private Tree parseAsPath(String file, String src) { 
-		src = src.trim();
+	private ParseTree parseAsPath(String file, String src) { 
 		this.file = file;
+		this.symCache = new HashMap<Sym, IParser>();
+		this.altCache = new HashMap<Alt, IParser>();
+		this.optCache = new HashMap<Symbol, IParser>();
+		this.iterCache = new HashMap<Symbol, IParser>();
+		this.iterSepCache = new HashMap<Symbol, IParser>();
+		this.table = new HashMap<IParser, Map<Integer,Entry>>();
+		
 		Success success = new Success(src);
 		try {
-			this.symCache = new HashMap<Sym, IParser>();
-			this.altCache = new HashMap<Alt, IParser>();
-			this.optCache = new HashMap<Symbol, IParser>();
-			this.iterCache = new HashMap<Symbol, IParser>();
-			this.iterSepCache = new HashMap<Symbol, IParser>();
-			this.table = new HashMap<IParser, Map<Integer,Entry>>();
-			Sym start = new Sym();
-			start.rule = grammar.startSymbol;
-			parseSym(start, success, src, 0);
+			// This is sort of klunky, in order to bypass layout
+			// interleaving in normal productions.
+			Rule rule = makeParseTreeProduction(grammar.startSymbol);
+			Alt alt = rule.alts.get(0);
+			IParser p = list(alt.elements);
+			int errLoc = p.parse(table, new Build(rule, alt.type, success), src, 0);
+			System.err.println("Parse error at: " + errLoc);
+			return null;
 		}
 		catch (Success s) {
-			assert s == success;
+			return parseTreeTreeToParseTree((Obj) s.object);
 		}
-		if (success.object != null) {
-			return success.object;
-		}
-		if (!success.lastPos.isEmpty()) {
-			System.err.println("Could not parse \"" + src.substring(success.lastPos.get(0)) + "\" at " + success.lastPos.get(0));
-			System.err.println("\ttree up till now: " + success.lastTree.get(0));
-		}
-		else {
-			System.err.println("Could not parse \"" + src + "\" at " + 0);
-		}
-		return null;
 	}
 	
-	public void parse(Symbol sym, Cnt cnt, String src, int pos) {
+	private ParseTree parseTreeTreeToParseTree(Obj pt) {
+		ParseTree parseTree = new ParseTree();
+		parseTree.preLayout = pt.args.get(0);
+		parseTree.top = pt.args.get(1);
+		parseTree.postLayout = pt.args.get(2);
+		return parseTree;
+	}
+
+	public Rule makeParseTreeProduction(Rule rule) {
+		Sym start = new Sym();
+		start.rule = rule;
+		
+		List<Element> elts = new ArrayList<Element>();
+		elts.add(LAYOUT);
+		
+		Element e = new Element();
+		e.symbol = start;
+		Label l = new Label();
+		l.name = "<start>";
+		e.label = l;
+		elts.add(e);			
+		
+		elts.add(LAYOUT);
+
+
+		Rule startP = new Rule();
+		startP.name = "<start>";
+		startP.alts = new ArrayList<Alt>();
+		Alt alt = new Alt();
+		Klass kls = new Klass();
+		kls.name = "<ParseTree>";
+		alt.type = kls;
+		alt.elements = elts;
+		startP.alts.add(alt);
+
+		return startP;
+	}
+	
+	public int parse(Symbol sym, Cnt cnt, String src, int pos) {
 		if (sym instanceof Lit) {
-			parseLit((Lit)sym, cnt, src, pos);
+			return parseLit((Lit)sym, cnt, src, pos);
 		}
 		else if (sym instanceof Int) {
-			parseInt((Int)sym, cnt, src, pos);
+			return parseInt((Int)sym, cnt, src, pos);
 		}
 		else if (sym instanceof Real) {
-			parseReal((Real)sym, cnt, src, pos);
+			return parseReal((Real)sym, cnt, src, pos);
 		}
 		else if (sym instanceof Bool) {
-			parseBool((Bool)sym, cnt, src, pos);
+			return parseBool((Bool)sym, cnt, src, pos);
 		}
 		else if (sym instanceof Id) {
-			parseId((Id)sym, cnt, src, pos);
+			return parseId((Id)sym, cnt, src, pos);
 		}
 		else if (sym instanceof Str) {
-			parseStr((Str)sym, cnt, src, pos);
+			return parseStr((Str)sym, cnt, src, pos);
 		}
 		else if (sym instanceof Key) {
-			parseKey((Key)sym, cnt, src, pos);
+			return parseKey((Key)sym, cnt, src, pos);
 		}
 		else if (sym instanceof Ref) {
-			parseRef((Ref)sym, cnt, src, pos);
+			return parseRef((Ref)sym, cnt, src, pos);
 		}
 		else if (sym instanceof Opt) {
-			parseOpt((Opt)sym, cnt, src, pos);
+			return parseOpt((Opt)sym, cnt, src, pos);
 		}
 		else if (sym instanceof Sym) {
-			parseSym((Sym)sym, cnt, src, pos);
+			return parseSym((Sym)sym, cnt, src, pos);
 		}
 		else if (sym instanceof Iter) {
-			parseIter((Iter)sym, cnt, src, pos);
+			return parseIter((Iter)sym, cnt, src, pos);
 		}
 		else if (sym instanceof IterStar) {
-			parseIterStar((IterStar)sym, cnt, src, pos);
+			return parseIterStar((IterStar)sym, cnt, src, pos);
 		}
 		else if (sym instanceof IterSep) {
-			parseIterSep((IterSep)sym, cnt, src, pos);
+			return parseIterSep((IterSep)sym, cnt, src, pos);
 		}
 		else if (sym instanceof IterSepStar) {
-			parseIterSepStar((IterSepStar)sym, cnt, src, pos);
+			return parseIterSepStar((IterSepStar)sym, cnt, src, pos);
 		}
 		else {
 			throw new RuntimeException("invalid symbol: " + sym);
@@ -196,23 +228,23 @@ public class Parser {
 	}
 	
 
-	protected void parseElement(Element elt, Cnt cnt, String src, int pos) {
+	protected int parseElement(Element elt, Cnt cnt, String src, int pos) {
 		if (elt instanceof Layout) {
-			parseLayout(cnt, src, pos);
-		}
-		else if (elt instanceof IParser) {
-			((IParser)elt).parse(table, cnt, src, pos);
-		}
-		else if (elt.label != null && elt.symbol != null) {
-			parse(elt.symbol, new LabelCnt(cnt, elt.label.name), src, pos);
-		}
-		else {
-			if (elt.symbol == null) {
-				throw new RuntimeException("Element's symbol is null " + elt);
-			}
-			parse(elt.symbol, cnt, src, pos);
+			return parseLayout(cnt, src, pos);
 		}
 		
+		if (elt instanceof IParser) {
+			return ((IParser)elt).parse(table, cnt, src, pos);
+		}
+		
+		if (elt.label != null && elt.symbol != null) {
+			return parse(elt.symbol, new LabelCnt(cnt, elt.label.name), src, pos);
+		}
+
+		if (elt.symbol == null) {
+			throw new RuntimeException("Element's symbol is null " + elt);
+		}
+		return parse(elt.symbol, cnt, src, pos);
 	}
 	
 	protected static class LabelCnt implements Cnt {
@@ -225,42 +257,44 @@ public class Parser {
 		}
 		
 		@Override
-		public void apply(int result, Tree obj) {
+		public int apply(int result, Tree obj) {
 			Arg arg = new Arg();
 			arg.name = name;
 			arg.value = obj;
-			cnt.apply(result, arg);
+			return cnt.apply(result, arg);
 		}
 		
 	}
 	
-	private void parseAlt(Rule rule, Alt alt, Cnt cnt, String src, int pos) {
+	private int parseAlt(Rule rule, Alt alt, Cnt cnt, String src, int pos) {
 		if (!altCache.containsKey(alt)) {
 			altCache.put(alt, new Memo(list(interleaveLayout(alt.elements))));
 		}
 		IParser p = altCache.get(alt); 
-		p.parse(table, new Build(rule, alt.type, cnt), src, pos);
+		return p.parse(table, new Build(rule, alt.type, cnt), src, pos);
 	}
 	
-	private void parseIterSepStar(IterSepStar sym, Cnt cnt, String src, int pos) {
-		parseIteratedSymbolSep(sym.arg, sym.sep, cnt, src, pos);
-		cnt.apply(pos, emptyList());
+	private int parseIterSepStar(IterSepStar sym, Cnt cnt, String src, int pos) {
+		int x = parseIteratedSymbolSep(sym.arg, sym.sep, cnt, src, pos);
+		int y = cnt.apply(pos, emptyList());
+		return x > y ? x : y;
 	}
 
-	private void parseIterSep(IterSep sym, Cnt cnt, String src, int pos) {
-		parseIteratedSymbolSep(sym.arg, sym.sep, cnt, src, pos);
+	private int parseIterSep(IterSep sym, Cnt cnt, String src, int pos) {
+		return parseIteratedSymbolSep(sym.arg, sym.sep, cnt, src, pos);
 	}
 
-	private void parseIteratedSymbolSep(Symbol sym, String sep, Cnt cnt, String src, int pos) {
+	private int parseIteratedSymbolSep(Symbol sym, String sep, Cnt cnt, String src, int pos) {
 		if (!iterSepCache.containsKey(sym)) {
 			iterSepCache.put(sym, new Memo(new IterSepParser(sym, sep)));
 		}
-		iterSepCache.get(sym).parse(table, cnt, src, pos);
+		return iterSepCache.get(sym).parse(table, cnt, src, pos);
 	}
 	
-	private void parseIterStar(IterStar sym, Cnt cnt, String src, int pos) {
-		parseIteratedSymbol(sym.arg, cnt, src, pos);
-		cnt.apply(pos, emptyList());
+	private int parseIterStar(IterStar sym, Cnt cnt, String src, int pos) {
+		int x = parseIteratedSymbol(sym.arg, cnt, src, pos);
+		int y = cnt.apply(pos, emptyList());
+		return x > y ? x : y;
 	}
 
 	private static amstin.models.ast.List emptyList() {
@@ -269,15 +303,15 @@ public class Parser {
 		return list;
 	}
 	
-	private void parseIter(Iter sym, Cnt cnt, String src, int pos) {
-		parseIteratedSymbol(sym.arg, cnt, src, pos);
+	private int parseIter(Iter sym, Cnt cnt, String src, int pos) {
+		return parseIteratedSymbol(sym.arg, cnt, src, pos);
 	}
 
-	private void parseIteratedSymbol(Symbol sym, Cnt cnt, String src, int pos) {
+	private int parseIteratedSymbol(Symbol sym, Cnt cnt, String src, int pos) {
 		if (!iterCache.containsKey(sym)) {
 			iterCache.put(sym, new IterParser(sym));
 		}
-		iterCache.get(sym).parse(table, cnt, src, pos);
+		return iterCache.get(sym).parse(table, cnt, src, pos);
 	}
 	
 	private class IterParser extends Element implements IParser {
@@ -294,9 +328,10 @@ public class Parser {
 
 
 		@Override
-		public void parse(Map<IParser, Map<Integer, Entry>> table, Cnt cnt, String src, int pos) {
-			base.parse(table, cnt, src, pos);
-			rec.parse(table, cnt, src, pos);
+		public int parse(Map<IParser, Map<Integer, Entry>> table, Cnt cnt, String src, int pos) {
+			int x = base.parse(table, cnt, src, pos);
+			int y = rec.parse(table, cnt, src, pos);
+			return x > y ? x : y;
 		}
 	}
 	
@@ -318,19 +353,19 @@ public class Parser {
 
 
 		@Override
-		public void parse(Map<IParser, Map<Integer, Entry>> table, Cnt cnt, String src, int pos) {
-			base.parse(table, cnt, src, pos);
-			rec.parse(table, cnt, src, pos);
+		public int parse(Map<IParser, Map<Integer, Entry>> table, Cnt cnt, String src, int pos) {
+			int x = base.parse(table, cnt, src, pos);
+			int y = rec.parse(table, cnt, src, pos);
+			return x > y ? x : y;
 		}
 	}
 
 
-	private void parseSym(Sym sym, Cnt cnt, String src, int pos) {
+	private int parseSym(Sym sym, Cnt cnt, String src, int pos) {
 		if (!symCache.containsKey(sym)) {
 			symCache.put(sym, new SymParser(sym));
 		}
-		symCache.get(sym).parse(table, cnt, src, pos);
-		//parseRule(sym.rule, cnt, src, pos);
+		return symCache.get(sym).parse(table, cnt, src, pos);
 	}
 	
 	private class SymParser implements IParser {
@@ -342,20 +377,25 @@ public class Parser {
 		}
 
 		@Override
-		public void parse(Map<IParser, Map<Integer, Entry>> table, Cnt cnt, String src, int pos) {
+		public int parse(Map<IParser, Map<Integer, Entry>> table, Cnt cnt, String src, int pos) {
+			int x = -1;
 			for (Alt alt: sym.rule.alts) {
-				parseAlt(sym.rule, alt, cnt, src, pos);
+				int y = parseAlt(sym.rule, alt, cnt, src, pos);
+				if (y > x) {
+					x = y;
+				}
 			}
+			return x;
 		}
 		
 	}
 
-	private void parseOpt(Opt sym, Cnt cnt, String src, int pos) {
+	private int parseOpt(Opt sym, Cnt cnt, String src, int pos) {
 		if (!optCache.containsKey(sym)) {
 			optCache.put(sym, new OptParser(sym.arg));
 		}
 		IParser p = optCache.get(sym);
-		p.parse(table, cnt, src, pos);
+		return p.parse(table, cnt, src, pos);
 	}
 	
 	private class OptParser implements IParser {
@@ -367,17 +407,17 @@ public class Parser {
 		}
 
 		@Override
-		public void parse(Map<IParser, Map<Integer, Entry>> table, Cnt cnt, String src, int pos) {
-			// TODO: this is wrong, booleans should not be in the AST, but
-			// inferred in ASTtoModel.
+		public int parse(Map<IParser, Map<Integer, Entry>> table, Cnt cnt, String src, int pos) {
 			if (sym instanceof Lit) {
-				Parser.this.parse(sym, new OptCnt(cnt), src, pos);
-				cnt.apply(pos, new False());
+				int x = Parser.this.parse(sym, new OptCnt(cnt), src, pos);
+				amstin.models.ast.Bool b = new amstin.models.ast.Bool();
+				b.value = false;
+				int y = cnt.apply(pos, b);
+				return x > y ? x : y;
 			}
-			else {
-				Parser.this.parse(sym, cnt, src, pos);
-				cnt.apply(pos, null);
-			}
+			int x = Parser.this.parse(sym, cnt, src, pos);
+			int y = cnt.apply(pos, null);
+			return x > y ? x : y;
 		}
 		
 	}
@@ -391,13 +431,15 @@ public class Parser {
 		}
 
 		@Override
-		public void apply(int result, Tree obj) {
-			cnt.apply(result, new True());
+		public int apply(int result, Tree obj) {
+			amstin.models.ast.Bool b = new amstin.models.ast.Bool();
+			b.value = true;
+			return cnt.apply(result, b);
 		}
 		
 	}
 
-	protected void parseRef(Ref sym, Cnt cnt, String src, int pos) {
+	protected int parseRef(Ref sym, Cnt cnt, String src, int pos) {
 		Pattern re = Pattern.compile(REF_REGEX);
 		Matcher m = re.matcher(src.subSequence(pos, src.length()));
 		if (m.lookingAt() && !isReserved(m.group())) {
@@ -405,94 +447,102 @@ public class Parser {
 			ref.name = unescapeId(m.group());
 			ref.type = sym.ref;
 			ref.loc = makeLoc(pos, m.group().length());
-			cnt.apply(pos + m.end(), ref);
+			return cnt.apply(pos + m.end(), ref);
 		}
+		return pos;
 	}
 
-	private void parseKey(Key sym, Cnt cnt, String src, int pos) {
+	private int parseKey(Key sym, Cnt cnt, String src, int pos) {
 		Pattern re = Pattern.compile(ID_REGEX);
 		Matcher m = re.matcher(src.subSequence(pos, src.length()));
 		if (m.lookingAt() && !isReserved(m.group())) {
 			Def def = new Def();
 			def.name = unescapeId(m.group());
 			def.loc = makeLoc(pos, m.group().length());
-			cnt.apply(pos + m.end(), def);
+			return cnt.apply(pos + m.end(), def);
 		}
+		return pos;
 	}
 
 	private String unescapeId(String str) {
 		return str.replaceAll("\\\\", "");
 	}
 
-	public void parseLit(Lit lit, Cnt cnt, String src, int pos) {
+	public int parseLit(Lit lit, Cnt cnt, String src, int pos) {
 		Pattern re = Pattern.compile(Pattern.quote(lit.value));
 		Matcher m = re.matcher(src.subSequence(pos, src.length()));
 		if (m.lookingAt()) {
 			amstin.models.ast.Lit litAst = new amstin.models.ast.Lit();
 			litAst.value = lit.value;
 			litAst.loc = makeLoc(pos, lit.value.length());	
-			cnt.apply(pos + m.end(), litAst);
+			return cnt.apply(pos + m.end(), litAst);
 		}
+		return pos;
 	}
 
-	public void parseLayout(Cnt cnt, String src, int pos) {
+	public int parseLayout(Cnt cnt, String src, int pos) {
 		Pattern re = Pattern.compile("([\\t\\n\\r\\f ]*(//[^\n]*\n)?)*");
 		Matcher m = re.matcher(src.subSequence(pos, src.length()));
 		if (m.lookingAt()) {
 			Ws ws = new Ws();
 			ws.value = m.group();
 			ws.loc = makeLoc(pos, m.end());
-			cnt.apply(pos + m.end(), ws);
+			return cnt.apply(pos + m.end(), ws);
 		}
+		return pos;
 	}
 
 
-	public void parseId(Id id, Cnt cnt, String src, int pos) {
+	public int parseId(Id id, Cnt cnt, String src, int pos) {
 		Pattern re = Pattern.compile(ID_REGEX);
 		Matcher m = re.matcher(src.subSequence(pos, src.length()));
 		if (m.lookingAt() && !isReserved(m.group())) {
 			amstin.models.ast.Id idAst = new amstin.models.ast.Id();
 			idAst.loc = makeLoc(pos, m.group().length());
 			idAst.value = unescapeId(m.group());
-			cnt.apply(pos + m.end(), idAst);
+			return cnt.apply(pos + m.end(), idAst);
 		}
+		return pos;
 	}
 	
 	private boolean isReserved(String str) {
 		return reserved.contains(str);
 	}
 
-	public void parseInt(Int n, Cnt cnt, String src, int pos) {
+	public int parseInt(Int n, Cnt cnt, String src, int pos) {
 		Pattern re = Pattern.compile("[-+]?[0-9]+");
 		Matcher m = re.matcher(src.subSequence(pos, src.length()));
 		if (m.lookingAt()) {
 			amstin.models.ast.Int intAst = new amstin.models.ast.Int();
 			intAst.value = Integer.parseInt(m.group());
 			intAst.loc = makeLoc(pos, m.group().length());
-			cnt.apply(pos + m.end(), intAst);
+			return cnt.apply(pos + m.end(), intAst);
 		}
+		return pos;
 	}
 	
-	private void parseBool(Bool sym, Cnt cnt, String src, int pos) {
+	private int parseBool(Bool sym, Cnt cnt, String src, int pos) {
 		Pattern re = Pattern.compile("true|false");
 		Matcher m = re.matcher(src.subSequence(pos, src.length()));
 		if (m.lookingAt()) {
 			amstin.models.ast.Bool bool = new amstin.models.ast.Bool();
 			bool.value = Boolean.parseBoolean(m.group());
 			bool.loc = makeLoc(pos, m.group().length());
-			cnt.apply(pos + m.end(), bool);
+			return cnt.apply(pos + m.end(), bool);
 		}
+		return pos;
 	}
 	
-	private void parseReal(Real sym, Cnt cnt, String src, int pos) {
+	private int parseReal(Real sym, Cnt cnt, String src, int pos) {
 		Pattern re = Pattern.compile("[-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?");
 		Matcher m = re.matcher(src.subSequence(pos, src.length()));
 		if (m.lookingAt()) {
 			amstin.models.ast.Real real = new amstin.models.ast.Real();
 			real.value = Double.parseDouble(m.group());
 			real.loc = makeLoc(pos, m.group().length());
-			cnt.apply(pos + m.end(), real);
+			return cnt.apply(pos + m.end(), real);
 		}
+		return pos;
 	}
 
 
@@ -505,7 +555,7 @@ public class Parser {
 		return loc;
 	}
 
-	public void parseStr(Str str, Cnt cnt, String src, int pos) {
+	public int parseStr(Str str, Cnt cnt, String src, int pos) {
 		Pattern re = Pattern.compile("\"(\\\\.|[^\"])*\"");
 		Matcher m = re.matcher(src.subSequence(pos, src.length()));
 		if (m.lookingAt()) {
@@ -518,8 +568,9 @@ public class Parser {
 			amstin.models.ast.Str strAst = new amstin.models.ast.Str();
 			strAst.value = s.substring(1, s.length() - 1);
 			strAst.loc = makeLoc(pos, m.group().length());
-			cnt.apply(pos + m.end(), strAst);
+			return cnt.apply(pos + m.end(), strAst);
 		}
+		return pos;
 	}
 
 	static List<Element> interleaveLayout(List<Element> elements) {
@@ -552,8 +603,8 @@ public class Parser {
 	private static class Nil implements IParser {
 
 		@Override
-		public void parse(Map<IParser, Map<Integer, Entry>> table, Cnt cnt, String src, int pos) {
-			cnt.apply(pos, emptyList());
+		public int parse(Map<IParser, Map<Integer, Entry>> table, Cnt cnt, String src, int pos) {
+			return cnt.apply(pos, emptyList());
 		}
 		
 	}
@@ -569,8 +620,8 @@ public class Parser {
 		}
 
 		@Override
-		public void parse(Map<IParser, Map<Integer, Entry>> table, Cnt cnt, String src, int pos) {
-			Parser.this.parseElement(p1, new Head(p2, src, cnt), src, pos);
+		public int parse(Map<IParser, Map<Integer, Entry>> table, Cnt cnt, String src, int pos) {
+			return Parser.this.parseElement(p1, new Head(p2, src, cnt), src, pos);
 		}
 		
 	}
@@ -589,8 +640,8 @@ public class Parser {
 		}
 
 		@Override
-		public void apply(int result, Tree obj1) {
-			p2.parse(table, new Tail(obj1, cnt), src, result);
+		public int apply(int result, Tree obj1) {
+			return p2.parse(table, new Tail(obj1, cnt), src, result);
 		}
 		
 	}
@@ -606,7 +657,7 @@ public class Parser {
 		}
 
 		@Override
-		public void apply(int result, Tree obj) {
+		public int apply(int result, Tree obj) {
 			amstin.models.ast.List list = (amstin.models.ast.List)obj;
 			if (obj1 != null) {
 				if (obj1 instanceof amstin.models.ast.List) {
@@ -616,7 +667,7 @@ public class Parser {
 					list.elements.add(0, obj1);
 				}
 			}
-			cnt.apply(result, list);
+			return cnt.apply(result, list);
 		}
 		
 	}
@@ -625,21 +676,15 @@ public class Parser {
 	public static class Success extends RuntimeException implements Cnt {
 		private final String src;
 		private Tree object;
-		private List<Integer> lastPos;
-		private List<Tree> lastTree;
 		
 		public Success(String src) {
 			this.src = src;
 			this.object = null;
-			this.lastPos = new ArrayList<Integer>();
-			this.lastTree = new ArrayList<Tree>();
 		}
 		
-		public void apply(int result, Tree object) {
+		public int apply(int result, Tree object) {
 			if (result < src.length()) {
-				lastPos.add(result);
-				lastTree.add(object);
-				return;
+				return result;
 			}
 			this.object = object;
 			throw this;
@@ -658,26 +703,25 @@ public class Parser {
 		}
 
 		@Override
-		public void apply(int result, Tree obj) {
+		public int apply(int result, Tree obj) {
 			amstin.models.ast.List kids = (amstin.models.ast.List) obj;
 			if (klass == null && rule.isInjection()) {
 				// injection
-				cnt.apply(result, kids.elements.get(0));
+				return cnt.apply(result, kids.elements.get(0));
 			}
-			else if (klass == null) {
+			
+			if (klass == null) {
 				// use the rule type as class name.
 				Obj ast = new Obj();
 				ast.name = rule.name;
 				ast.args = kids.elements;
-				cnt.apply(result, ast);
+				return cnt.apply(result, ast);
 			}
-			else {
-				Obj ast = new Obj();
-				ast.name = klass.name;
-				ast.args = kids.elements;
-				cnt.apply(result, ast);
-			}
-			
+
+			Obj ast = new Obj();
+			ast.name = klass.name;
+			ast.args = kids.elements;
+			return cnt.apply(result, ast);
 		}
 		
 	}

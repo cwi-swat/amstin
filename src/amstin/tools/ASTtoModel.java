@@ -10,11 +10,11 @@ import java.util.Stack;
 import amstin.models.ast.Arg;
 import amstin.models.ast.Bool;
 import amstin.models.ast.Def;
-import amstin.models.ast.False;
 import amstin.models.ast.Id;
 import amstin.models.ast.Int;
 import amstin.models.ast.Lit;
 import amstin.models.ast.Obj;
+import amstin.models.ast.ParseTree;
 import amstin.models.ast.Real;
 import amstin.models.ast.Ref;
 import amstin.models.ast.Str;
@@ -32,15 +32,15 @@ public class ASTtoModel  {
 
 	private String pkg;
 	private List<Fix> fixes;
-	private Tree root;
+	private ParseTree root;
 	private Stack<Map<String,Object>> defs;
 
-	public static Object instantiate(String pkg, Tree root) {
+	public static Object instantiate(String pkg, ParseTree root) {
 		ASTtoModel toJava = new ASTtoModel(pkg, root);
 		return toJava.toJava();
 	}
 	
-	private ASTtoModel(String pkg, Tree root) {
+	private ASTtoModel(String pkg, ParseTree root) {
 		this.pkg = pkg;
 		this.fixes = new ArrayList<Fix>();
 		this.root = root;
@@ -56,7 +56,10 @@ public class ASTtoModel  {
 		return result;
 	}
 
-	
+	private Object toJava(ParseTree pt) {
+		return toJava(((Arg)pt.top).value);
+	}
+
 	private Object toJava(Tree obj) {
 		if (obj == null) {
 			return null;
@@ -78,9 +81,6 @@ public class ASTtoModel  {
 		}
 		if (obj instanceof Bool) {
 			return ((Bool)obj).value;
-		}
-		if (obj instanceof False) {
-			return false;
 		}
 		if (obj instanceof Ref) {
 			throw new ReferenceFound((Ref)obj);

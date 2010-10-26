@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 import amstin.Config;
-import amstin.models.ast.Tree;
+import amstin.models.ast.ParseTree;
 import amstin.models.grammar.Grammar;
 import amstin.models.grammar.parsing.cps.Parser;
 import amstin.models.meta.MetaModel;
@@ -43,7 +43,7 @@ public class _Main {
 		
 		String meta = Parser.readPath(META_MODULE);
 		Parser moduleParser = new Parser(moduleGrammar);
-		Tree obj = moduleParser.parse(meta);
+		ParseTree obj = moduleParser.parse(meta);
 		
 		// Import map:
 		// instance -> java.pkg.namespace
