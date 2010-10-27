@@ -133,7 +133,18 @@ public class Parser {
 			Alt alt = rule.alts.get(0);
 			IParser p = list(alt.elements);
 			int errLoc = p.parse(table, new Build(rule, alt.type, success), src, 0);
-			System.err.println("Parse error at: " + errLoc);
+			String s = src.substring(errLoc, errLoc + 1);
+			int ind = -1;
+			int lineNo = 0;
+			while (ind < errLoc) {
+				// incredibly stupid way to find line number of parse error
+				ind = src.indexOf('\n', ind + 1);
+				lineNo++;
+			}
+			
+			System.err.println("Parse error at offset " + errLoc +
+					" line " + lineNo +
+					"; character '" + s + "' unexpected");
 			return null;
 		}
 		catch (Success s) {

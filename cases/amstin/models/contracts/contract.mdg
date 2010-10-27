@@ -1,0 +1,13 @@
+
+start Defs
+
+Contract ::= "zero"
+		  |  "one" currency:id
+		  |  "give" Contract
+		  |  Contract "and" Contract
+		  |  Contract "or" Contract
+		  |  "if" Observable "then" Contract "else" Contract "end"
+		  |  Contract "scaled" Observable 
+		  |  Contract "when" Observable 
+		  |  Contract "anytime" Observable
+		  |  Contract "until" Observable

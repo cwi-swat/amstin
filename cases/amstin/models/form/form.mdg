@@ -1,0 +1,48 @@
+
+start Form
+
+Form ::= 
+
+Control ::= [Input]   "input"   options:Option* "(" label:Exp ")"
+		 |  [Secret]  "secret"  options:Option* "(" label:Exp ")"
+		 |  [Area]    "area"    options:Option* "(" label:Exp "," width:Exp "," height:Exp ")"
+		 |  [Output]  "output"  options:Option* "(" label:Exp "," value:Exp ")"
+		 |  [Range]   "range"   options:Option* "(" label:Exp "," start:Exp "," end:Exp "," step:Exp ")"
+		 |  [Trigger] "trigger" options:Option* "(" label:Exp ")" "{" actions:Action* "}"
+		 |  [Submit]  "submit"  options:Option* "(" label:Exp "," submission:Symbol ")"
+		 |  [Select]  "select"  options:Option* "(" label:Exp ")" "{" items:Item* "}"
+		 |  [Select1] "select1" options:Option* "(" label:Exp ")" "{" items:Item* "}"
+		 |  [Switch]  "switch"  options:Option* "(" label:Exp ")" "{" cases:Case* "}"
+		 |  [Repeat]  "repeat"  options:Option* "{" statements:Statement* "}" 
+		 |  [Group]   "group"   options:Option* "(" label:Exp ")" "{" statements:Statement* "}"
+
+Case ::= "case" Options* "{ statements:Statement* "}" 
+
+Item ::= [SimpleItem] "item" options:Option* "(" label:Exp "," value:Exp ")"
+         [Choices] "choices" options:Option* "(" label:Exp ")" "{" items:Item* "}"
+		 
+		 
+Exp ::= [Var]  ref:Reference
+     |  [Int]  value:int
+     |  [Real] value:real
+     |  [Str]  value:str
+     |  [Add]
+     |  [Mul]
+     |  [Sub]
+
+Reference ::= ids:{id "."}+
+
+Option ::= [Id] "#" name:id
+		 | [Class] "." name:id
+		 | [Flag] "/" name:id
+
+
+Action ::= delete
+         | insert
+         | send
+         | toggle
+         | reset
+         | setfocus
+         | setindex
+         | setvalue
+		 

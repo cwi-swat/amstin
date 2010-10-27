@@ -1,0 +1,21 @@
+
+start Drawing
+
+Drawing ::= "drawing" boundingBox:BoundingBox commands:Command*
+
+BoundingBox ::= "bounding" "box" lowerLeft:Point upperRight:Point 
+
+Command ::= 
+     [Ellipse] "ellipse" point:Point size:Size ";"
+   | [Polygon] "polygon" points:Point* ";"
+   | [Polyline] "polyline" points:Point* ";"
+   | [BSpline] "bspline" points:Point* ";"
+   | [Text] "text" align:id point:Point width:int value:str ";"
+   | [FillColor] "fillcolor" name:id ";"
+   | [PenColor] "pencolor" name:id ";"
+   | [Font] "font" size:int name:str ";"
+   | [Style] "style" name:id ";"
+   | [Image] "image" point:Point size:Size filename:str ";"
+   
+Point ::= x:int y:int
+Size ::= w:int h:int

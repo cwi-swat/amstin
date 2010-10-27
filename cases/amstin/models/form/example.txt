@@ -1,0 +1,10 @@
+
+
+
+person.drink: select1("Drink") {
+  item("Name:", "name");
+  choices("Soft Drinks") {
+     item("Water", "h2o");
+     item("Cola", "cola");
+  }
+}

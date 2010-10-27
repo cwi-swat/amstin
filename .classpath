@@ -1,17 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="cases"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="lib/codemodel-2.2.jar" sourcepath="lib/codemodel-2.2-sources.jar">
 		<attributes>
 			<attribute name="javadoc_location" value="jar:platform:/resource/amstin/lib/codemodel-2.2-javadoc.jar!/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="lib/hsqldb-2.0.0/hsqldb/lib/hsqldb.jar"/>
-	<classpathentry kind="lib" path="lib/h2/bin/h2-1.2.139.jar"/>
-	<classpathentry kind="lib" path="lib/ejml-0.13.jar" sourcepath="lib/ejml-0.13-src.zip">
-		<attributes>
-			<attribute name="javadoc_location" value="jar:platform:/resource/amstin/lib/ejml-0.13-doc.zip!/"/>
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="lib/snakeyaml-1.6.jar"/>

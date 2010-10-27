@@ -1,0 +1,22 @@
+
+
+start Tests
+
+import AST;
+import Grammar;
+
+// X@ means: identifier/filename syntax indicating
+// an imported model, which should be instanceof X
+Tests ::= "tests" "for" grammar:Grammar@ tests:Test*
+
+Test ::= "test" rule:Rule^ source:str "=" tree:Tree ";"
+
+
+/*
+
+tests for /models/stm.mdg
+
+test Actions "actions {unlockDoor lockPanel}" = appl(...)
+
+
+*/

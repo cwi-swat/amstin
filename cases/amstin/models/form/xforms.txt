@@ -1,0 +1,1106 @@
+
+Common.Attributes = id (and any from other namespaces)
+
+Single.Node.Binding.Attributes
+  optional model (idref) ref (path) bind (idref)
+
+NodeSet.Binding.Attributes
+  optional model (idref) nodeset (path) bind (idref)
+
+LinkingAttributes
+   src: uri
+ 
+
+model ::= (instance | submission | bind | Action (?))*
+
+instance ::= (any xml)
+ 
+bind ::= 
+  optional attrs 
+    nodeset = Xpath
+    calculate = Xpath
+    type = Qname
+    required = Xpath
+    contraint = xpath
+    relevant = xpath
+    readonly = xpath
+    p3ptype = string
+ 
+
+// User interfaces
+
+control ::= input | secret | textarea | output | upload | select1 | select | range | submit | trigger | group | switch | repeat
+
+optional attrs
+   appearance: appearanceType  
+ 
+
+UI.Content ::= output 
+
+(UI.common) ::= (help | hint | alert| Action)*
+
+label ::= any of Ui.Content
+hint ::= any of Ui.content
+alert
+help
+
+Attrs: single.node.binding.attributess)
+(ComplexType mixed = true???)
+
+
+List.UI.Common :::= item | itemset | choices 
+
+item ::= label value UI.Common&
+(Common.Attributes)
+
+itemset ::=  label (value | copy) UI.Common*
+Common.Attributes|NodeSet.Binding.Attributes)
+
+choices ::= label? (choices | item | itemset)*
+Common.Attributes
+
+
+value ::= <str>
+mediaTypeWithValue 
+
+common.attributes
+Single.node.binding.attributes
+value : xpath
+
+
+copy filename mediatype 
+common.attributes
+Single.node.binding.attributes
+ 
+
+secret textarea input ::= label (UI.Common)*
+common
+single.node.binding
+optional inputmode : string
+optional incremental boolean = false
+UI.Common attrs
+
+
+upload ::= label filename? mediatype?  UI.Common*
+Common
+Sinlge.Node
+optional mediatype: string
+optional incremental: bool = false
+
+select1 ::= label List.UI.Common* UI.Common*
+Common
+Single.Node
+UI.Common.Attrs
+optional selection (open|closed) = "closed"
+optional incremetnal: bool = true
+
+
+select ::= label List.UI.Common* UI.Common*
+Common
+Single.Node
+UI.Common.Attrs
+optional selection (open|closed) = "closed"
+optional incremetnal: bool = true
+
+
+range = label UI.Common*
+Common
+Single.Node
+UI.Common.Attrs
+optional start: string
+optional end: string
+optional steo: string
+optional incremetnal: bool = false
+
+trigger ::= label UI.Common*
+Common
+Single.Node
+UI.Common.Attrs
+
+output ::=  (label mediatypeWithValue?)? UI.Common*
+Common
+Single.Node
+optional appearance: appearanceType
+optional value: xpath
+optional mediatype: string
+
+submit ::= label UI.Common*
+Common
+Single.Node.Binding
+UIt.Common.Attrs
+optional submmission : idref
+ 
+	<!--
+Advanced User Interface
+--> 
+	<xsd:attribute name="repeat-nodeset" type="xforms:XPathExpression"/> 
+	<xsd:attribute name="repeat-model" type="xsd:IDREF"/> 
+	<xsd:attribute name="repeat-bind" type="xsd:IDREF"/> 
+	<xsd:attribute name="repeat-startindex" type="xsd:positiveInteger"/> 
+	<xsd:attribute name="repeat-number" type="xsd:nonNegativeInteger"/> 
+
+
+repeat ::= (Core.Form.Controls | Container.Form.Controls | Action)*
+Common.Attributes
+Nodeset.Binding
+UI.Common
+startIndex: posInt
+number: nonNegINt
+
+group ::= label? (Core.Form.Controls | Container.Form.Controls | UI.Common)*
+Common.Attributes
+Nodeset.Binding
+UI.Common
+
+switch ::= case+
+   Common.Attributes
+   Single.Node.Binding
+   Uit.Common.Attrs
+case ::= label? (Core.Form.Controls | Container.Form.Controls | Action)*
+   optional selected: bool = false
+   Common.Attributes
+ 
+	<!--
+XForms Actions
+--> 
+
+XML.Events ::= event | observer | target | handler | phase | propagate | defaultAction
+ 
+Common.Action.Attributes ::= optional if: xpath, optional while: xpath 
+
+Action ::= (action | setvalue | insert | delete | setindex | toggle| setfocus | dispatch | rebuild | recalculate | revalidate | refresh | reset | load | send | message)* 
+action ::= Action+
+Common.Attributes
+XML.Events
+Common.Action.Attributes 
+
+	<xsd:element name="setvalue"> 
+		<xsd:complexType> 
+			<xsd:simpleContent> 
+				<xsd:extension base="xsd:string"> 
+					<xsd:attributeGroup ref="xforms:Common.Attributes"/> 
+					<xsd:attributeGroup ref="xforms:Single.Node.Binding.Attributes"/> 
+					<xsd:attribute name="value" type="xforms:XPathExpression" use="optional"/> 
+					<xsd:attributeGroup ref="xforms:XML.Events"/> 
+					<xsd:attributeGroup ref="xforms:Common.Action.Attributes"/> 
+				</xsd:extension> 
+			</xsd:simpleContent> 
+		</xsd:complexType> 
+	</xsd:element> 
+	<xsd:element name="insert"> 
+		<xsd:complexType> 
+			<xsd:attributeGroup ref="xforms:Common.Attributes"/> 
+			<xsd:attributeGroup ref="xforms:Nodeset.Binding.Attributes"/> 
+			<xsd:attribute name="at" type="xforms:XPathExpression" use="optional"/> 
+			<xsd:attribute name="context" type="xforms:XPathExpression" use="optional"/> 
+			<xsd:attribute name="origin" type="xforms:XPathExpression" use="optional"/> 
+			<xsd:attribute name="position" use="optional"> 
+				<xsd:simpleType> 
+					<xsd:restriction base="xsd:string"> 
+						<xsd:enumeration value="before"/> 
+						<xsd:enumeration value="after"/> 
+					</xsd:restriction> 
+				</xsd:simpleType> 
+			</xsd:attribute> 
+			<xsd:attributeGroup ref="xforms:XML.Events"/> 
+			<xsd:attributeGroup ref="xforms:Common.Action.Attributes"/> 
+		</xsd:complexType> 
+	</xsd:element> 
+	<xsd:element name="delete"> 
+		<xsd:complexType> 
+			<xsd:attributeGroup ref="xforms:Common.Attributes"/> 
+			<xsd:attributeGroup ref="xforms:Nodeset.Binding.Attributes"/> 
+			<xsd:attribute name="at" type="xforms:XPathExpression" use="optional"/> 
+			<xsd:attribute name="context" type="xforms:XPathExpression" use="optional"/> 
+			<xsd:attributeGroup ref="xforms:XML.Events"/> 
+			<xsd:attributeGroup ref="xforms:Common.Action.Attributes"/> 
+		</xsd:complexType> 
+	</xsd:element> 
+	<xsd:element name="setindex"> 
+		<xsd:complexType> 
+			<xsd:attributeGroup ref="xforms:Common.Attributes"/> 
+			<xsd:attribute name="repeat" type="xsd:IDREF" use="required"/> 
+			<xsd:attribute name="index" type="xforms:XPathExpression" use="required"/> 
+			<xsd:attributeGroup ref="xforms:XML.Events"/> 
+			<xsd:attributeGroup ref="xforms:Common.Action.Attributes"/> 
+		</xsd:complexType> 
+	</xsd:element> 
+	<xsd:element name="toggle"> 
+		<xsd:complexType> 
+			<xsd:sequence minOccurs="0" maxOccurs="1"> 
+				<xsd:element name="case" type="xforms:ValueTemplate"/> 
+			</xsd:sequence> 
+			<xsd:attributeGroup ref="xforms:Common.Attributes"/> 
+			<xsd:attribute name="case" type="xsd:IDREF" use="optional"/> 
+			<xsd:attributeGroup ref="xforms:XML.Events"/> 
+			<xsd:attributeGroup ref="xforms:Common.Action.Attributes"/> 
+		</xsd:complexType> 
+	</xsd:element> 
+	<xsd:element name="setfocus"> 
+		<xsd:complexType> 
+			<xsd:sequence minOccurs="0" maxOccurs="1"> 
+				<xsd:element name="control" type="xforms:ValueTemplate"/> 
+			</xsd:sequence>			
+			<xsd:attributeGroup ref="xforms:Common.Attributes"/> 
+			<xsd:attribute name="control" type="xsd:IDREF" use="optional"/> 
+			<xsd:attributeGroup ref="xforms:XML.Events"/> 
+			<xsd:attributeGroup ref="xforms:Common.Action.Attributes"/> 
+		</xsd:complexType> 
+	</xsd:element> 
+	<xsd:element name="dispatch"> 
+		<xsd:complexType> 
+		        <!-- Need to be able to say only zero or one of each child, but order independent.
+		             This gets as close as possible with schema. --> 
+			<xsd:sequence minOccurs="0" maxOccurs="3"> 
+			    <xsd:choice> 
+				<xsd:element name="name" type="xforms:ValueTemplate"/> 
+				<xsd:element name="targetid" type="xforms:ValueTemplate"/> 
+				<xsd:element name="target" type="xforms:ValueTemplate"/> 
+				<xsd:element name="delay" type="xforms:ValueTemplate"/> 
+		            </xsd:choice> 
+			</xsd:sequence>				
+			<xsd:attributeGroup ref="xforms:Common.Attributes"/> 
+			<xsd:attribute name="name" type="xsd:NMTOKEN" use="optional"/> 
+			<xsd:attribute name="targetid" type="xsd:IDREF" use="optional"/> 
+			<xsd:attribute name="target" type="xsd:IDREF" use="optional"/> 
+			<xsd:attribute name="delay" type="xsd:string" use="optional" default=""/> 
+			<xsd:attribute name="bubbles" type="xsd:boolean" use="optional" default="true"/> 
+			<xsd:attribute name="cancelable" type="xsd:boolean" use="optional" default="true"/> 
+			<xsd:attributeGroup ref="xforms:XML.Events"/> 
+			<xsd:attributeGroup ref="xforms:Common.Action.Attributes"/> 
+		</xsd:complexType> 
+	</xsd:element> 
+	<xsd:element name="rebuild"> 
+		<xsd:complexType> 
+			<xsd:attributeGroup ref="xforms:Common.Attributes"/> 
+			<xsd:attribute name="model" type="xsd:IDREF" use="optional"/> 
+			<xsd:attributeGroup ref="xforms:XML.Events"/> 
+			<xsd:attributeGroup ref="xforms:Common.Action.Attributes"/> 
+		</xsd:complexType> 
+	</xsd:element> 
+	<xsd:element name="recalculate"> 
+		<xsd:complexType> 
+			<xsd:attributeGroup ref="xforms:Common.Attributes"/> 
+			<xsd:attribute name="model" type="xsd:IDREF" use="optional"/> 
+			<xsd:attributeGroup ref="xforms:XML.Events"/> 
+			<xsd:attributeGroup ref="xforms:Common.Action.Attributes"/> 
+		</xsd:complexType> 
+	</xsd:element> 
+	<xsd:element name="revalidate"> 
+		<xsd:complexType> 
+			<xsd:attributeGroup ref="xforms:Common.Attributes"/> 
+			<xsd:attribute name="model" type="xsd:IDREF" use="optional"/> 
+			<xsd:attributeGroup ref="xforms:XML.Events"/> 
+			<xsd:attributeGroup ref="xforms:Common.Action.Attributes"/> 
+		</xsd:complexType> 
+	</xsd:element> 
+	<xsd:element name="refresh"> 
+		<xsd:complexType> 
+			<xsd:attributeGroup ref="xforms:Common.Attributes"/> 
+			<xsd:attribute name="model" type="xsd:IDREF" use="optional"/> 
+			<xsd:attributeGroup ref="xforms:XML.Events"/> 
+			<xsd:attributeGroup ref="xforms:Common.Action.Attributes"/> 
+		</xsd:complexType> 
+	</xsd:element> 
+	<xsd:element name="reset"> 
+		<xsd:complexType> 
+			<xsd:attributeGroup ref="xforms:Common.Attributes"/> 
+			<xsd:attributeGroup ref="xforms:XML.Events"/> 
+			<xsd:attributeGroup ref="xforms:Common.Action.Attributes"/> 
+			<xsd:attribute name="model" type="xsd:IDREF" use="optional"/> 
+		</xsd:complexType> 
+	</xsd:element> 
+	<xsd:element name="load"> 
+		<xsd:complexType> 
+			<xsd:sequence minOccurs="0" maxOccurs="1"> 
+				<xsd:element name="resource" type="xforms:ValueTemplate"/> 
+			</xsd:sequence>			
+			<xsd:attributeGroup ref="xforms:Common.Attributes"/> 
+			<xsd:attributeGroup ref="xforms:Single.Node.Binding.Attributes"/> 
+			<xsd:attribute name="resource" type="xsd:anyURI" use="optional"/> 
+			<xsd:attribute name="show" use="optional" default="replace"> 
+				<xsd:simpleType> 
+					<xsd:restriction base="xsd:string"> 
+						<xsd:enumeration value="new"/> 
+						<xsd:enumeration value="replace"/> 
+					</xsd:restriction> 
+				</xsd:simpleType> 
+			</xsd:attribute> 
+			<xsd:attributeGroup ref="xforms:XML.Events"/> 
+			<xsd:attributeGroup ref="xforms:Common.Action.Attributes"/> 
+		</xsd:complexType> 
+	</xsd:element> 
+	<xsd:element name="send"> 
+		<xsd:complexType> 
+			<xsd:attributeGroup ref="xforms:Common.Attributes"/> 
+			<xsd:attribute name="submission" type="xsd:IDREF" use="optional"/> 
+			<xsd:attributeGroup ref="xforms:XML.Events"/> 
+			<xsd:attributeGroup ref="xforms:Common.Action.Attributes"/> 
+		</xsd:complexType> 
+	</xsd:element> 
+	<xsd:element name="message"> 
+		<xsd:complexType mixed="true"> 
+			<xsd:group ref="xforms:UI.Content"/> 
+			<xsd:attributeGroup ref="xforms:Common.Attributes"/> 
+			<xsd:attributeGroup ref="xforms:Single.Node.Binding.Attributes"/> 
+			<xsd:attribute name="level" use="optional" default="modal"> 
+				<xsd:simpleType> 
+					<xsd:union memberTypes="xforms:QNameButNotNCNAME"> 
+						<xsd:simpleType> 
+							<xsd:restriction base="xsd:string"> 
+								<xsd:enumeration value="ephemeral"/> 
+								<xsd:enumeration value="modeless"/> 
+								<xsd:enumeration value="modal"/> 
+							</xsd:restriction> 
+						</xsd:simpleType> 
+					</xsd:union> 
+				</xsd:simpleType> 
+			</xsd:attribute> 
+			<xsd:attributeGroup ref="xforms:XML.Events"/> 
+			<xsd:attributeGroup ref="xforms:Common.Action.Attributes"/> 
+		</xsd:complexType> 
+	</xsd:element> 
+ 
+	<xsd:element name="submission"> 
+		<xsd:annotation> 
+			<xsd:documentation>submit info container.</xsd:documentation> 
+		</xsd:annotation> 
+		<xsd:complexType> 
+			<xsd:sequence> 
+			        <!-- There should only be zero or one resource, zero or one method, and zero or more header 
+			             We can't say exactly this, but we get as close as possible --> 
+				<xsd:choice minOccurs="0" maxOccurs="unbounded"> 
+        				<xsd:element name="resource" type="xforms:ValueTemplate"/> 
+        				<xsd:element name="method" type="xforms:ValueTemplate"/> 
+        				<xsd:element name="header"> 
+        					<xsd:complexType> 
+        					        <!-- Both name and value+ are required, but order independent --> 
+        						<xsd:choice> 
+        						     <xsd:sequence> 
+        							     <xsd:element name="name" type="xforms:ValueTemplate" /> 
+        							     <xsd:element name="value" type="xforms:ValueTemplate"
+                                        minOccurs="1" maxOccurs="unbounded" /> 
+        						     </xsd:sequence> 
+        						     <xsd:sequence> 
+        							     <xsd:element name="value" type="xforms:ValueTemplate"
+                                        minOccurs="1" maxOccurs="unbounded" /> 
+        							     <xsd:element name="name" type="xforms:ValueTemplate" /> 
+        						     </xsd:sequence> 
+        						</xsd:choice> 
+                    <xsd:attribute name="combine" use="optional" default="append"> 
+                            <xsd:simpleType> 
+                                    <xsd:restriction base="xsd:string"> 
+                                            <xsd:enumeration value="append"/> 
+                                            <xsd:enumeration value="prepend"/> 
+                                            <xsd:enumeration value="replace"/> 
+                                    </xsd:restriction> 
+                            </xsd:simpleType> 
+                    </xsd:attribute> 
+        					</xsd:complexType> 
+        				</xsd:element> 
+				</xsd:choice> 
+				<!-- As is the case everywhere else, action handlers are last --> 
+				<xsd:group ref="xforms:Action"/> 
+			</xsd:sequence> 
+			<xsd:attributeGroup ref="xforms:Common.Attributes"/> 
+			
+			<xsd:attribute name="ref" type="xforms:XPathExpression" use="optional"/> 
+			<xsd:attribute name="bind" type="xsd:IDREF" use="optional"/> 
+			
+			<!-- Either the resource attribute, action attribute, or resource child element is required --> 
+			<xsd:attribute name="resource" type="xsd:anyURI" use="optional"/> 
+			<xsd:attribute name="action" type="xsd:anyURI" use="optional"/> 
+			
+			<xsd:attribute name="mode" use="optional" default="asynchronous"> 
+				<xsd:simpleType> 
+					<xsd:restriction base="xsd:string"> 
+						<xsd:enumeration value="asynchronous"/> 
+						<xsd:enumeration value="synchronous"/> 
+					</xsd:restriction> 
+				</xsd:simpleType> 
+			</xsd:attribute> 
+ 
+			<!-- Either the method attribute or the method child element is required --> 
+			<xsd:attribute name="method" use="optional"> 
+				<xsd:simpleType> 
+					<xsd:union memberTypes="xforms:QNameButNotNCNAME xsd:NCName"> 
+						<xsd:simpleType> 
+							<xsd:restriction base="xsd:string"> 
+								<xsd:enumeration value="post"/> 
+								<xsd:enumeration value="put"/> 
+								<xsd:enumeration value="get"/> 
+								<xsd:enumeration value="delete"/> 
+								<xsd:enumeration value="multipart-post"/> 
+								<xsd:enumeration value="form-data-post"/> 
+								<xsd:enumeration value="urlencoded-post"/> 
+							</xsd:restriction> 
+						</xsd:simpleType> 
+					</xsd:union> 
+				</xsd:simpleType> 
+			</xsd:attribute> 
+ 
+                        <!-- The defaults for these are false if serialization is 'none' and true otherwise --> 
+			<xsd:attribute name="validate" type="xsd:boolean" use="optional"/> 
+			<xsd:attribute name="relevant" type="xsd:boolean" use="optional"/> 
+			
+			<!-- The default is based on the selected method, e.g. application/xml for the post method --> 
+			<xsd:attribute name="serialization" type="xsd:string" use="optional"/> 
+			
+			<xsd:attribute name="version" type="xsd:NMTOKEN" use="optional" default="1.0"/> 
+			<xsd:attribute name="indent" type="xsd:boolean" use="optional" default="false"/> 
+			<xsd:attribute name="mediatype" type="xsd:string" use="optional" default="application/xml"/> 
+			<xsd:attribute name="encoding" type="xsd:string" use="optional" default="UTF-8"/> 
+			
+			<xsd:attribute name="omit-xml-declaration" type="xsd:boolean" use="optional" default="false"/> 
+			<!-- This is optional with no default because omitting the attribute behaves differently 
+			     than including it with any value --> 
+			<xsd:attribute name="standalone" type="xsd:boolean" use="optional"/> 
+			
+			<xsd:attribute name="cdata-section-elements" type="xforms:QNameList" use="optional" default=""/> 
+			
+			<xsd:attribute name="replace" use="optional" default="all"> 
+				<xsd:simpleType> 
+					<xsd:union memberTypes="xforms:QNameButNotNCNAME"> 
+						<xsd:simpleType> 
+							<xsd:restriction base="xsd:string"> 
+								<xsd:enumeration value="all"/> 
+								<xsd:enumeration value="instance"/> 
+								<xsd:enumeration value="text"/> 
+								<xsd:enumeration value="none"/> 
+							</xsd:restriction> 
+						</xsd:simpleType> 
+					</xsd:union> 
+				</xsd:simpleType> 
+			</xsd:attribute> 
+			
+			<!-- Default is not specified because the default is to replace the instance being submitted --> 
+			<xsd:attribute name="instance" type="xsd:IDREF" use="optional"/> 
+			
+			<xsd:attribute name="separator" use="optional" default="&amp;"> 
+				<xsd:simpleType> 
+					<xsd:restriction base="xsd:string"> 
+						<xsd:enumeration value="&amp;"/> 
+						<xsd:enumeration value=";"/> 
+					</xsd:restriction> 
+				</xsd:simpleType> 
+			</xsd:attribute> 
+			
+			<!-- Default is not specified because the defalut is to replace the whole instance indicated 
+			     by the instance attribute --> 
+			<xsd:attribute name="targetref" type="xforms:XPathExpression" use="optional"/> 
+			<xsd:attribute name="target" type="xforms:XPathExpression" use="optional"/> 
+			
+			<!-- Default not specified because omitting the attribute behaves differently than
+			     including it with any value --> 
+			<xsd:attribute name="includenamespaceprefixes" use="optional"> 
+				<xsd:simpleType> 
+					<xsd:list> 
+						<xsd:simpleType> 
+							<xsd:union memberTypes="xsd:NCName"> 
+								<xsd:simpleType> 
+									<xsd:restriction base="xsd:string"> 
+										<xsd:enumeration value="#default"/> 
+									</xsd:restriction> 
+								</xsd:simpleType> 
+							</xsd:union> 
+						</xsd:simpleType> 
+					</xsd:list> 
+				</xsd:simpleType> 
+			</xsd:attribute> 
+		</xsd:complexType> 
+	</xsd:element> 
+ 
+        <!-- 
+Internal helper types 
+--> 
+ 
+	<xsd:simpleType name="versionList"> 
+		<xsd:list itemType="xforms:versionNumber"/> 
+	</xsd:simpleType> 
+	<xsd:simpleType name="versionNumber"> 
+		<xsd:restriction base="xsd:string"> 
+			<xsd:pattern value="[1-9]\d*\.\d+"/> 
+		</xsd:restriction> 
+	</xsd:simpleType> 
+	<xsd:simpleType name="XPathExpression"> 
+		<xsd:restriction base="xsd:string"/> 
+	</xsd:simpleType> 
+	<xsd:simpleType name="QNameList"> 
+		<xsd:list itemType="xsd:QName"/> 
+	</xsd:simpleType> 
+	<xsd:simpleType name="anyURIList"> 
+		<xsd:list itemType="xsd:anyURI"/> 
+	</xsd:simpleType> 
+	<xsd:simpleType name="QNameButNotNCNAME"> 
+		<xsd:restriction base="xsd:QName"> 
+			<xsd:pattern value="[^:]+:[^:]+"/> 
+		</xsd:restriction> 
+	</xsd:simpleType> 
+	<xsd:simpleType name="appearanceType"> 
+		<xsd:union memberTypes="xforms:QNameButNotNCNAME"> 
+			<xsd:simpleType> 
+				<xsd:restriction base="xsd:string"> 
+					<xsd:enumeration value="full"/> 
+					<xsd:enumeration value="compact"/> 
+					<xsd:enumeration value="minimal"/> 
+				</xsd:restriction> 
+			</xsd:simpleType> 
+		</xsd:union> 
+	</xsd:simpleType> 
+ 
+	<xsd:complexType name="ValueTemplate"> 
+		<xsd:simpleContent> 
+			<xsd:extension base="xsd:string"> 
+				<xsd:attribute name="value" type="xforms:XPathExpression" use="optional"/> 
+			</xsd:extension> 
+		</xsd:simpleContent> 
+	</xsd:complexType> 
+ 
+        <!--
+New simpleTypes provided to form authors
+--> 
+ 
+	<xsd:simpleType name="listItem"> 
+		<xsd:restriction base="xsd:string"> 
+			<xsd:pattern value="\S+"/> 
+		</xsd:restriction> 
+	</xsd:simpleType> 
+	<xsd:simpleType name="listItems"> 
+		<xsd:list itemType="xforms:listItem"/> 
+        </xsd:simpleType> 
+ 
+	<xsd:simpleType name="dateTime"> 
+		<xsd:union> 
+			<xsd:simpleType> 
+				<xsd:restriction base="xsd:dateTime"/> 
+			</xsd:simpleType> 
+			<xsd:simpleType> 
+				<xsd:restriction base="xsd:string"> 
+					<xsd:length value="0"/> 
+				</xsd:restriction> 
+			</xsd:simpleType> 
+		</xsd:union> 
+	</xsd:simpleType> 
+	
+	<xsd:simpleType name="time"> 
+		<xsd:union> 
+			<xsd:simpleType> 
+				<xsd:restriction base="xsd:time"/> 
+			</xsd:simpleType> 
+			<xsd:simpleType> 
+				<xsd:restriction base="xsd:string"> 
+					<xsd:length value="0"/> 
+				</xsd:restriction> 
+			</xsd:simpleType> 
+		</xsd:union> 
+	</xsd:simpleType> 
+	
+	<xsd:simpleType name="date"> 
+		<xsd:union> 
+			<xsd:simpleType> 
+				<xsd:restriction base="xsd:date"/> 
+			</xsd:simpleType> 
+			<xsd:simpleType> 
+				<xsd:restriction base="xsd:string"> 
+					<xsd:length value="0"/> 
+				</xsd:restriction> 
+			</xsd:simpleType> 
+		</xsd:union> 
+	</xsd:simpleType> 
+	
+	<xsd:simpleType name="gYearMonth"> 
+		<xsd:union> 
+			<xsd:simpleType> 
+				<xsd:restriction base="xsd:gYearMonth"/> 
+			</xsd:simpleType> 
+			<xsd:simpleType> 
+				<xsd:restriction base="xsd:string"> 
+					<xsd:length value="0"/> 
+				</xsd:restriction> 
+			</xsd:simpleType> 
+		</xsd:union> 
+	</xsd:simpleType> 
+	
+	<xsd:simpleType name="gYear"> 
+		<xsd:union> 
+			<xsd:simpleType> 
+				<xsd:restriction base="xsd:gYear"/> 
+			</xsd:simpleType> 
+			<xsd:simpleType> 
+				<xsd:restriction base="xsd:string"> 
+					<xsd:length value="0"/> 
+				</xsd:restriction> 
+			</xsd:simpleType> 
+		</xsd:union> 
+	</xsd:simpleType> 
+	
+	<xsd:simpleType name="gMonthDay"> 
+		<xsd:union> 
+			<xsd:simpleType> 
+				<xsd:restriction base="xsd:gMonthDay"/> 
+			</xsd:simpleType> 
+			<xsd:simpleType> 
+				<xsd:restriction base="xsd:string"> 
+					<xsd:length value="0"/> 
+				</xsd:restriction> 
+			</xsd:simpleType> 
+		</xsd:union> 
+	</xsd:simpleType> 
+	
+	<xsd:simpleType name="gDay"> 
+		<xsd:union> 
+			<xsd:simpleType> 
+				<xsd:restriction base="xsd:gDay"/> 
+			</xsd:simpleType> 
+			<xsd:simpleType> 
+				<xsd:restriction base="xsd:string"> 
+					<xsd:length value="0"/> 
+				</xsd:restriction> 
+			</xsd:simpleType> 
+		</xsd:union> 
+	</xsd:simpleType> 
+	
+	<xsd:simpleType name="gMonth"> 
+		<xsd:union> 
+			<xsd:simpleType> 
+				<xsd:restriction base="xsd:gMonth"/> 
+			</xsd:simpleType> 
+			<xsd:simpleType> 
+				<xsd:restriction base="xsd:string"> 
+					<xsd:length value="0"/> 
+				</xsd:restriction> 
+			</xsd:simpleType> 
+		</xsd:union> 
+	</xsd:simpleType> 
+	
+	<xsd:simpleType name="string"> 
+		<xsd:restriction base="xsd:string"/> 
+	</xsd:simpleType> 
+	
+	<xsd:simpleType name="boolean"> 
+		<xsd:union> 
+			<xsd:simpleType> 
+				<xsd:restriction base="xsd:boolean"/> 
+			</xsd:simpleType> 
+			<xsd:simpleType> 
+				<xsd:restriction base="xsd:string"> 
+					<xsd:length value="0"/> 
+				</xsd:restriction> 
+			</xsd:simpleType> 
+		</xsd:union> 
+	</xsd:simpleType> 
+	
+	<xsd:simpleType name="base64Binary"> 
+		<xsd:union> 
+			<xsd:simpleType> 
+				<xsd:restriction base="xsd:base64Binary"/> 
+			</xsd:simpleType> 
+			<xsd:simpleType> 
+				<xsd:restriction base="xsd:string"> 
+					<xsd:length value="0"/> 
+				</xsd:restriction> 
+			</xsd:simpleType> 
+		</xsd:union> 
+	</xsd:simpleType> 
+	
+	<xsd:simpleType name="hexBinary"> 
+		<xsd:union> 
+			<xsd:simpleType> 
+				<xsd:restriction base="xsd:hexBinary"/> 
+			</xsd:simpleType> 
+			<xsd:simpleType> 
+				<xsd:restriction base="xsd:string"> 
+					<xsd:length value="0"/> 
+				</xsd:restriction> 
+			</xsd:simpleType> 
+		</xsd:union> 
+	</xsd:simpleType> 
+	
+	<xsd:simpleType name="float"> 
+		<xsd:union> 
+			<xsd:simpleType> 
+				<xsd:restriction base="xsd:float"/> 
+			</xsd:simpleType> 
+			<xsd:simpleType> 
+				<xsd:restriction base="xsd:string"> 
+					<xsd:length value="0"/> 
+				</xsd:restriction> 
+			</xsd:simpleType> 
+		</xsd:union> 
+	</xsd:simpleType> 
+	
+	<xsd:simpleType name="decimal"> 
+		<xsd:union> 
+			<xsd:simpleType> 
+				<xsd:restriction base="xsd:decimal"/> 
+			</xsd:simpleType> 
+			<xsd:simpleType> 
+				<xsd:restriction base="xsd:string"> 
+					<xsd:length value="0"/> 
+				</xsd:restriction> 
+			</xsd:simpleType> 
+		</xsd:union> 
+	</xsd:simpleType> 
+	
+	<xsd:simpleType name="double"> 
+		<xsd:union> 
+			<xsd:simpleType> 
+				<xsd:restriction base="xsd:double"/> 
+			</xsd:simpleType> 
+			<xsd:simpleType> 
+				<xsd:restriction base="xsd:string"> 
+					<xsd:length value="0"/> 
+				</xsd:restriction> 
+			</xsd:simpleType> 
+		</xsd:union> 
+	</xsd:simpleType> 
+	
+	<xsd:simpleType name="anyURI"> 
+		<xsd:union> 
+			<xsd:simpleType> 
+				<xsd:restriction base="xsd:anyURI"/> 
+			</xsd:simpleType> 
+			<xsd:simpleType> 
+				<xsd:restriction base="xsd:string"> 
+					<xsd:length value="0"/> 
+				</xsd:restriction> 
+			</xsd:simpleType> 
+		</xsd:union> 
+	</xsd:simpleType> 
+	
+	<xsd:simpleType name="QName"> 
+		<xsd:union> 
+			<xsd:simpleType> 
+				<xsd:restriction base="xsd:QName"/> 
+			</xsd:simpleType> 
+			<xsd:simpleType> 
+				<xsd:restriction base="xsd:string"> 
+					<xsd:length value="0"/> 
+				</xsd:restriction> 
+			</xsd:simpleType> 
+		</xsd:union> 
+	</xsd:simpleType> 
+	
+	<xsd:simpleType name="normalizedString"> 
+		<xsd:union> 
+			<xsd:simpleType> 
+				<xsd:restriction base="xsd:normalizedString"/> 
+			</xsd:simpleType> 
+			<xsd:simpleType> 
+				<xsd:restriction base="xsd:string"> 
+					<xsd:length value="0"/> 
+				</xsd:restriction> 
+			</xsd:simpleType> 
+		</xsd:union> 
+	</xsd:simpleType> 
+	
+	<xsd:simpleType name="token"> 
+		<xsd:union> 
+			<xsd:simpleType> 
+				<xsd:restriction base="xsd:token"/> 
+			</xsd:simpleType> 
+			<xsd:simpleType> 
+				<xsd:restriction base="xsd:string"> 
+					<xsd:length value="0"/> 
+				</xsd:restriction> 
+			</xsd:simpleType> 
+		</xsd:union> 
+	</xsd:simpleType> 
+	
+	<xsd:simpleType name="language"> 
+		<xsd:union> 
+			<xsd:simpleType> 
+				<xsd:restriction base="xsd:language"/> 
+			</xsd:simpleType> 
+			<xsd:simpleType> 
+				<xsd:restriction base="xsd:string"> 
+					<xsd:length value="0"/> 
+				</xsd:restriction> 
+			</xsd:simpleType> 
+		</xsd:union> 
+	</xsd:simpleType> 
+	
+	<xsd:simpleType name="Name"> 
+		<xsd:union> 
+			<xsd:simpleType> 
+				<xsd:restriction base="xsd:Name"/> 
+			</xsd:simpleType> 
+			<xsd:simpleType> 
+				<xsd:restriction base="xsd:string"> 
+					<xsd:length value="0"/> 
+				</xsd:restriction> 
+			</xsd:simpleType> 
+		</xsd:union> 
+	</xsd:simpleType> 
+	
+	<xsd:simpleType name="NCName"> 
+		<xsd:union> 
+			<xsd:simpleType> 
+				<xsd:restriction base="xsd:NCName"/> 
+			</xsd:simpleType> 
+			<xsd:simpleType> 
+				<xsd:restriction base="xsd:string"> 
+					<xsd:length value="0"/> 
+				</xsd:restriction> 
+			</xsd:simpleType> 
+		</xsd:union> 
+	</xsd:simpleType> 
+	
+	<xsd:simpleType name="ID"> 
+		<xsd:union> 
+			<xsd:simpleType> 
+				<xsd:restriction base="xsd:ID"/> 
+			</xsd:simpleType> 
+			<xsd:simpleType> 
+				<xsd:restriction base="xsd:string"> 
+					<xsd:length value="0"/> 
+				</xsd:restriction> 
+			</xsd:simpleType> 
+		</xsd:union> 
+	</xsd:simpleType> 
+	
+	<xsd:simpleType name="IDREF"> 
+		<xsd:union> 
+			<xsd:simpleType> 
+				<xsd:restriction base="xsd:IDREF"/> 
+			</xsd:simpleType> 
+			<xsd:simpleType> 
+				<xsd:restriction base="xsd:string"> 
+					<xsd:length value="0"/> 
+				</xsd:restriction> 
+			</xsd:simpleType> 
+		</xsd:union> 
+	</xsd:simpleType> 
+	
+	<xsd:simpleType name="IDREFS"> 
+		<xsd:union> 
+			<xsd:simpleType> 
+				<xsd:restriction base="xsd:IDREFS"/> 
+			</xsd:simpleType> 
+			<xsd:simpleType> 
+				<xsd:restriction base="xsd:string"> 
+					<xsd:length value="0"/> 
+				</xsd:restriction> 
+			</xsd:simpleType> 
+		</xsd:union> 
+	</xsd:simpleType> 
+	
+	<xsd:simpleType name="NMTOKEN"> 
+		<xsd:union> 
+			<xsd:simpleType> 
+				<xsd:restriction base="xsd:NMTOKEN"/> 
+			</xsd:simpleType> 
+			<xsd:simpleType> 
+				<xsd:restriction base="xsd:string"> 
+					<xsd:length value="0"/> 
+				</xsd:restriction> 
+			</xsd:simpleType> 
+		</xsd:union> 
+	</xsd:simpleType> 
+	
+	<xsd:simpleType name="NMTOKENS"> 
+		<xsd:union> 
+			<xsd:simpleType> 
+				<xsd:restriction base="xsd:NMTOKENS"/> 
+			</xsd:simpleType> 
+			<xsd:simpleType> 
+				<xsd:restriction base="xsd:string"> 
+					<xsd:length value="0"/> 
+				</xsd:restriction> 
+			</xsd:simpleType> 
+		</xsd:union> 
+	</xsd:simpleType> 
+	
+	<xsd:simpleType name="integer"> 
+		<xsd:union> 
+			<xsd:simpleType> 
+				<xsd:restriction base="xsd:integer"/> 
+			</xsd:simpleType> 
+			<xsd:simpleType> 
+				<xsd:restriction base="xsd:string"> 
+					<xsd:length value="0"/> 
+				</xsd:restriction> 
+			</xsd:simpleType> 
+		</xsd:union> 
+	</xsd:simpleType> 
+	
+	<xsd:simpleType name="negativeInteger"> 
+		<xsd:union> 
+			<xsd:simpleType> 
+				<xsd:restriction base="xsd:negativeInteger"/> 
+			</xsd:simpleType> 
+			<xsd:simpleType> 
+				<xsd:restriction base="xsd:string"> 
+					<xsd:length value="0"/> 
+				</xsd:restriction> 
+			</xsd:simpleType> 
+		</xsd:union> 
+	</xsd:simpleType> 
+	
+	<xsd:simpleType name="long"> 
+		<xsd:union> 
+			<xsd:simpleType> 
+				<xsd:restriction base="xsd:long"/> 
+			</xsd:simpleType> 
+			<xsd:simpleType> 
+				<xsd:restriction base="xsd:string"> 
+					<xsd:length value="0"/> 
+				</xsd:restriction> 
+			</xsd:simpleType> 
+		</xsd:union> 
+	</xsd:simpleType> 
+	
+	<xsd:simpleType name="int"> 
+		<xsd:union> 
+			<xsd:simpleType> 
+				<xsd:restriction base="xsd:int"/> 
+			</xsd:simpleType> 
+			<xsd:simpleType> 
+				<xsd:restriction base="xsd:string"> 
+					<xsd:length value="0"/> 
+				</xsd:restriction> 
+			</xsd:simpleType> 
+		</xsd:union> 
+	</xsd:simpleType> 
+	
+	<xsd:simpleType name="short"> 
+		<xsd:union> 
+			<xsd:simpleType> 
+				<xsd:restriction base="xsd:short"/> 
+			</xsd:simpleType> 
+			<xsd:simpleType> 
+				<xsd:restriction base="xsd:string"> 
+					<xsd:length value="0"/> 
+				</xsd:restriction> 
+			</xsd:simpleType> 
+		</xsd:union> 
+	</xsd:simpleType> 
+	
+	<xsd:simpleType name="byte"> 
+		<xsd:union> 
+			<xsd:simpleType> 
+				<xsd:restriction base="xsd:byte"/> 
+			</xsd:simpleType> 
+			<xsd:simpleType> 
+				<xsd:restriction base="xsd:string"> 
+					<xsd:length value="0"/> 
+				</xsd:restriction> 
+			</xsd:simpleType> 
+		</xsd:union> 
+	</xsd:simpleType> 
+	
+	<xsd:simpleType name="nonNegativeInteger"> 
+		<xsd:union> 
+			<xsd:simpleType> 
+				<xsd:restriction base="xsd:nonNegativeInteger"/> 
+			</xsd:simpleType> 
+			<xsd:simpleType> 
+				<xsd:restriction base="xsd:string"> 
+					<xsd:length value="0"/> 
+				</xsd:restriction> 
+			</xsd:simpleType> 
+		</xsd:union> 
+	</xsd:simpleType> 
+	
+	<xsd:simpleType name="unsignedLong"> 
+		<xsd:union> 
+			<xsd:simpleType> 
+				<xsd:restriction base="xsd:unsignedLong"/> 
+			</xsd:simpleType> 
+			<xsd:simpleType> 
+				<xsd:restriction base="xsd:string"> 
+					<xsd:length value="0"/> 
+				</xsd:restriction> 
+			</xsd:simpleType> 
+		</xsd:union> 
+	</xsd:simpleType> 
+	
+	<xsd:simpleType name="unsignedInt"> 
+		<xsd:union> 
+			<xsd:simpleType> 
+				<xsd:restriction base="xsd:unsignedInt"/> 
+			</xsd:simpleType> 
+			<xsd:simpleType> 
+				<xsd:restriction base="xsd:string"> 
+					<xsd:length value="0"/> 
+				</xsd:restriction> 
+			</xsd:simpleType> 
+		</xsd:union> 
+	</xsd:simpleType> 
+	
+	<xsd:simpleType name="unsignedShort"> 
+		<xsd:union> 
+			<xsd:simpleType> 
+				<xsd:restriction base="xsd:unsignedShort"/> 
+			</xsd:simpleType> 
+			<xsd:simpleType> 
+				<xsd:restriction base="xsd:string"> 
+					<xsd:length value="0"/> 
+				</xsd:restriction> 
+			</xsd:simpleType> 
+		</xsd:union> 
+	</xsd:simpleType> 
+	
+	<xsd:simpleType name="unsignedByte"> 
+		<xsd:union> 
+			<xsd:simpleType> 
+				<xsd:restriction base="xsd:unsignedByte"/> 
+			</xsd:simpleType> 
+			<xsd:simpleType> 
+				<xsd:restriction base="xsd:string"> 
+					<xsd:length value="0"/> 
+				</xsd:restriction> 
+			</xsd:simpleType> 
+		</xsd:union> 
+	</xsd:simpleType> 
+	
+	<xsd:simpleType name="positiveInteger"> 
+		<xsd:union> 
+			<xsd:simpleType> 
+				<xsd:restriction base="xsd:positiveInteger"/> 
+			</xsd:simpleType> 
+			<xsd:simpleType> 
+				<xsd:restriction base="xsd:string"> 
+					<xsd:length value="0"/> 
+				</xsd:restriction> 
+			</xsd:simpleType> 
+		</xsd:union> 
+	</xsd:simpleType> 
+	
+	<xsd:simpleType name="dayTimeDuration"> 
+		<xsd:restriction base="xsd:duration"> 
+			<xsd:pattern value="([\-]?P([0-9]+D(T([0-9]+(H([0-9]+(M([0-9]+(\.[0-9]*)?S
+			|\.[0-9]+S)?|(\.[0-9]*)?S)|(\.[0-9]*)?S)?|M([0-9]+
+			(\.[0-9]*)?S|\.[0-9]+S)?|(\.[0-9]*)?S)|\.[0-9]+S))?
+			|T([0-9]+(H([0-9]+(M([0-9]+(\.[0-9]*)?S|\.[0-9]+S)?
+			|(\.[0-9]*)?S)|(\.[0-9]*)?S)?|M([0-9]+(\.[0-9]*)?S|\.[0-9]+S)?
+			|(\.[0-9]*)?S)|\.[0-9]+S)))?"/> 
+		</xsd:restriction> 
+	</xsd:simpleType> 
+ 
+	<xsd:simpleType name="yearMonthDuration"> 
+		<xsd:restriction base="xsd:duration"> 
+			<xsd:pattern value="([\-]?P[0-9]+(Y([0-9]+M)?|M))?"/> 
+		</xsd:restriction> 
+	</xsd:simpleType> 
+	<xsd:simpleType name="email"> 
+		<xsd:restriction base="xsd:string"> 
+			<xsd:pattern value="([A-Za-z0-9!#-'\*\+\-/=\?\^_`\{-~]+(\.[A-Za-z0-9!#-'\*\+\-/=\?\^_`\{-~]+)*@[A-Za-z0-9!#-'\*\+\-/=\?\^_`\{-~]+(\.[A-Za-z0-9!#-'\*\+\-/=\?\^_`\{-~]+)*)?"/> 
+		</xsd:restriction> 
+	</xsd:simpleType> 
+ 
+	<xsd:simpleType name="card-number"> 
+		<xsd:annotation> 
+			<xsd:documentation> 
+			This type defines the basic lexical properties for a dataypte that can be used to represent
+			various ID numbers such as for debit and credit cards.
+			This type does not apply the Luhn checksum algorithm.
+			</xsd:documentation> 
+		</xsd:annotation> 
+		<xsd:restriction base="xsd:string"> 
+			<xsd:pattern value="[0-9]*"/> 
+		</xsd:restriction> 
+	</xsd:simpleType> 
+ 
+ 
+</xsd:schema> 

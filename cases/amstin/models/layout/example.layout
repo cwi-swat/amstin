@@ -1,0 +1,15 @@
+
+
+layout Employee
+  list {
+    view name
+    view salary
+    view tax
+    view manager
+  }
+  table subordinates {
+  
+  }
+  
+  
+end
