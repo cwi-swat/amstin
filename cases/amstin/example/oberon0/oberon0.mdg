@@ -1,0 +1,70 @@
+
+start Module
+
+Selector ::= [Empty]
+	  |  [Field] "." name:id
+	  |  [Index] "[" expression:Expression "]"
+
+Factor ::= [Select] var:id selector:Selector
+         | [Number] value:int
+	     | [Bracket] "(" expression:Expression ")"
+	     | [Not] "~" factor:Factor
+
+Term ::= [Mul] term:Term "*" factor:Factor
+       | [Div] term:Term "DIV" factor:Factor
+	   | [Mod] term:Term "MOD" factor:Factor
+	   | [Amp] term:Term "&" factor:Factor
+	   | [Fct] factor:Factor
+
+Simple ::= [Add] expression:Simple "+" term:Term
+       	|  [Min] expression:Simple "-" term:Term
+	    |  [Or] expression:Simple "OR" term:Term
+	    |  [Trm] term:Term
+
+Expression ::= [Eq] lhs:Simple "=" rhs:Simple
+	        | [NEq] lhs:Simple "#" rhs:Simple
+	        | [LT] lhs:Simple "<" rhs:Simple
+	        | [LEq] lhs:Simple "<=" rhs:Simple
+	        | [GT] lhs:Simple ">" rhs:Simple
+	        | [GEq] lhs:Simple ">=" rhs:Simple
+	        | [Smpl] simple:Simple
+
+
+Statement ::= [Assign] var:id selector:Selector ":=" expression:Expression
+	       | [Call] name:id selector:Selector actuals:{Expression ","}*
+	       | [If] "IF" condition:Expression "THEN" statements:{Statement ";"}+ 
+	      	   elsIfs:ElsIf* else:Else? "END"
+	       | [While] "WHILE" condition:Expression "DO" statements:{Statement ";"}+ "END"
+
+ElsIf ::= "ELSIF" condition:Expression "THEN" statements:{Statement ";"}+ 
+
+Else ::= "ELSE" statements:{Statement ";"}+
+
+Type ::= [Array] "ARRAY" bound:Expression "OF" type:Type
+       | [Record] "RECORD" fields:{Field ";"}* "END"
+	   | [User] name:id
+
+Field ::= names:{id ","}+ ":" type:Type
+
+Formal ::= "VAR"? {id ","}+ ":" type:Type
+
+Formals ::= "(" {Formal ";"}* ")"
+
+Body ::= "BEGIN" statements:{Statement ";"}+
+
+Procedure ::= "PROCEDURE" name:id formals:Formals? ";" decls:Declarations body:Body? "END" endName:id
+
+Const ::= name:id "=" expression:Expression ";"
+Type ::= name:id "=" type:Type ";"
+Var ::= name:id ":" type:Type ";"
+
+Consts ::= "CONST" consts:Const* 
+Types ::= "TYPE" types:Type*
+Vars ::= "VAR" vars:Var*
+
+
+Declarations ::= constSection:Consts? typeSection:Types? varSection:Vars? procedures:Procedure*
+
+Module ::= "MODULE" name:id ";" decls:Declarations body:Body? "END" endName:id "."
+
+
