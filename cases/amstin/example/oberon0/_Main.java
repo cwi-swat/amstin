@@ -6,11 +6,11 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 import amstin.Config;
-import amstin.models.ast.ParseTree;
 import amstin.models.grammar.Grammar;
 import amstin.models.grammar.parsing.cps.Parser;
 import amstin.models.meta.MetaModel;
-import amstin.tools.ASTtoString;
+import amstin.models.parsetree.ParseTree;
+import amstin.tools.ParseTreeToString;
 import amstin.tools.GrammarToMetaModel;
 import amstin.tools.MetaModelToJava;
 import amstin.tools.ModelToDot;
@@ -45,7 +45,7 @@ public class _Main {
 		String example = Parser.readPath(EXAMPLE_OBERON0);
 		
 		ParseTree tree = oberon0Parser.parse(example);
-		System.out.println("YIELD:\n" +ASTtoString.astToString(tree));
+		System.out.println("YIELD:\n" +ParseTreeToString.parseTreeToString(tree));
 		Object exampleModel = oberon0Parser.parse(OBERON0_PKG, example);
 		ModelToString.unparse(oberon0, exampleModel, writer);
 		writer.flush();

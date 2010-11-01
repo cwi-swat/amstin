@@ -33,7 +33,7 @@ Expression ::= [Eq] lhs:Simple "=" rhs:Simple
 Statement ::= [Assign] var:id selector:Selector ":=" expression:Expression
 	       | [Call] name:id selector:Selector actuals:{Expression ","}*
 	       | [If] "IF" condition:Expression "THEN" statements:{Statement ";"}+ 
-	      	   elsIfs:ElsIf* else:Else? "END"
+	      	   elsIfs:ElsIf* els:Else? "END"
 	       | [While] "WHILE" condition:Expression "DO" statements:{Statement ";"}+ "END"
 
 ElsIf ::= "ELSIF" condition:Expression "THEN" statements:{Statement ";"}+ 
@@ -41,10 +41,10 @@ ElsIf ::= "ELSIF" condition:Expression "THEN" statements:{Statement ";"}+
 Else ::= "ELSE" statements:{Statement ";"}+
 
 Type ::= [Array] "ARRAY" bound:Expression "OF" type:Type
-       | [Record] "RECORD" fields:{Field ";"}* "END"
+       | [Record] "RECORD" fields:{FieldDecl ";"}* "END"
 	   | [User] name:id
 
-Field ::= names:{id ","}+ ":" type:Type
+FieldDecl ::= names:{id ","}+ ":" type:Type
 
 Formal ::= "VAR"? {id ","}+ ":" type:Type
 
@@ -52,15 +52,18 @@ Formals ::= "(" {Formal ";"}* ")"
 
 Body ::= "BEGIN" statements:{Statement ";"}+
 
-Procedure ::= "PROCEDURE" name:id formals:Formals? ";" decls:Declarations body:Body? "END" endName:id
+Procedure ::= "PROCEDURE" name:id formals:Formals? ";" 
+				decls:Declarations 
+				body:Body? 
+			  "END" endName:id ";"
 
-Const ::= name:id "=" expression:Expression ";"
-Type ::= name:id "=" type:Type ";"
-Var ::= name:id ":" type:Type ";"
+ConstDecl ::= name:id "=" expression:Expression ";"
+TypeDecl ::= name:id "=" type:Type ";"
+VarDecl ::= names:{id ","}+ ":" type:Type ";"
 
-Consts ::= "CONST" consts:Const* 
-Types ::= "TYPE" types:Type*
-Vars ::= "VAR" vars:Var*
+Consts ::= "CONST" consts:ConstDecl* 
+Types ::= "TYPE" types:TypeDecl*
+Vars ::= "VAR" vars:VarDecl*
 
 
 Declarations ::= constSection:Consts? typeSection:Types? varSection:Vars? procedures:Procedure*
