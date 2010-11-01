@@ -28,9 +28,11 @@ Box ::= [Vertical] "V" options:Option* "[" kids:Box* "]"
 Option ::= [Hs] "hs" "=" value:int
         | [Vs] "vs" "=" value:int
         | [Is] "is" "=" value:int
+        | [Gs] "gs" "=" value:int
         | [Sep] "sep" "=" value:str
         | [Color] "color" "=" value:id
         | [Style] "style" "=" value:id
         | [Op] "op" "=" box:Box
+        | [Cells] "row" "=" spec:str
 
   

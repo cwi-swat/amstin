@@ -10,6 +10,7 @@ import amstin.models.ast.Id;
 import amstin.models.ast.Int;
 import amstin.models.ast.Key;
 import amstin.models.ast.List;
+import amstin.models.ast.Nil;
 import amstin.models.ast.Real;
 import amstin.models.ast.Ref;
 import amstin.models.ast.Str;
@@ -26,6 +27,7 @@ import amstin.models.format.NumBox;
 import amstin.models.format.RefBox;
 import amstin.models.format.Row;
 import amstin.models.format.Rule;
+import amstin.models.format.SepList;
 import amstin.models.format.StrBox;
 import amstin.models.format.Text;
 import amstin.models.format.Var;
@@ -80,6 +82,9 @@ public class ASTtoBox {
 		if (ast instanceof Bool) {
 			return text(((Bool)ast).value.toString());
 		}
+		if (ast instanceof Nil) {
+			return text("");
+		}
 		throw new RuntimeException("unsupported AST type: " + ast.getClass());
 	}
 
@@ -103,6 +108,7 @@ public class ASTtoBox {
 	}
 
 	private void evalComposite(Box box, java.util.List<Arg> args, java.util.List<Box> output) {
+		// TODO: use a reflective trick here to avoid this duplication
 		if (box instanceof Vertical) {
 			Vertical v1 = (Vertical)box;
 			Vertical v2 = new Vertical();
@@ -126,6 +132,38 @@ public class ASTtoBox {
 			i2.kids = new ArrayList<Box>();
 			evalKids(i1.kids, args, i2.kids);
 			output.add(i2);
+		} 
+		else if (box instanceof Group) {
+			Group g1 = (Group)box;
+			Group g2 = new Group();
+			g2.options = g1.options;
+			g2.kids = new ArrayList<Box>();
+			evalKids(g1.kids, args, g2.kids);
+			output.add(g2);
+		} 
+		else if (box instanceof Align) {
+			Align a1 = (Align)box;
+			Align a2 = new Align();
+			a2.options = a1.options;
+			a2.kids = new ArrayList<Box>();
+			evalKids(a1.kids, args, a2.kids);
+			output.add(a2);
+		} 
+		else if (box instanceof Row) {
+			Row r1 = (Row)box;
+			Row r2 = new Row();
+			r2.options = r1.options;
+			r2.kids = new ArrayList<Box>();
+			evalKids(r1.kids, args, r2.kids);
+			output.add(r2);
+		} 
+		else if (box instanceof SepList) {
+			SepList s1 = (SepList)box;
+			SepList s2 = new SepList();
+			s2.options = s1.options;
+			s2.kids = new ArrayList<Box>();
+			evalKids(s1.kids, args, s2.kids);
+			output.add(s2);
 		} 
 		else {
 			throw new RuntimeException("unsupported box expression " + box.getClass());
