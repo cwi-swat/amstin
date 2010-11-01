@@ -1,4 +1,4 @@
-package amstin.models.ast;
+package amstin.models.parsetree;
 
 public class ParseTree {
 	public Tree preLayout;

@@ -1,6 +1,5 @@
 package amstin.models.grammar.parsing.gll.prods;
 
-import amstin.models.ast.Tree;
 import amstin.models.grammar.Id;
 import amstin.models.grammar.Int;
 import amstin.models.grammar.Key;
@@ -9,6 +8,7 @@ import amstin.models.grammar.Real;
 import amstin.models.grammar.Ref;
 import amstin.models.grammar.Str;
 import amstin.models.grammar.Symbol;
+import amstin.models.parsetree.Tree;
 
 public class Terminal extends Production {
 
@@ -46,32 +46,32 @@ public class Terminal extends Production {
 	
 	public Tree makeTree(String value) {
 		if (symbol instanceof Id) {
-			amstin.models.ast.Id x = new amstin.models.ast.Id();
+			amstin.models.parsetree.Id x = new amstin.models.parsetree.Id();
 			x.value = value;
 			return x;
 		}
 		if (symbol instanceof Real) {
-			amstin.models.ast.Real x = new amstin.models.ast.Real();
+			amstin.models.parsetree.Real x = new amstin.models.parsetree.Real();
 			x.value = Double.parseDouble(value);
 			return x;
 		}
 		if (symbol instanceof Int) {
-			amstin.models.ast.Int x = new amstin.models.ast.Int();
+			amstin.models.parsetree.Int x = new amstin.models.parsetree.Int();
 			x.value = Integer.parseInt(value);
 			return x;
 		}
 		if (symbol instanceof Ref) {
-			amstin.models.ast.Ref x = new amstin.models.ast.Ref();
+			amstin.models.parsetree.Ref x = new amstin.models.parsetree.Ref();
 			x.name = value;
 			return x;
 		}
 		if (symbol instanceof Key) {
-			amstin.models.ast.Def x = new amstin.models.ast.Def();
+			amstin.models.parsetree.Def x = new amstin.models.parsetree.Def();
 			x.name = value;
 			return x;
 		}
 		if (symbol instanceof Str) {
-			amstin.models.ast.Str x = new amstin.models.ast.Str();
+			amstin.models.parsetree.Str x = new amstin.models.parsetree.Str();
 			x.value = value.substring(1, value.length() - 1);
 			return x;
 		}

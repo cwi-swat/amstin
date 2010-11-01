@@ -14,13 +14,6 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import amstin.models.ast.Arg;
-import amstin.models.ast.Def;
-import amstin.models.ast.Location;
-import amstin.models.ast.Obj;
-import amstin.models.ast.ParseTree;
-import amstin.models.ast.Tree;
-import amstin.models.ast.Ws;
 import amstin.models.grammar.Alt;
 import amstin.models.grammar.Bool;
 import amstin.models.grammar.Boot;
@@ -43,7 +36,14 @@ import amstin.models.grammar.Rule;
 import amstin.models.grammar.Str;
 import amstin.models.grammar.Sym;
 import amstin.models.grammar.Symbol;
-import amstin.tools.ASTtoModel;
+import amstin.models.parsetree.Arg;
+import amstin.models.parsetree.Def;
+import amstin.models.parsetree.Location;
+import amstin.models.parsetree.Obj;
+import amstin.models.parsetree.ParseTree;
+import amstin.models.parsetree.Tree;
+import amstin.models.parsetree.Ws;
+import amstin.tools.ParseTreeToModel;
 
 
 public class Parser {
@@ -75,7 +75,7 @@ public class Parser {
 		Grammar grammar = Boot.instance;
 		Parser parser = new Parser(grammar);
 		ParseTree pt = parser.parse(src);
-		return (Grammar) ASTtoModel.instantiate(amstin.models.grammar._Main.GRAMMAR_PKG, pt);
+		return (Grammar) ParseTreeToModel.instantiate(amstin.models.grammar._Main.GRAMMAR_PKG, pt);
 	}
 
 	
@@ -104,7 +104,7 @@ public class Parser {
 	
 	public Object parse(String pkg, String src) {
 		ParseTree pt = parseAsPath("-", src);
-		return ASTtoModel.instantiate(pkg, pt);
+		return ParseTreeToModel.instantiate(pkg, pt);
 	}
 	
 	public ParseTree parse(File file) {
@@ -308,8 +308,8 @@ public class Parser {
 		return x > y ? x : y;
 	}
 
-	private static amstin.models.ast.List emptyList() {
-		amstin.models.ast.List list = new amstin.models.ast.List();
+	private static amstin.models.parsetree.List emptyList() {
+		amstin.models.parsetree.List list = new amstin.models.parsetree.List();
 		list.elements = new ArrayList<Tree>();
 		return list;
 	}
@@ -421,7 +421,7 @@ public class Parser {
 		public int parse(Map<IParser, Map<Integer, Entry>> table, Cnt cnt, String src, int pos) {
 			if (sym instanceof Lit) {
 				int x = Parser.this.parse(sym, new OptCnt(cnt), src, pos);
-				amstin.models.ast.Bool b = new amstin.models.ast.Bool();
+				amstin.models.parsetree.Bool b = new amstin.models.parsetree.Bool();
 				b.value = false;
 				int y = cnt.apply(pos, b);
 				return x > y ? x : y;
@@ -443,7 +443,7 @@ public class Parser {
 
 		@Override
 		public int apply(int result, Tree obj) {
-			amstin.models.ast.Bool b = new amstin.models.ast.Bool();
+			amstin.models.parsetree.Bool b = new amstin.models.parsetree.Bool();
 			b.value = true;
 			return cnt.apply(result, b);
 		}
@@ -454,7 +454,7 @@ public class Parser {
 		Pattern re = Pattern.compile(REF_REGEX);
 		Matcher m = re.matcher(src.subSequence(pos, src.length()));
 		if (m.lookingAt() && !isReserved(m.group())) {
-			amstin.models.ast.Ref ref = new amstin.models.ast.Ref();
+			amstin.models.parsetree.Ref ref = new amstin.models.parsetree.Ref();
 			ref.name = unescapeId(m.group());
 			ref.type = sym.ref;
 			ref.loc = makeLoc(pos, m.group().length());
@@ -483,7 +483,7 @@ public class Parser {
 		Pattern re = Pattern.compile(Pattern.quote(lit.value));
 		Matcher m = re.matcher(src.subSequence(pos, src.length()));
 		if (m.lookingAt()) {
-			amstin.models.ast.Lit litAst = new amstin.models.ast.Lit();
+			amstin.models.parsetree.Lit litAst = new amstin.models.parsetree.Lit();
 			litAst.value = lit.value;
 			litAst.loc = makeLoc(pos, lit.value.length());	
 			return cnt.apply(pos + m.end(), litAst);
@@ -508,7 +508,7 @@ public class Parser {
 		Pattern re = Pattern.compile(ID_REGEX);
 		Matcher m = re.matcher(src.subSequence(pos, src.length()));
 		if (m.lookingAt() && !isReserved(m.group())) {
-			amstin.models.ast.Id idAst = new amstin.models.ast.Id();
+			amstin.models.parsetree.Id idAst = new amstin.models.parsetree.Id();
 			idAst.loc = makeLoc(pos, m.group().length());
 			idAst.value = unescapeId(m.group());
 			return cnt.apply(pos + m.end(), idAst);
@@ -524,7 +524,7 @@ public class Parser {
 		Pattern re = Pattern.compile("[-+]?[0-9]+");
 		Matcher m = re.matcher(src.subSequence(pos, src.length()));
 		if (m.lookingAt()) {
-			amstin.models.ast.Int intAst = new amstin.models.ast.Int();
+			amstin.models.parsetree.Int intAst = new amstin.models.parsetree.Int();
 			intAst.value = Integer.parseInt(m.group());
 			intAst.loc = makeLoc(pos, m.group().length());
 			return cnt.apply(pos + m.end(), intAst);
@@ -536,7 +536,7 @@ public class Parser {
 		Pattern re = Pattern.compile("true|false");
 		Matcher m = re.matcher(src.subSequence(pos, src.length()));
 		if (m.lookingAt()) {
-			amstin.models.ast.Bool bool = new amstin.models.ast.Bool();
+			amstin.models.parsetree.Bool bool = new amstin.models.parsetree.Bool();
 			bool.value = Boolean.parseBoolean(m.group());
 			bool.loc = makeLoc(pos, m.group().length());
 			return cnt.apply(pos + m.end(), bool);
@@ -548,7 +548,7 @@ public class Parser {
 		Pattern re = Pattern.compile("[-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?");
 		Matcher m = re.matcher(src.subSequence(pos, src.length()));
 		if (m.lookingAt()) {
-			amstin.models.ast.Real real = new amstin.models.ast.Real();
+			amstin.models.parsetree.Real real = new amstin.models.parsetree.Real();
 			real.value = Double.parseDouble(m.group());
 			real.loc = makeLoc(pos, m.group().length());
 			return cnt.apply(pos + m.end(), real);
@@ -576,7 +576,7 @@ public class Parser {
 			s = s.replaceAll("\\t", "\t");
 			s = s.replaceAll("\\f", "\f");
 			s = s.replaceAll("\\r", "\r");
-			amstin.models.ast.Str strAst = new amstin.models.ast.Str();
+			amstin.models.parsetree.Str strAst = new amstin.models.parsetree.Str();
 			strAst.value = s.substring(1, s.length() - 1);
 			strAst.loc = makeLoc(pos, m.group().length());
 			return cnt.apply(pos + m.end(), strAst);
@@ -669,10 +669,10 @@ public class Parser {
 
 		@Override
 		public int apply(int result, Tree obj) {
-			amstin.models.ast.List list = (amstin.models.ast.List)obj;
+			amstin.models.parsetree.List list = (amstin.models.parsetree.List)obj;
 			if (obj1 != null) {
-				if (obj1 instanceof amstin.models.ast.List) {
-					list.elements.addAll(((amstin.models.ast.List)obj1).elements);
+				if (obj1 instanceof amstin.models.parsetree.List) {
+					list.elements.addAll(((amstin.models.parsetree.List)obj1).elements);
 				}
 				else {
 					list.elements.add(0, obj1);
@@ -715,7 +715,7 @@ public class Parser {
 
 		@Override
 		public int apply(int result, Tree obj) {
-			amstin.models.ast.List kids = (amstin.models.ast.List) obj;
+			amstin.models.parsetree.List kids = (amstin.models.parsetree.List) obj;
 			if (klass == null && rule.isInjection()) {
 				// injection
 				return cnt.apply(result, kids.elements.get(0));

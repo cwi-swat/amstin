@@ -1,8 +1,8 @@
 
-package amstin.models.ast;
+package amstin.models.parsetree;
 
 
-public class Id
+public class Str
     extends Tree
 {
 

@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import amstin.models.ast.Tree;
 import amstin.models.grammar.Alt;
 import amstin.models.grammar.Bool;
 import amstin.models.grammar.Grammar;
@@ -39,6 +38,7 @@ import amstin.models.grammar.parsing.gll.stack.LiteralStackNode;
 import amstin.models.grammar.parsing.gll.stack.NonTerminalStackNode;
 import amstin.models.grammar.parsing.gll.stack.OptionalStackNode;
 import amstin.models.grammar.parsing.gll.stack.SeparatedListStackNode;
+import amstin.models.parsetree.Tree;
 
 public class Parser extends SGLL {
 	private static final String TERMINAL_SIGIL = "#";

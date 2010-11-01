@@ -6,17 +6,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import amstin.example.graph.EdgeStat;
+import amstin.example.graph.Field;
+import amstin.example.graph.Field2Field;
+import amstin.example.graph.Graph;
+import amstin.example.graph.Node2Node;
+import amstin.example.graph.NodeStat;
+import amstin.example.graph.Port;
+import amstin.example.graph.Record;
+import amstin.example.graph.Stat;
 import amstin.models.grammar.Grammar;
 import amstin.models.grammar.parsing.cps.Parser;
-import amstin.models.graph.EdgeStat;
-import amstin.models.graph.Field;
-import amstin.models.graph.Field2Field;
-import amstin.models.graph.Graph;
-import amstin.models.graph.Node2Node;
-import amstin.models.graph.NodeStat;
-import amstin.models.graph.Port;
-import amstin.models.graph.Record;
-import amstin.models.graph.Stat;
 import amstin.models.meta.Bool;
 import amstin.models.meta.Class;
 import amstin.models.meta.Int;
@@ -41,7 +41,7 @@ public class MetaModelToGraph {
 		MetaModelToGraph toGraph = new MetaModelToGraph(mm);
 		Graph g = toGraph.toGraph();
 		PrintWriter writer = new PrintWriter(System.out);
-		Grammar grammar =  Parser.parseGrammar(amstin.models.graph._Main.GRAPH_MDG);
+		Grammar grammar =  Parser.parseGrammar(amstin.example.graph._Main.GRAPH_MDG);
 		ModelToString.unparse(grammar, g, writer);
 		writer.flush();
 	}

@@ -7,15 +7,15 @@ import java.io.PrintWriter;
 import java.util.List;
 
 import amstin.Config;
-import amstin.models.ast.ParseTree;
-import amstin.models.ast.Tree;
 import amstin.models.grammar.Grammar;
 import amstin.models.grammar.parsing.cps.Parser;
 import amstin.models.meta.MetaModel;
+import amstin.models.parsetree.ParseTree;
+import amstin.models.parsetree.Tree;
 import amstin.tools.CheckModel;
 import amstin.tools.ModelToJava;
 import amstin.tools.ModelToYAML;
-import amstin.tools.ASTtoModel;
+import amstin.tools.ParseTreeToModel;
 import amstin.tools.ModelToDot;
 import amstin.tools.ModelToString;
 
@@ -37,7 +37,7 @@ public class _Main {
 		Parser stmParser = new Parser(stm);
 		ParseTree obj = stmParser.parse(grant);
 		System.out.println(obj);
-		StateMachine grantStm = (StateMachine) ASTtoModel.instantiate(STATEMACHINE_PKG, obj);
+		StateMachine grantStm = (StateMachine) ParseTreeToModel.instantiate(STATEMACHINE_PKG, obj);
 		System.out.println(grantStm);
 		
 		PrintWriter out = new PrintWriter(System.out);

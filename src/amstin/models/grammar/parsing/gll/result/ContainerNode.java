@@ -4,11 +4,6 @@ import java.net.URI;
 import java.util.Arrays;
 import java.util.List;
 
-import amstin.models.ast.Amb;
-import amstin.models.ast.Cycle;
-import amstin.models.ast.Location;
-import amstin.models.ast.Obj;
-import amstin.models.ast.Tree;
 import amstin.models.grammar.parsing.gll.prods.Production;
 import amstin.models.grammar.parsing.gll.prods.Terminal;
 import amstin.models.grammar.parsing.gll.result.struct.Link;
@@ -16,6 +11,11 @@ import amstin.models.grammar.parsing.gll.util.ArrayList;
 import amstin.models.grammar.parsing.gll.util.DoubleArrayList;
 import amstin.models.grammar.parsing.gll.util.IndexedStack;
 import amstin.models.grammar.parsing.gll.util.Stack;
+import amstin.models.parsetree.Amb;
+import amstin.models.parsetree.Cycle;
+import amstin.models.parsetree.Location;
+import amstin.models.parsetree.Obj;
+import amstin.models.parsetree.Tree;
 
 public class ContainerNode extends AbstractNode{
 	

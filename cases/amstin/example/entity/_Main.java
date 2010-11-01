@@ -6,12 +6,11 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 import amstin.Config;
-import amstin.models.ast.ParseTree;
-import amstin.models.ast.Tree;
 import amstin.models.grammar.Grammar;
 import amstin.models.grammar.parsing.cps.Parser;
 import amstin.models.meta.MetaModel;
-import amstin.tools.ASTtoString;
+import amstin.models.parsetree.ParseTree;
+import amstin.tools.ParseTreeToString;
 import amstin.tools.GrammarToMetaModel;
 import amstin.tools.ModelToDot;
 import amstin.tools.ModelToString;
@@ -45,7 +44,7 @@ public class _Main {
 		Parser entityParser = new Parser(entityGrammar);
 		
 		ParseTree tree = entityParser.parse(example);
-		System.out.println("YIELD:\n" +ASTtoString.astToString(tree));
+		System.out.println("YIELD:\n" +ParseTreeToString.parseTreeToString(tree));
 		Object exampleModel = entityParser.parse(ENTITY_PKG, example);
 		ModelToString.unparse(entityGrammar, exampleModel, writer);
 		writer.flush();

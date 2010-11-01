@@ -10,7 +10,6 @@ import java.io.Reader;
 import java.lang.reflect.Method;
 import java.net.URI;
 
-import amstin.models.ast.Tree;
 import amstin.models.grammar.parsing.gll.prods.Production;
 import amstin.models.grammar.parsing.gll.result.AbstractNode;
 import amstin.models.grammar.parsing.gll.result.ContainerNode;
@@ -24,6 +23,7 @@ import amstin.models.grammar.parsing.gll.util.IntegerKeyedHashMap;
 import amstin.models.grammar.parsing.gll.util.LinearIntegerKeyedMap;
 import amstin.models.grammar.parsing.gll.util.ObjectIntegerKeyedHashMap;
 import amstin.models.grammar.parsing.gll.util.RotatingQueue;
+import amstin.models.parsetree.Tree;
 
 public abstract class SGLL implements IGLL{
 	private final static int STREAM_READ_SEGMENT_SIZE = 8192;

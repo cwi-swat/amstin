@@ -1,6 +1,6 @@
 package amstin.models.grammar.parsing.cps;
 
-import amstin.models.ast.Tree;
+import amstin.models.parsetree.Tree;
 
 
 public interface Cnt {

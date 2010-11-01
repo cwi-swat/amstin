@@ -7,23 +7,23 @@ import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
-import amstin.models.ast.Arg;
-import amstin.models.ast.Bool;
-import amstin.models.ast.Def;
-import amstin.models.ast.Id;
-import amstin.models.ast.Int;
-import amstin.models.ast.Lit;
-import amstin.models.ast.Obj;
-import amstin.models.ast.ParseTree;
-import amstin.models.ast.Real;
-import amstin.models.ast.Ref;
-import amstin.models.ast.Str;
-import amstin.models.ast.Tree;
-import amstin.models.ast.Ws;
+import amstin.models.parsetree.Arg;
+import amstin.models.parsetree.Bool;
+import amstin.models.parsetree.Def;
+import amstin.models.parsetree.Id;
+import amstin.models.parsetree.Int;
+import amstin.models.parsetree.Lit;
+import amstin.models.parsetree.Obj;
+import amstin.models.parsetree.ParseTree;
+import amstin.models.parsetree.Real;
+import amstin.models.parsetree.Ref;
+import amstin.models.parsetree.Str;
+import amstin.models.parsetree.Tree;
+import amstin.models.parsetree.Ws;
 
 
 
-public class ASTtoModel  {
+public class ParseTreeToModel  {
 	
 	// TODO this tool should use the grammar, for instance
 	// to know whether certain optional literals are absent
@@ -36,11 +36,11 @@ public class ASTtoModel  {
 	private Stack<Map<String,Object>> defs;
 
 	public static Object instantiate(String pkg, ParseTree root) {
-		ASTtoModel toJava = new ASTtoModel(pkg, root);
+		ParseTreeToModel toJava = new ParseTreeToModel(pkg, root);
 		return toJava.toJava();
 	}
 	
-	private ASTtoModel(String pkg, ParseTree root) {
+	private ParseTreeToModel(String pkg, ParseTree root) {
 		this.pkg = pkg;
 		this.fixes = new ArrayList<Fix>();
 		this.root = root;
@@ -88,10 +88,10 @@ public class ASTtoModel  {
 		if (obj instanceof Def) {
 			throw new DefineFound((Def)obj);
 		}
-		if (obj instanceof amstin.models.ast.List) {
+		if (obj instanceof amstin.models.parsetree.List) {
 			List<Object> newList = new ArrayList<Object>();
 			int i = 0;
-			for (Tree o: ((amstin.models.ast.List)obj).elements) {
+			for (Tree o: ((amstin.models.parsetree.List)obj).elements) {
 				if (o instanceof Lit || o instanceof Ws) {
 					continue;
 				}

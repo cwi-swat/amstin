@@ -5,11 +5,11 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 import amstin.Config;
-import amstin.models.ast.ParseTree;
 import amstin.models.grammar.Grammar;
 import amstin.models.grammar.parsing.cps.Parser;
 import amstin.models.meta.MetaModel;
-import amstin.tools.ASTtoModel;
+import amstin.models.parsetree.ParseTree;
+import amstin.tools.ParseTreeToModel;
 import amstin.tools.GrammarToMetaModel;
 import amstin.tools.MetaModelToJava;
 import amstin.tools.ModelToString;
@@ -56,7 +56,7 @@ public class _Main {
 		//
 		
 		System.out.println(obj);
-		Module metaModule = (Module) ASTtoModel.instantiate(MODULE_PKG, obj);
+		Module metaModule = (Module) ParseTreeToModel.instantiate(MODULE_PKG, obj);
 		System.out.println(metaModule);
 //		
 //		PrintWriter out = new PrintWriter(System.out);

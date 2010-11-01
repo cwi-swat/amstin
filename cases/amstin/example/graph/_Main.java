@@ -6,12 +6,12 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 import amstin.Config;
-import amstin.models.ast.ParseTree;
-import amstin.models.ast.Tree;
 import amstin.models.grammar.Grammar;
 import amstin.models.grammar.parsing.cps.Parser;
 import amstin.models.meta.MetaModel;
-import amstin.tools.ASTtoString;
+import amstin.models.parsetree.ParseTree;
+import amstin.models.parsetree.Tree;
+import amstin.tools.ParseTreeToString;
 import amstin.tools.GrammarToMetaModel;
 import amstin.tools.MetaModelToJava;
 import amstin.tools.ModelToDot;
@@ -45,7 +45,7 @@ public class _Main {
 		Parser graphParser = new Parser(graphGrammar);
 		
 		ParseTree tree = graphParser.parse(example);
-		System.out.println("YIELD:\n" +ASTtoString.astToString(tree));
+		System.out.println("YIELD:\n" +ParseTreeToString.parseTreeToString(tree));
 		Object exampleModel = graphParser.parse(GRAPH_PKG, example);
 		ModelToString.unparse(graphGrammar, exampleModel, writer);
 		writer.flush();

@@ -1,5 +1,5 @@
 
-package amstin.models.ast;
+package amstin.models.parsetree;
 
 import java.util.List;
 

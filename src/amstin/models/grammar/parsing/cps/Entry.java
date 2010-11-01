@@ -3,7 +3,7 @@ package amstin.models.grammar.parsing.cps;
 import java.util.ArrayList;
 import java.util.List;
 
-import amstin.models.ast.Tree;
+import amstin.models.parsetree.Tree;
 
 public class Entry {
 	final List<Cnt> cnts;

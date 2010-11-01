@@ -3,7 +3,7 @@ package amstin.models.grammar.parsing.cps;
 import java.util.HashMap;
 import java.util.Map;
 
-import amstin.models.ast.Tree;
+import amstin.models.parsetree.Tree;
 
 public class Memo implements IParser {
 

@@ -6,8 +6,8 @@ import java.io.InputStream;
 import java.io.Reader;
 import java.net.URI;
 
-import amstin.models.ast.Tree;
 import amstin.models.grammar.parsing.gll.stack.AbstractStackNode;
+import amstin.models.parsetree.Tree;
 
 public interface IGLL{
 	public final static int START_SYMBOL_ID = -1;

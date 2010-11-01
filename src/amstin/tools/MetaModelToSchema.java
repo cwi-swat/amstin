@@ -11,6 +11,13 @@ import java.util.Map;
 import java.util.Set;
 
 
+import amstin.example.schema.Column;
+import amstin.example.schema.Key;
+import amstin.example.schema.Modifier;
+import amstin.example.schema.NotNull;
+import amstin.example.schema.Ref;
+import amstin.example.schema.Schema;
+import amstin.example.schema.Table;
 import amstin.models.grammar.Grammar;
 import amstin.models.grammar.parsing.cps.Parser;
 import amstin.models.meta.Bool;
@@ -22,13 +29,6 @@ import amstin.models.meta.MetaModel;
 import amstin.models.meta.Real;
 import amstin.models.meta.Star;
 import amstin.models.meta.Str;
-import amstin.models.schema.Column;
-import amstin.models.schema.Key;
-import amstin.models.schema.Modifier;
-import amstin.models.schema.NotNull;
-import amstin.models.schema.Ref;
-import amstin.models.schema.Schema;
-import amstin.models.schema.Table;
 
 public class MetaModelToSchema {
 
@@ -36,7 +36,7 @@ public class MetaModelToSchema {
 		MetaModel mm = amstin.models.meta.Boot.instance;
 		MetaModelToSchema x = new MetaModelToSchema(mm);
 		Schema s = x.toSchema();
-		Grammar schemaGrammar = Parser.parseGrammar(amstin.models.schema._Main.SCHEMA_MDG);
+		Grammar schemaGrammar = Parser.parseGrammar(amstin.example.schema._Main.SCHEMA_MDG);
 		Writer writer = new PrintWriter(System.out);
 		ModelToString.unparse(schemaGrammar, s, writer);
 		writer.flush();
@@ -106,7 +106,7 @@ public class MetaModelToSchema {
 	private void addTypeColumn(Table table) {
 		Column cls = new Column();
 		cls.name = typeColumnName();
-		amstin.models.schema.VarChar varChar = new amstin.models.schema.VarChar();
+		amstin.example.schema.VarChar varChar = new amstin.example.schema.VarChar();
 		varChar.length = 256;
 		cls.type = varChar;
 		cls.modifiers = new ArrayList<Modifier>();
@@ -117,7 +117,7 @@ public class MetaModelToSchema {
 	private void addPrimaryKey(Table table) {
 		Column key = new Column();
 		key.name = primaryKeyName();
-		key.type = new amstin.models.schema.Int();
+		key.type = new amstin.example.schema.Int();
 		key.modifiers = new ArrayList<Modifier>();
 		key.modifiers.add(new Key());
 		table.columns.add(key);
@@ -188,18 +188,18 @@ public class MetaModelToSchema {
 			
 			
 			if (field.type instanceof Str) {
-				amstin.models.schema.VarChar varChar = new amstin.models.schema.VarChar();
+				amstin.example.schema.VarChar varChar = new amstin.example.schema.VarChar();
 				varChar.length = 256;
 				col.type = varChar;
 			}
 			else if (field.type instanceof Int) {
-				col.type = new amstin.models.schema.Int();				
+				col.type = new amstin.example.schema.Int();				
 			}
 			else if (field.type instanceof Real) {
-				col.type = new amstin.models.schema.Real();								
+				col.type = new amstin.example.schema.Real();								
 			}
 			else if (field.type instanceof Bool) {
-				col.type = new amstin.models.schema.Bool();				
+				col.type = new amstin.example.schema.Bool();				
 			}
 			else if (field.type instanceof Klass) {
 				makeForeignKey(schema, field, col);
@@ -229,7 +229,7 @@ public class MetaModelToSchema {
 		Table joinTable = defineTable(schema, name);
 		Column col1 = new Column();
 		col1.name = foreignKeyName(table.name);
-		col1.type = new amstin.models.schema.Int();
+		col1.type = new amstin.example.schema.Int();
 		col1.modifiers = new ArrayList<Modifier>();
 		col1.modifiers.add(new NotNull());
 		Ref ref = new Ref();
@@ -238,7 +238,7 @@ public class MetaModelToSchema {
 		
 		Column col2 = new Column();
 		col2.name = columnName(field);
-		col2.type = new amstin.models.schema.Int();
+		col2.type = new amstin.example.schema.Int();
 		col2.modifiers = new ArrayList<Modifier>();
 		col2.modifiers.add(new NotNull());
 		
@@ -261,18 +261,18 @@ public class MetaModelToSchema {
 		
 		Column col1 = new Column();
 		col1.name = foreignKeyName(table.name);
-		col1.type = new amstin.models.schema.Int();
-		col1.modifiers = new ArrayList<amstin.models.schema.Modifier>();
-		col1.modifiers.add(new amstin.models.schema.NotNull());
-		amstin.models.schema.Ref ref = new amstin.models.schema.Ref();
+		col1.type = new amstin.example.schema.Int();
+		col1.modifiers = new ArrayList<amstin.example.schema.Modifier>();
+		col1.modifiers.add(new amstin.example.schema.NotNull());
+		amstin.example.schema.Ref ref = new amstin.example.schema.Ref();
 		ref.table = table;
 		col1.modifiers.add(ref);
 		
 		Column col2 = new Column();
 		col2.name = "position";
-		col2.type = new amstin.models.schema.Int();
-		col2.modifiers = new ArrayList<amstin.models.schema.Modifier>();
-		col2.modifiers.add(new amstin.models.schema.NotNull());
+		col2.type = new amstin.example.schema.Int();
+		col2.modifiers = new ArrayList<amstin.example.schema.Modifier>();
+		col2.modifiers.add(new amstin.example.schema.NotNull());
 		
 		Column col3 = new Column();
 		col3.modifiers = new ArrayList<Modifier>();
@@ -280,18 +280,18 @@ public class MetaModelToSchema {
 
 		
 		if (field.type instanceof Str) {
-			amstin.models.schema.VarChar varChar = new amstin.models.schema.VarChar();
+			amstin.example.schema.VarChar varChar = new amstin.example.schema.VarChar();
 			varChar.length = 256;
 			col3.type = varChar;
 		}
 		else if (field.type instanceof Int) {
-			col3.type = new amstin.models.schema.Int();				
+			col3.type = new amstin.example.schema.Int();				
 		}
 		else if (field.type instanceof Real) {
-			col3.type = new amstin.models.schema.Real();								
+			col3.type = new amstin.example.schema.Real();								
 		}
 		else if (field.type instanceof Bool) {
-			col3.type = new amstin.models.schema.Bool();				
+			col3.type = new amstin.example.schema.Bool();				
 		}
 		else if (field.type instanceof Klass) {
 			makeForeignKey(schema, field, col3);
@@ -308,9 +308,9 @@ public class MetaModelToSchema {
 	}
 
 	private void makeForeignKey(Schema schema, Field field, Column col) {
-		amstin.models.schema.Ref ref;
-		col.type = new amstin.models.schema.Int();
-		ref = new amstin.models.schema.Ref();
+		amstin.example.schema.Ref ref;
+		col.type = new amstin.example.schema.Int();
+		ref = new amstin.example.schema.Ref();
 		ref.table = tableForClass(schema, ((Klass)field.type).klass);
 		col.modifiers.add(ref);
 	}
