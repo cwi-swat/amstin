@@ -1,0 +1,12 @@
+start AST
+
+AST ::= [Cons] name:id "(" kids:{AST ","}* ")"
+	  | [List] "[" elements:{AST ","}* "]"
+	  | [Int] value:int
+	  | [Real] value:real
+	  | [Bool] value:bool
+	  | [Str] value:str
+	  | [Id] value:id
+	  | [Key] value:id
+	  | [Ref] value:id
+
