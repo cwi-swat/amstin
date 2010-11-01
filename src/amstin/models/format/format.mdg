@@ -1,0 +1,36 @@
+start Format
+
+Format ::= rules:Rule*
+
+Rule ::= name:id "::=" alts:{Alt "|"}+
+
+Alt ::= label:Label? box:Box
+
+Label ::= "[" name:id "]"
+
+Box ::= [Vertical] "V" options:Option* "[" kids:Box* "]"
+     |  [Horizontal] "H" options:Option* "[" kids:Box* "]"
+     |  [Indented] "I" options:Option* "[" kids:Box* "]"
+     |  [Group] "G" options:Option* "[" kids:Box* "]"
+     |  [Align] "A" options:Option* "[" kids:Box* "]"
+     |  [Row] "R" options:Option* "[" kids:Box* "]"
+     |  [SepList] "SL" options:Option* "[" kids:Box* "]"
+     |  [LitBox] "KW" options:Option* "[" kids:Box* "]"
+     |  [VarBox] "VAR" options:Option* "[" kids:Box* "]"
+     |  [StrBox] "STR" options:Option* "[" kids:Box* "]"
+     |  [NumBox] "NUM" options:Option* "[" kids:Box* "]"
+     |  [RefBox] "REF" options:Option* "[" kids:Box* "]"
+     |  [KeyBox] "KEY" options:Option* "[" kids:Box* "]"
+     |  [Text] value:str
+     |  [Var] name:id
+     |  [Dummy] "_"
+
+Option ::= [Hs] "hs" "=" value:int
+        | [Vs] "vs" "=" value:int
+        | [Is] "is" "=" value:int
+        | [Sep] "sep" "=" value:str
+        | [Color] "color" "=" value:id
+        | [Style] "style" "=" value:id
+        | [Op] "op" "=" box:Box
+
+  

@@ -139,6 +139,9 @@ public class Parser {
 			while (ind < errLoc) {
 				// incredibly stupid way to find line number of parse error
 				ind = src.indexOf('\n', ind + 1);
+				if (ind == -1) {
+					break;
+				}
 				lineNo++;
 			}
 			

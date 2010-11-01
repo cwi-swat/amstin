@@ -1,0 +1,12 @@
+
+AST ::= [Cons] V[H hs=0[name "("] I is=2 sep="," [args] ")"]
+	  | [List] H hs=0["[" H sep="," [elements] "]"]
+	  | [Int] value
+	  | [Real] value
+	  | [Bool] value
+	  | [Str] value
+	  | [Id] value
+	  | [Key] H hs=0 ["&" value]
+	  | [Ref] H hs=0 ["*" value]
+
+Arg ::= H hs=1[H hs=0 [name ":"] ast]
