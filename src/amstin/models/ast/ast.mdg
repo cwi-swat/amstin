@@ -1,12 +1,15 @@
 start AST
 
-AST ::= [Cons] name:id "(" kids:{AST ","}* ")"
+AST ::= [Cons] name:id "(" args:{Arg ","}* ")"
 	  | [List] "[" elements:{AST ","}* "]"
 	  | [Int] value:int
 	  | [Real] value:real
 	  | [Bool] value:bool
 	  | [Str] value:str
 	  | [Id] value:id
-	  | [Key] value:id
-	  | [Ref] value:id
+	  | [Key] "&" value:id
+	  | [Ref] "*" value:id
+	  | [Nil] "(" ")"
+
+Arg ::= name:id ":" ast:AST
 

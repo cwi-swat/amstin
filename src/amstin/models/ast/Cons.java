@@ -8,6 +8,6 @@ public class Cons
 {
 
     public String name;
-    public List<AST> kids;
+    public List<Arg> args;
 
 }

@@ -20,9 +20,15 @@ import amstin.tools.ParseTreeToString;
 public class _Main {
 	private static final String AST_PKG = Config.PKG +".models.ast";
 	private static final String AST_MDG = Config.PKG_DIR + "/models/ast/ast.mdg";
-	private static final String EXAMPLE_AST = Config.PKG_DIR + "/models/ast/sample.ast";
+	public static final String EXAMPLE_AST = Config.PKG_DIR + "/models/ast/sample.ast";
 
+	public static Parser astParser() {
+		return new Parser(astGrammar());
+	}
 
+	public static Grammar astGrammar() {
+		return Parser.parseGrammar(AST_MDG);
+	}
 	
 	public static void main(String[] args) throws IOException {
 		Grammar astGrammar = Parser.parseGrammar(AST_MDG);

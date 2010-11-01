@@ -1,1 +1,1 @@
-mul(add(3, true), "a string") 
+mul(lhs: add(lhs: 3, rhs: true), rhs: "a string") 
