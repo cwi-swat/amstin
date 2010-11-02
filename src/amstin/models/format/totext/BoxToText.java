@@ -63,6 +63,51 @@ public class BoxToText {
 		}
 	}
 
+	private String fillCol(String s, int width, char alignment) {
+		switch (alignment) {
+		case 'l': return String.format("%-" + width +  "s", s);
+		case 'r': return String.format("%" + width +  "s", s);
+		case 'c': 
+			if (width > 1) { 
+				return String.format("%" + (width / 2) +  "s%s%" + (width / 2) + "s", "", s, "");
+			}
+			return s;
+		default: throw new RuntimeException("Invalid alignment: " + alignment);
+		}
+	}
+
+	private void horizontalToText(Horizontal h, StringWriter writer, int indent, boolean mustIndent) {
+		boolean first = true;
+		for (Box k: each(h)) {
+			if (!first && !isHorizontallyEmpty(k)) {
+				writer.append(hfill(getHs(h.options)));
+				toText(k, writer, indent, false);
+			}
+			else {
+				toText(k, writer, indent, mustIndent);
+			}
+			first = false;
+		}
+	}
+
+	private void verticalToText(Vertical v, StringWriter writer, int indent, boolean mustIndent) {
+		boolean first = true;
+		for (Box box: each(v)) {
+			if (!first && !isVerticallyEmpty(box)) {
+				writer.append(vfill(getVs(v.options)));
+			}
+			toText(box, writer, indent, true);
+			first = false;
+		}
+	}
+
+	private void indentedToText(Indented box, StringWriter writer, int indent, boolean mustIndent) {
+		Vertical v = new Vertical();
+		v.options = box.options;
+		v.kids = box.kids;
+		verticalToText(v, writer, indent + getIs(box.options), true);
+	}
+
 	private void alignToText(Align align, StringWriter writer, int indent, boolean mustIndent) {
 		String spec = getCells(align.options);
 		char[] cs = spec.toCharArray();
@@ -71,122 +116,14 @@ public class BoxToText {
 		for (int i = 0; i < cs.length; i++) {
 			colWidths[i] = columnWidth(i, each);
 		}
-		for (Box box: each) {
-			rowToText((Row)box, writer, indent, colWidths, cs);
-		}
-	}
-
-	private int columnWidth(int i, List<Box> boxes) {
-		int w = 0;
-		for (Box row: boxes) {
-			int cur = width(cellAt(i, (Row) row));
-			if (cur > w) {
-				w = cur;
+		int len = each.size();
+		for (int i = 0; i < len; i++) {
+			rowToText((Row)each.get(i), writer, indent, colWidths, cs);
+			if (i < len - 1) {
+				// TODO: vertical rowspacing instead of 1
+				writer.append(vfill(1));
 			}
 		}
-		return w;
-	}
-
-	private int width(Box box) {
-		if (box instanceof Horizontal) {
-			return sumWidth(each(box), getHs(((Horizontal)box).options));
-		}
-		else if (box instanceof Row) {
-			return sumWidth(each(box));
-		}
-		else if (box instanceof Vertical) {
-			return maxWidth(each(box));
-		}
-		else if (box instanceof Indented) {
-			return maxWidth(each(box));
-		}
-		else if (box instanceof Text) {
-			return ((Text)box).value.length();
-		}
-		else if (box instanceof Align) {
-			return maxWidth(each(box));
-		}
-		throw new RuntimeException("unsupported box expression: " + box.getClass());
-	}
-	
-	
-	private int height(Box box) {
-		if (box instanceof Horizontal) {
-			return maxHeight(each(box));
-		}
-		else if (box instanceof Row) {
-			return maxHeight(each(box));
-		}
-		else if (box instanceof Vertical) {
-			return sumHeight(each(box), getVs(((Vertical)box).options));
-		}
-		else if (box instanceof Indented) {
-			return sumHeight(each(box), getVs(((Indented)box).options));
-		}
-		else if (box instanceof Text) {
-			return 1;
-		}
-		else if (box instanceof Align) {
-			return sumHeight(each(box));
-		}
-		throw new RuntimeException("unsupported box expression: " + box.getClass());
-	}
-
-	private int sumHeight(List<Box> boxes) {
-		return sumHeight(boxes, 0);
-	}
-	
-	private int sumHeight(List<Box> boxes, int vs) {
-		int h = 0;
-		for (Box k: boxes) {
-			h += height(k) + vs;
-		}
-		if (h > 0) {
-			return h - vs;
-		}
-		return h;
-	}
-	
-	private int maxHeight(List<Box> boxes) {
-		int h = 0;
-		for (Box k: boxes) {
-			int n = height(k);
-			if (n > h) {
-				h = n;
-			}
-		}
-		return h;
-	}
-
-	
-	private int sumWidth(List<Box> boxes, int hs) {
-		int w = 0;
-		for (Box k: boxes) {
-			w += width(k) + hs;
-		}
-		if (w > 0) {
-			return w - hs;
-		}
-		return w;
-	}
-
-	private int sumWidth(List<Box> boxes) {
-		return sumWidth(boxes, 0);
-	}
-
-	private int maxWidth(List<Box> boxes) {
-		int w = 0;
-		for (Box k: boxes) {
-			int n = width(k);
-			if (n > w) {
-				w = n;
-			}
-		}
-		return w;
-	}
-
-	private Box cellAt(int i, Row row) {
-		return row.kids.get(i);
 	}
 
 	private void rowToText(Row row, StringWriter writer, int indent, int[] colWidths, char[] spec) {
@@ -207,72 +144,18 @@ public class BoxToText {
 			}
 		}
 		for (String line: output) {
-			writer.append(line + vfill(1));
-		}
-	}
-
-
-	private String fillCol(String s, int width, char alignment) {
-		switch (alignment) {
-		case 'l': return String.format("%-" + width +  "s", s);
-		case 'r': return String.format("%" + width +  "s", s);
-		case 'c': 
-			if (width > 1) { 
-				return String.format("%" + (width / 2) +  "s%s%" + (width / 2) + "s", "", s, "");
-			}
-			return s;
-		default: throw new RuntimeException("Invalid alignment: " + alignment);
+			writer.append(line);
 		}
 	}
 
 	private void textToText(Text box, StringWriter writer, int indent, boolean mustIndent) {
-		indentIfNeeded(writer, indent, mustIndent);
-		writer.append(box.value);
-	}
-
-	private void indentIfNeeded(StringWriter writer, int indent, boolean mustIndent) {
+		// TODO: check for mustindent for numbox etc. too
 		if (mustIndent) {
 			indent(writer, indent);
 		}
+		writer.append(box.value);
 	}
 
-	private void indent(StringWriter writer, int indent) {
-		writer.write(hfill(indent));
-	}
-
-	private void indentedToText(Indented box, StringWriter writer, int indent, boolean mustIndent) {
-		Vertical v = new Vertical();
-		v.options = box.options;
-		v.kids = box.kids;
-		verticalToText(v, writer, indent + getIs(box.options), true);
-	}
-
-	private void verticalToText(Vertical v, StringWriter writer, int indent, boolean mustIndent) {
-		boolean first = true;
-		for (Box box: each(v)) {
-			if (!first) {
-				writer.append(vfill(getVs(v.options)));
-			}
-			toText(box, writer, indent, true);
-			first = false;
-		}
-	}
-
-	private void horizontalToText(Horizontal h, StringWriter writer, int indent, boolean mustIndent) {
-		boolean first = true;
-		for (Box k: each(h)) {
-			if (!first) {
-				writer.append(hfill(getHs(h.options)));
-				toText(k, writer, indent, false);
-			}
-			else {
-				toText(k, writer, indent, mustIndent);
-			}
-			first = false;
-		}
-	}
-	
-	
 	private List<Box> each(Box box) {
 		if (box instanceof Horizontal) {
 			return each(((Horizontal)box).kids);
@@ -324,6 +207,23 @@ public class BoxToText {
 		}
 		if (prev != null) {
 			result.add(prev);
+		}
+		return result;
+	}
+
+	private List<Box> each(List<Box> kids) {
+		// We just create lists; could make lazy iterators though...
+		List<Box> result = new ArrayList<Box>();
+		for (Box k: kids) {
+			if (k instanceof Group || k instanceof SepList) {
+				// Splicing
+				for (Box b: each(k)) {
+					result.add(b);
+				}
+			}
+			else {
+				result.add(k);
+			}
 		}
 		return result;
 	}
@@ -389,27 +289,14 @@ public class BoxToText {
 		}
 	}
 
-	private List<Box> each(List<Box> kids) {
-		// We just create lists; could make lazy iterators though...
-		List<Box> result = new ArrayList<Box>();
-		for (Box k: kids) {
-			if (k instanceof Group || k instanceof SepList) {
-				// Splicing
-				for (Box b: each(k)) {
-					result.add(b);
-				}
-			}
-			else {
-				result.add(k);
-			}
-		}
-		return result;
-	}
-
 	private String hfill(int hs) {
 		return fill(' ', hs);
 	}
 	
+	private void indent(StringWriter writer, int indent) {
+		writer.write(hfill(indent));
+	}
+
 	private String fill(char c, int len) {
 		char[] cs = new char[len];
 		Arrays.fill(cs, c);
@@ -418,6 +305,137 @@ public class BoxToText {
 	
 	private String vfill(int vs) {
 		return fill('\n', vs);
+	}
+
+	private boolean isVerticallyEmpty(Box box) {
+		if (box instanceof Vertical) {
+			return ((Vertical)box).kids.isEmpty();
+		}
+		if (box instanceof Indented) {
+			return ((Indented)box).kids.isEmpty();
+		}
+		if (box instanceof Align) {
+			return ((Align)box).kids.isEmpty();
+		}
+		return false;
+	}
+
+	private boolean isHorizontallyEmpty(Box box) {
+		if (box instanceof Horizontal) {
+			return ((Horizontal)box).kids.isEmpty();
+		}
+		return false;
+	}
+
+	private int width(Box box) {
+		if (box instanceof Horizontal) {
+			return sumWidth(each(box), getHs(((Horizontal)box).options));
+		}
+		else if (box instanceof Row) {
+			return sumWidth(each(box));
+		}
+		else if (box instanceof Vertical) {
+			return maxWidth(each(box));
+		}
+		else if (box instanceof Indented) {
+			return maxWidth(each(box));
+		}
+		else if (box instanceof Text) {
+			return ((Text)box).value.length();
+		}
+		else if (box instanceof Align) {
+			return maxWidth(each(box));
+		}
+		throw new RuntimeException("unsupported box expression: " + box.getClass());
+	}
+
+	private int height(Box box) {
+		if (box instanceof Horizontal) {
+			return maxHeight(each(box));
+		}
+		else if (box instanceof Row) {
+			return maxHeight(each(box));
+		}
+		else if (box instanceof Vertical) {
+			return sumHeight(each(box), getVs(((Vertical)box).options));
+		}
+		else if (box instanceof Indented) {
+			return sumHeight(each(box), getVs(((Indented)box).options));
+		}
+		else if (box instanceof Text) {
+			return 1;
+		}
+		else if (box instanceof Align) {
+			return sumHeight(each(box));
+		}
+		throw new RuntimeException("unsupported box expression: " + box.getClass());
+	}
+
+	private int columnWidth(int i, List<Box> boxes) {
+		int w = 0;
+		for (Box row: boxes) {
+			int cur = width(cellAt(i, (Row) row));
+			if (cur > w) {
+				w = cur;
+			}
+		}
+		return w;
+	}
+
+	private Box cellAt(int i, Row row) {
+		return row.kids.get(i);
+	}
+
+	private int sumHeight(List<Box> boxes) {
+		return sumHeight(boxes, 0);
+	}
+
+	private int sumHeight(List<Box> boxes, int vs) {
+		int h = 0;
+		for (Box k: boxes) {
+			h += height(k) + vs;
+		}
+		if (h > 0) {
+			return h - vs;
+		}
+		return h;
+	}
+
+	private int maxHeight(List<Box> boxes) {
+		int h = 0;
+		for (Box k: boxes) {
+			int n = height(k);
+			if (n > h) {
+				h = n;
+			}
+		}
+		return h;
+	}
+
+	private int sumWidth(List<Box> boxes, int hs) {
+		int w = 0;
+		for (Box k: boxes) {
+			w += width(k) + hs;
+		}
+		if (w > 0) {
+			return w - hs;
+		}
+		return w;
+	}
+
+	private int sumWidth(List<Box> boxes) {
+		return sumWidth(boxes, 0);
+	}
+
+	private int maxWidth(List<Box> boxes) {
+		int w = 0;
+		for (Box k: boxes) {
+			int n = width(k);
+			if (n > w) {
+				w = n;
+			}
+		}
+		return w;
 	}
 
 	private int getGs(List<Option> options) {
