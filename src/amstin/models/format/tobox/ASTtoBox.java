@@ -22,17 +22,11 @@ import amstin.models.format.Format;
 import amstin.models.format.Group;
 import amstin.models.format.Horizontal;
 import amstin.models.format.Indented;
-import amstin.models.format.KeyBox;
-import amstin.models.format.LitBox;
-import amstin.models.format.NumBox;
-import amstin.models.format.RefBox;
 import amstin.models.format.Row;
 import amstin.models.format.Rule;
 import amstin.models.format.SepList;
-import amstin.models.format.StrBox;
 import amstin.models.format.Text;
 import amstin.models.format.Var;
-import amstin.models.format.VarBox;
 import amstin.models.format.Vertical;
 
 public class ASTtoBox {

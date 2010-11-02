@@ -31,8 +31,7 @@ Actuals ::= H hs=0 ["(" H[SL sep=","[expressions]] ")"]
 
 Statement ::= [Assign] H[ H hs=0 [var selector] ":=" expression]
 	       | [Call] H hs=0 [name selector actuals]
-	       | [If] V[H["IF" condition "THEN"] I[SL sep=";" [statements]] 
-	      	   elsIfs els "END"]
+	       | [If] V[H["IF" condition "THEN"] I[SL sep=";" [statements]] elsIfs els "END"]
 	       | [While] V[H["WHILE" condition "DO"] I[SL sep=";" [statements]] "END"]
 
 ElsIf ::= V[ H["ELSIF" condition "THEN"] I[SL sep=";" [statements]]] 

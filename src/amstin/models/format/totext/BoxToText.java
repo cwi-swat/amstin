@@ -88,7 +88,7 @@ public class BoxToText {
 
 	private int width(Box box) {
 		if (box instanceof Horizontal) {
-			return sumWidth(each(box));
+			return sumWidth(each(box), getHs(((Horizontal)box).options));
 		}
 		else if (box instanceof Row) {
 			return sumWidth(each(box));
@@ -108,6 +108,7 @@ public class BoxToText {
 		throw new RuntimeException("unsupported box expression: " + box.getClass());
 	}
 	
+	
 	private int height(Box box) {
 		if (box instanceof Horizontal) {
 			return maxHeight(each(box));
@@ -116,10 +117,10 @@ public class BoxToText {
 			return maxHeight(each(box));
 		}
 		else if (box instanceof Vertical) {
-			return sumHeight(each(box));
+			return sumHeight(each(box), getVs(((Vertical)box).options));
 		}
 		else if (box instanceof Indented) {
-			return sumHeight(each(box));
+			return sumHeight(each(box), getVs(((Indented)box).options));
 		}
 		else if (box instanceof Text) {
 			return 1;
@@ -131,9 +132,16 @@ public class BoxToText {
 	}
 
 	private int sumHeight(Iterable<Box> boxes) {
+		return sumHeight(boxes, 0);
+	}
+	
+	private int sumHeight(Iterable<Box> boxes, int vs) {
 		int h = 0;
 		for (Box k: boxes) {
-			h += height(k);
+			h += height(k) + vs;
+		}
+		if (h > 0) {
+			return h - vs;
 		}
 		return h;
 	}
@@ -149,12 +157,20 @@ public class BoxToText {
 		return h;
 	}
 
-	private int sumWidth(Iterable<Box> boxes) {
+	
+	private int sumWidth(Iterable<Box> boxes, int hs) {
 		int w = 0;
 		for (Box k: boxes) {
-			w += width(k);
+			w += width(k) + hs;
+		}
+		if (w > 0) {
+			return w - hs;
 		}
 		return w;
+	}
+
+	private int sumWidth(Iterable<Box> boxes) {
+		return sumWidth(boxes, 0);
 	}
 
 	private int maxWidth(Iterable<Box> boxes) {
@@ -225,7 +241,7 @@ public class BoxToText {
 			if (!first) {
 				writer.append(vfill(getVs(v.options)));
 			}
-			if (!(box instanceof Vertical) && !(box instanceof Indented) && !(box instanceof Align)) {
+			if (!(box instanceof Vertical || box instanceof Indented || box instanceof Align)) {
 				writer.append(hfill(indent));
 			}
 			toText(box, writer, indent);
@@ -301,6 +317,7 @@ public class BoxToText {
 	}
 
 	private void wrap(List<Box> result, List<Option> options, Object ...args) {
+		// TODO: change op options to id; this is wrong now.
 		Box op = getOp(options);
 		if (op != null) {
 			if (op instanceof Vertical) {
