@@ -1,0 +1,72 @@
+
+Selector ::= [Empty] ""
+	  |  [Field] H hs=0 [ "." name ]
+	  |  [Index] H hs=0 [ "[" expression "]" ]
+
+Factor ::= [Select] H hs=0[var selector]
+         | [Number] value
+	     | [Bracket] H hs=0["(" expression ")"]
+	     | [Not] H hs=0 ["~" factor]
+
+Term ::= [Mul] H [term "*" factor]
+       | [Div] H [term "DIV" factor]
+	   | [Mod] H [term "MOD" factor]
+	   | [Amp] H [term "&" factor]
+	   | [Fct] factor
+
+Simple ::= [Add] H[expression "+" term]
+       	|  [Min] H[expression "-" term]
+	    |  [Or] H[expression "OR" term]
+	    |  [Trm] term
+
+Expression ::= [Eq] H[lhs "=" rhs]
+	        | [NEq] H[lhs "#" rhs]
+	        | [LT] H[lhs "<" rhs]
+	        | [LEq] H[lhs "<=" rhs]
+	        | [GT] H[lhs ">" rhs]
+	        | [GEq] H[lhs ">=" rhs]
+	        | [Smpl] simple
+
+Actuals ::= H hs=0 ["(" H[SL sep=","[expressions]] ")"]
+
+Statement ::= [Assign] H[ H hs=0 [var selector] ":=" expression]
+	       | [Call] H hs=0 [name selector actuals]
+	       | [If] V[H["IF" condition "THEN"] I[SL sep=";" [statements]] 
+	      	   elsIfs els "END"]
+	       | [While] V[H["WHILE" condition "DO"] I[SL sep=";" [statements]] "END"]
+
+ElsIf ::= V[ H["ELSIF" condition "THEN"] I[SL sep=";" [statements]]] 
+
+Else ::= V["ELSE" I[SL sep=";" [statements]]]
+
+Type ::= [Array] H["ARRAY" bound "OF" type]
+       | [Record] V["RECORD" I[A row="lll" [fields]] "END"]
+	   | [User] name
+
+FieldDecl ::= R [H[SL sep="," [names]] ":" type]
+
+Formal ::= H[isVar("VAR") H[SL sep="," [names]] ":" type]
+
+Formals ::= H hs=0 ["(" H[SL sep=";" [formals]] ")"]
+
+Body ::= V["BEGIN" I[SL sep=";" [statements]]]
+
+Procedure ::= V[H["PROCEDURE" H hs=0[name formals ";"]] 
+				I[decls] 
+				body 
+			 H[ "END" H hs=0 [endName ";"]]]
+
+ConstDecl ::= R[name "=" H hs=0[expression ";"]]
+TypeDecl ::=  R[name "=" H hs=0[type ";"]]
+VarDecl ::=   R[H[SL sep="," [names]] ":" H hs=0[type ";"]]
+
+Consts ::= V["CONST" I[A row="lcl" [consts]]] 
+Types ::= V["TYPE" I[A row="lcl" [types]]]
+Vars ::= V["VAR" I[A row="lcl" [vars]]]
+
+
+Declarations ::= V [constSection typeSection varSection V vs=2[procedures]]
+
+Module ::= V vs=2 [H["MODULE" H hs=0[name ";"]] decls body H["END" H hs=0[endName "."]]]
+
+

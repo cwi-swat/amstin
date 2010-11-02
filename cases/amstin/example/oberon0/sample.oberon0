@@ -37,15 +37,15 @@ BEGIN
       r := r - w; 
       q := q + 1 
     END 
-  END ;
+  END;
   Write(x); 
-  Write(y); 
-  Write(q); 
-  Write(r); 
-  WriteLn 
+  Write(y);
+  Write(q);
+  Write(r);
+  WriteLn
 END Divide;
 
-PROCEDURE BinSearch; 
+PROCEDURE BinSearch(x: INTEGER; VAR output: INTEGER); 
   VAR 
     i, j, k, n, x: INTEGER;
     a: ARRAY 32 OF INTEGER; 

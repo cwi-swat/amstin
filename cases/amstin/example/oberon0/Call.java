@@ -1,7 +1,6 @@
 
 package amstin.example.oberon0;
 
-import java.util.List;
 
 public class Call
     extends Statement
@@ -9,6 +8,6 @@ public class Call
 
     public String name;
     public Selector selector;
-    public List<Expression> actuals;
+    public Actuals actuals;
 
 }

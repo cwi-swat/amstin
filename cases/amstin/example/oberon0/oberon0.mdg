@@ -30,8 +30,10 @@ Expression ::= [Eq] lhs:Simple "=" rhs:Simple
 	        | [Smpl] simple:Simple
 
 
+Actuals ::= "(" expressions:{Expression ","}* ")"
+
 Statement ::= [Assign] var:id selector:Selector ":=" expression:Expression
-	       | [Call] name:id selector:Selector actuals:{Expression ","}*
+	       | [Call] name:id selector:Selector actuals:Actuals?
 	       | [If] "IF" condition:Expression "THEN" statements:{Statement ";"}+ 
 	      	   elsIfs:ElsIf* els:Else? "END"
 	       | [While] "WHILE" condition:Expression "DO" statements:{Statement ";"}+ "END"
@@ -46,9 +48,9 @@ Type ::= [Array] "ARRAY" bound:Expression "OF" type:Type
 
 FieldDecl ::= names:{id ","}+ ":" type:Type
 
-Formal ::= "VAR"? {id ","}+ ":" type:Type
+Formal ::= isVar:"VAR"? names:{id ","}+ ":" type:Type
 
-Formals ::= "(" {Formal ";"}* ")"
+Formals ::= "(" formals:{Formal ";"}* ")"
 
 Body ::= "BEGIN" statements:{Statement ";"}+
 
