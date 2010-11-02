@@ -95,8 +95,12 @@ public class BoxToText {
 		for (Box box: each(v)) {
 			if (!first && !isVerticallyEmpty(box)) {
 				writer.append(vfill(getVs(v.options)));
+				toText(box, writer, indent, true);	
 			}
-			toText(box, writer, indent, true);
+			else {
+				toText(box, writer, indent, mustIndent);
+			}
+			
 			first = false;
 		}
 	}
@@ -489,7 +493,26 @@ public class BoxToText {
 	private Box getOp(List<Option> options) {
 		Option o = getOption(options, "op");
 		if (o != null) {
-			return ((Op)o).box;
+			String box = ((Op)o).box;
+			if (box.equals("H")) {
+				Horizontal h = new Horizontal();
+				h.options = new ArrayList<Option>();
+				h.kids = new ArrayList<Box>();
+				return h;
+			}
+			if (box.equals("V")) {
+				Vertical v = new Vertical();
+				v.options = new ArrayList<Option>();
+				v.kids = new ArrayList<Box>();
+				return v;
+			}
+			if (box.equals("R")) {
+				Row r = new Row();
+				r.options = new ArrayList<Option>();
+				r.kids = new ArrayList<Box>();
+				return r;
+			}
+			throw new RuntimeException("unsupported box operator: " + box);
 		}
 		Horizontal h = new Horizontal();
 		h.options = new ArrayList<Option>();

@@ -1,5 +1,5 @@
 
-AST ::= [Cons] V[H hs=0[name "("] I is=2 [SL sep="," [args]] ")"]
+AST ::= [Cons] V[H hs=0[name "("] I [SL sep="," [args]] ")"]
 	  | [List] H hs=0["[" H sep="," [elements] "]"]
 	  | [Int] value
 	  | [Real] value
@@ -9,4 +9,4 @@ AST ::= [Cons] V[H hs=0[name "("] I is=2 [SL sep="," [args]] ")"]
 	  | [Key] H hs=0 ["&" value]
 	  | [Ref] H hs=0 ["*" value]
 
-Arg ::= H hs=1[H hs=0 [name ":"] ast]
+Arg ::= H [H hs=0 [name ":"] ast]

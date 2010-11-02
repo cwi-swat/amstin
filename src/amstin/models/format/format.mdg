@@ -33,7 +33,7 @@ Option ::= [Hs] "hs" "=" value:int
         | [Sep] "sep" "=" value:str
         | [Color] "color" "=" value:id
         | [Style] "style" "=" value:id
-        | [Op] "op" "=" box:Box
+        | [Op] "op" "=" box:id
         | [Cells] "row" "=" spec:str
 
   

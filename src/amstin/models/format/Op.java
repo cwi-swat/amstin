@@ -6,6 +6,6 @@ public class Op
     extends Option
 {
 
-    public Box box;
+    public String box;
 
 }
