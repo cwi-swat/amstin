@@ -21,6 +21,7 @@ Box ::= [Vertical] "V" options:Option* "[" kids:Box* "]"
      |  [NumBox] "NUM" options:Option* "[" kids:Box* "]"
      |  [RefBox] "REF" options:Option* "[" kids:Box* "]"
      |  [KeyBox] "KEY" options:Option* "[" kids:Box* "]"
+     |  [Cond] var:id "(" arg:Box ")"
      |  [Text] value:str
      |  [Var] name:id
      |  [Dummy] "_"

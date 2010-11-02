@@ -133,7 +133,10 @@ public class Parser {
 			Alt alt = rule.alts.get(0);
 			IParser p = list(alt.elements);
 			int errLoc = p.parse(table, new Build(rule, alt.type, success), src, 0);
-			String s = src.substring(errLoc, errLoc + 1);
+			String s = "<EOF>";
+			if (errLoc < src.length()) {
+				src.substring(errLoc, errLoc + 1);
+			}
 			int ind = -1;
 			int lineNo = 0;
 			while (ind < errLoc) {
@@ -422,6 +425,9 @@ public class Parser {
 
 		@Override
 		public int parse(Map<IParser, Map<Integer, Entry>> table, Cnt cnt, String src, int pos) {
+			// TODO: This boolean making of optional literals should be in implode
+			// and instantiate; not here in the parser; parsetrees just contain
+			// syntactic structure.
 			if (sym instanceof Lit) {
 				int x = Parser.this.parse(sym, new OptCnt(cnt), src, pos);
 				amstin.models.parsetree.Bool b = new amstin.models.parsetree.Bool();

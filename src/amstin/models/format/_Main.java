@@ -21,10 +21,10 @@ import amstin.tools.ModelToString;
 
 public class _Main {
 
-	private static final String FORMAT_DIR = Config.PKG_DIR + "/models/format";
-	private static final String FORMAT_PKG = Config.PKG +".models.format";
-	private static final String FORMAT_MDG = FORMAT_DIR + "/format.mdg";
-	private static final String EXAMPLE_FORMAT = FORMAT_DIR + "/ast.format";
+	public static final String FORMAT_DIR = Config.PKG_DIR + "/models/format";
+	public static final String FORMAT_PKG = Config.PKG +".models.format";
+	public static final String FORMAT_MDG = FORMAT_DIR + "/format.mdg";
+	public static final String EXAMPLE_FORMAT = FORMAT_DIR + "/ast.format";
 
 	public static void main(String[] args) throws IOException {
 		Grammar formatGrammar = Parser.parseGrammar(FORMAT_MDG);

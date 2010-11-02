@@ -17,6 +17,7 @@ import amstin.models.ast.Str;
 import amstin.models.format.Align;
 import amstin.models.format.Alt;
 import amstin.models.format.Box;
+import amstin.models.format.Cond;
 import amstin.models.format.Format;
 import amstin.models.format.Group;
 import amstin.models.format.Horizontal;
@@ -51,6 +52,13 @@ public class ASTtoBox {
 		return toBox(root);
 	}
 
+	private void toBox(AST ast, java.util.List<Box> output) {
+		Box box = toBox(ast);
+		if (box != null) {
+			output.add(box);
+		}
+	}
+	
 	private Box toBox(AST ast) {
 		if (ast instanceof Cons) {
 			Cons cons = (Cons)ast;
@@ -83,7 +91,7 @@ public class ASTtoBox {
 			return text(((Bool)ast).value.toString());
 		}
 		if (ast instanceof Nil) {
-			return text("");
+			return null;
 		}
 		throw new RuntimeException("unsupported AST type: " + ast.getClass());
 	}
@@ -97,7 +105,10 @@ public class ASTtoBox {
 
 	private void eval(Box box, java.util.List<Arg> args, java.util.List<Box> output) {
 		if (box instanceof Var) {
-			evalVar(box, args, output);
+			evalVar((Var)box, args, output);
+		}
+		else if (box instanceof Cond) {
+			evalCond((Cond)box, args, output);
 		}
 		else if (box instanceof Text) {
 			output.add(box);
@@ -169,24 +180,40 @@ public class ASTtoBox {
 			throw new RuntimeException("unsupported box expression " + box.getClass());
 		}
 	}
-
-	private void evalVar(Box box, java.util.List<Arg> args, java.util.List<Box> output) {
-		Var v = (Var)box;
+	
+	private void evalCond(Cond cond, java.util.List<Arg> args, java.util.List<Box> output) {
 		for (Arg arg: args) {
-			if (arg.name.equals(v.name)) {
+			if (arg.name.equals(cond.var)) {
+				AST ast = arg.ast;
+				if (ast == null) {
+					return;
+				}
+				if (ast instanceof Bool && !((Bool)ast).value) {
+					return;
+				}
+				output.add(cond.arg);
+				return;
+			}
+		}
+		throw new RuntimeException("undefined label " + cond.var);
+	}
+
+	private void evalVar(Var var, java.util.List<Arg> args, java.util.List<Box> output) {
+		for (Arg arg: args) {
+			if (arg.name.equals(var.name)) {
 				AST ast = arg.ast;
 				if (ast instanceof List) {
 					for (AST k: ((List)ast).elements) {
-						output.add(toBox(k));
+						toBox(k, output);
 					}
 				}
 				else {
-					output.add(toBox(ast));
+					toBox(ast, output);
 				}
 				return;
 			}
 		}
-		throw new RuntimeException("undefined label " + v.name);
+		throw new RuntimeException("undefined label " + var.name);
 	}
 
 	private void evalKids(java.util.List<Box> kids, java.util.List<Arg> args, java.util.List<Box> output) {

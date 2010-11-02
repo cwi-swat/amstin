@@ -4,6 +4,8 @@ ParseTree ::= "parseTree" "(" preLayout:Tree "," top:Tree "," postLayout:Tree ")
 
 Tree ::= [Obj] "appl" "(" name:id "," "[" args:{Tree ","}* "]" ")"
        | [List] "[" elements:{Tree ","}* "]"
+       | [Opt] "opt" "(" arg:Tree ")"
+       | [Nil] "nil" 
        | [Cycle] value:int
        | [Amb] "{" alternatives:{Tree ","}* "}" 
        | [Arg] name:id ":" value:Tree?

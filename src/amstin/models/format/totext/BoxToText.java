@@ -64,19 +64,20 @@ public class BoxToText {
 
 	private void alignToText(Align align, StringWriter writer, int indent) {
 		String spec = getCells(align.options);
-		String[] cs = spec.split("");
+		char[] cs = spec.toCharArray();
 		int colWidths[] = new int[cs.length];
+		Iterable<Box> each = each(align);
 		for (int i = 0; i < cs.length; i++) {
-			colWidths[i] = columnWidth(i, align.kids);
+			colWidths[i] = columnWidth(i, each);
 		}
-		for (Box box: each(align)) {
-			rowToText((Row)box, writer, indent, colWidths, spec);
+		for (Box box: each) {
+			rowToText((Row)box, writer, indent, colWidths, cs);
 		}
 	}
 
-	private int columnWidth(int i, List<Box> kids) {
+	private int columnWidth(int i, Iterable<Box> boxes) {
 		int w = 0;
-		for (Box row: kids) {
+		for (Box row: boxes) {
 			int cur = width(cellAt(i, (Row) row));
 			if (cur > w) {
 				w = cur;
@@ -87,59 +88,59 @@ public class BoxToText {
 
 	private int width(Box box) {
 		if (box instanceof Horizontal) {
-			return sumWidth(((Horizontal)box).kids);
+			return sumWidth(each(box));
 		}
 		else if (box instanceof Row) {
-			return sumWidth(((Row)box).kids);
+			return sumWidth(each(box));
 		}
 		else if (box instanceof Vertical) {
-			return maxWidth(((Vertical)box).kids);
+			return maxWidth(each(box));
 		}
 		else if (box instanceof Indented) {
-			return maxWidth(((Indented) box).kids);
+			return maxWidth(each(box));
 		}
 		else if (box instanceof Text) {
 			return ((Text)box).value.length();
 		}
 		else if (box instanceof Align) {
-			return maxWidth(((Align)box).kids);
+			return maxWidth(each(box));
 		}
 		throw new RuntimeException("unsupported box expression: " + box.getClass());
 	}
 	
 	private int height(Box box) {
 		if (box instanceof Horizontal) {
-			return maxHeight(((Horizontal)box).kids);
+			return maxHeight(each(box));
 		}
 		else if (box instanceof Row) {
-			return maxHeight(((Row)box).kids);
+			return maxHeight(each(box));
 		}
 		else if (box instanceof Vertical) {
-			return sumHeight(((Vertical)box).kids);
+			return sumHeight(each(box));
 		}
 		else if (box instanceof Indented) {
-			return sumHeight(((Indented) box).kids);
+			return sumHeight(each(box));
 		}
 		else if (box instanceof Text) {
 			return 1;
 		}
 		else if (box instanceof Align) {
-			return sumHeight(((Align)box).kids);
+			return sumHeight(each(box));
 		}
 		throw new RuntimeException("unsupported box expression: " + box.getClass());
 	}
 
-	private int sumHeight(List<Box> kids) {
+	private int sumHeight(Iterable<Box> boxes) {
 		int h = 0;
-		for (Box k: kids) {
+		for (Box k: boxes) {
 			h += height(k);
 		}
 		return h;
 	}
-
-	private int maxHeight(List<Box> kids) {
+	
+	private int maxHeight(Iterable<Box> boxes) {
 		int h = 0;
-		for (Box k: kids) {
+		for (Box k: boxes) {
 			int n = height(k);
 			if (n > h) {
 				h = n;
@@ -148,17 +149,17 @@ public class BoxToText {
 		return h;
 	}
 
-	private int sumWidth(List<Box> kids) {
+	private int sumWidth(Iterable<Box> boxes) {
 		int w = 0;
-		for (Box k: kids) {
+		for (Box k: boxes) {
 			w += width(k);
 		}
 		return w;
 	}
 
-	private int maxWidth(List<Box> kids) {
+	private int maxWidth(Iterable<Box> boxes) {
 		int w = 0;
-		for (Box k: kids) {
+		for (Box k: boxes) {
 			int n = width(k);
 			if (n > w) {
 				w = n;
@@ -171,20 +172,21 @@ public class BoxToText {
 		return row.kids.get(i);
 	}
 
-	private void rowToText(Row row, StringWriter writer, int indent, int[] colWidths, String spec) {
+	private void rowToText(Row row, StringWriter writer, int indent, int[] colWidths, char[] spec) {
 		int height = height(row);
 		String output[] = new String[height];
 		String fill = hfill(indent);
+		// Pre fill the left margin for each line
 		Arrays.fill(output, fill);
 		
-		List<Box> cols = row.kids;
-		for (int col = 0; col < cols.size(); col++) {
-			Box cell = cols.get(col);
+		List<Box> cells = row.kids;
+		for (int col = 0; col < cells.size(); col++) {
+			Box cell = cells.get(col);
 			StringWriter s = new StringWriter();
 			toText(cell, s, 0);
 			String lines[] = s.toString().split("\n");
 			for (int i = 0; i < height; i++) {
-				output[i] += fillCol(lines[i], colWidths[col], spec.charAt(col));
+				output[i] += fillCol(lines[i], colWidths[col], spec[col]);
 			}
 		}
 		for (String line: output) {
@@ -197,7 +199,11 @@ public class BoxToText {
 		switch (alignment) {
 		case 'l': return String.format("%-" + width +  "s", s);
 		case 'r': return String.format("%" + width +  "s", s);
-		case 'c': return String.format("%" + (width / 2) +  "s%s%" + (width / 2) + "s", "", s, "");
+		case 'c': 
+			if (width > 1) { 
+				return String.format("%" + (width / 2) +  "s%s%" + (width / 2) + "s", "", s, "");
+			}
+			return s;
 		default: throw new RuntimeException("Invalid alignment: " + alignment);
 		}
 	}
@@ -219,7 +225,7 @@ public class BoxToText {
 			if (!first) {
 				writer.append(vfill(getVs(v.options)));
 			}
-			if (!(box instanceof Vertical) && !(box instanceof Indented)) {
+			if (!(box instanceof Vertical) && !(box instanceof Indented) && !(box instanceof Align)) {
 				writer.append(hfill(indent));
 			}
 			toText(box, writer, indent);
@@ -270,8 +276,8 @@ public class BoxToText {
 		for (Box kid: each(box.kids)) {
 			group.add(kid);
 			if (i % step == 0) {
-				wrap(result, box.options, group);
-				group = new ArrayList<Box>();
+				wrap(result, box.options, (Object[]) group.toArray(new Box[group.size()]));
+				group.clear();
 			}
 			i++;
 		}
@@ -316,6 +322,14 @@ public class BoxToText {
 			else if (op instanceof Indented) {
 				Indented v1 = (Indented)op;
 				Indented v2 = new Indented();
+				v2.options = v1.options;
+				v2.kids = new ArrayList<Box>();
+				wrapArgs(v2.kids, args);
+				result.add(v2);
+			}
+			else if (op instanceof Row) {
+				Row v1 = (Row)op;
+				Row v2 = new Row();
 				v2.options = v1.options;
 				v2.kids = new ArrayList<Box>();
 				wrapArgs(v2.kids, args);
@@ -390,7 +404,7 @@ public class BoxToText {
 		if (o != null) {
 			return ((Hs)o).value;
 		}
-		return 0;
+		return 1;
 	}
 
 	private int getVs(List<Option> options) {
@@ -418,7 +432,7 @@ public class BoxToText {
 	}
 
 	private String getCells(List<Option> options) {
-		Option o = getOption(options, "row");
+		Option o = getOption(options, "cells");
 		if (o != null) {
 			return ((Cells)o).spec;
 		}
