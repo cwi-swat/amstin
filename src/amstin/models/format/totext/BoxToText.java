@@ -1,6 +1,7 @@
 package amstin.models.format.totext;
 
 import java.io.StringWriter;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -37,36 +38,36 @@ public class BoxToText {
 
 	private String toText() {
 		StringWriter writer = new StringWriter();
-		toText(root, writer, 0);
+		toText(root, writer, 0, true);
 		return writer.toString();
 	}
 
-	private void toText(Box box, StringWriter writer, int indent) {
+	private void toText(Box box, StringWriter writer, int indent, boolean mustIndent) {
 		if (box instanceof Horizontal) {
-			horizontalToText((Horizontal) box, writer, indent);
+			horizontalToText((Horizontal) box, writer, indent, mustIndent);
 		}
 		else if (box instanceof Vertical) {
-			verticalToText((Vertical) box, writer, indent);
+			verticalToText((Vertical) box, writer, indent, mustIndent);
 		}
 		else if (box instanceof Indented) {
-			indentedToText((Indented) box, writer, indent);
+			indentedToText((Indented) box, writer, indent, mustIndent);
 		}
 		else if (box instanceof Text) {
-			textToText((Text) box, writer, indent);
+			textToText((Text) box, writer, indent, mustIndent);
 		}
 		else if (box instanceof Align) {
-			alignToText((Align)box, writer, indent);
+			alignToText((Align)box, writer, indent, mustIndent);
 		}
 		else {
 			throw new RuntimeException("unsupported box expression " + box.getClass());
 		}
 	}
 
-	private void alignToText(Align align, StringWriter writer, int indent) {
+	private void alignToText(Align align, StringWriter writer, int indent, boolean mustIndent) {
 		String spec = getCells(align.options);
 		char[] cs = spec.toCharArray();
 		int colWidths[] = new int[cs.length];
-		Iterable<Box> each = each(align);
+		List<Box> each = each(align);
 		for (int i = 0; i < cs.length; i++) {
 			colWidths[i] = columnWidth(i, each);
 		}
@@ -75,7 +76,7 @@ public class BoxToText {
 		}
 	}
 
-	private int columnWidth(int i, Iterable<Box> boxes) {
+	private int columnWidth(int i, List<Box> boxes) {
 		int w = 0;
 		for (Box row: boxes) {
 			int cur = width(cellAt(i, (Row) row));
@@ -131,11 +132,11 @@ public class BoxToText {
 		throw new RuntimeException("unsupported box expression: " + box.getClass());
 	}
 
-	private int sumHeight(Iterable<Box> boxes) {
+	private int sumHeight(List<Box> boxes) {
 		return sumHeight(boxes, 0);
 	}
 	
-	private int sumHeight(Iterable<Box> boxes, int vs) {
+	private int sumHeight(List<Box> boxes, int vs) {
 		int h = 0;
 		for (Box k: boxes) {
 			h += height(k) + vs;
@@ -146,7 +147,7 @@ public class BoxToText {
 		return h;
 	}
 	
-	private int maxHeight(Iterable<Box> boxes) {
+	private int maxHeight(List<Box> boxes) {
 		int h = 0;
 		for (Box k: boxes) {
 			int n = height(k);
@@ -158,7 +159,7 @@ public class BoxToText {
 	}
 
 	
-	private int sumWidth(Iterable<Box> boxes, int hs) {
+	private int sumWidth(List<Box> boxes, int hs) {
 		int w = 0;
 		for (Box k: boxes) {
 			w += width(k) + hs;
@@ -169,11 +170,11 @@ public class BoxToText {
 		return w;
 	}
 
-	private int sumWidth(Iterable<Box> boxes) {
+	private int sumWidth(List<Box> boxes) {
 		return sumWidth(boxes, 0);
 	}
 
-	private int maxWidth(Iterable<Box> boxes) {
+	private int maxWidth(List<Box> boxes) {
 		int w = 0;
 		for (Box k: boxes) {
 			int n = width(k);
@@ -199,7 +200,7 @@ public class BoxToText {
 		for (int col = 0; col < cells.size(); col++) {
 			Box cell = cells.get(col);
 			StringWriter s = new StringWriter();
-			toText(cell, s, 0);
+			toText(cell, s, 0, false);
 			String lines[] = s.toString().split("\n");
 			for (int i = 0; i < height; i++) {
 				output[i] += fillCol(lines[i], colWidths[col], spec[col]);
@@ -224,44 +225,55 @@ public class BoxToText {
 		}
 	}
 
-	private void textToText(Text box, StringWriter writer, int indent) {
+	private void textToText(Text box, StringWriter writer, int indent, boolean mustIndent) {
+		indentIfNeeded(writer, indent, mustIndent);
 		writer.append(box.value);
 	}
 
-	private void indentedToText(Indented box, StringWriter writer, int indent) {
+	private void indentIfNeeded(StringWriter writer, int indent, boolean mustIndent) {
+		if (mustIndent) {
+			indent(writer, indent);
+		}
+	}
+
+	private void indent(StringWriter writer, int indent) {
+		writer.write(hfill(indent));
+	}
+
+	private void indentedToText(Indented box, StringWriter writer, int indent, boolean mustIndent) {
 		Vertical v = new Vertical();
 		v.options = box.options;
 		v.kids = box.kids;
-		verticalToText(v, writer, indent + getIs(box.options));
+		verticalToText(v, writer, indent + getIs(box.options), true);
 	}
 
-	private void verticalToText(Vertical v, StringWriter writer, int indent) {
+	private void verticalToText(Vertical v, StringWriter writer, int indent, boolean mustIndent) {
 		boolean first = true;
 		for (Box box: each(v)) {
 			if (!first) {
 				writer.append(vfill(getVs(v.options)));
 			}
-			if (!(box instanceof Vertical || box instanceof Indented || box instanceof Align)) {
-				writer.append(hfill(indent));
-			}
-			toText(box, writer, indent);
+			toText(box, writer, indent, true);
 			first = false;
 		}
 	}
 
-	private void horizontalToText(Horizontal h, StringWriter writer, int indent) {
+	private void horizontalToText(Horizontal h, StringWriter writer, int indent, boolean mustIndent) {
 		boolean first = true;
 		for (Box k: each(h)) {
 			if (!first) {
 				writer.append(hfill(getHs(h.options)));
+				toText(k, writer, indent, false);
 			}
-			toText(k, writer, indent);
+			else {
+				toText(k, writer, indent, mustIndent);
+			}
 			first = false;
 		}
 	}
 	
 	
-	private Iterable<Box> each(Box box) {
+	private List<Box> each(Box box) {
 		if (box instanceof Horizontal) {
 			return each(((Horizontal)box).kids);
 		}
@@ -283,7 +295,7 @@ public class BoxToText {
 		throw new RuntimeException("unsupported box expression: " + box.getClass());
 	}
 	
-	private Iterable<Box> eachGroup(Group box) {
+	private List<Box> eachGroup(Group box) {
 		int step = getGs(box.options);
 		List<Box> result = new ArrayList<Box>();
 		
@@ -300,8 +312,8 @@ public class BoxToText {
 		
 		return result;
 	}
-
-	private Iterable<Box> eachSepList(SepList sl) {
+	
+	private List<Box> eachSepList(SepList sl) {
 		Box prev = null;
 		List<Box> result = new ArrayList<Box>();
 		for (Box box: each(sl.kids)) {
@@ -377,7 +389,7 @@ public class BoxToText {
 		}
 	}
 
-	private Iterable<Box> each(List<Box> kids) {
+	private List<Box> each(List<Box> kids) {
 		// We just create lists; could make lazy iterators though...
 		List<Box> result = new ArrayList<Box>();
 		for (Box k: kids) {
