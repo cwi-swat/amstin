@@ -9,7 +9,6 @@ AST ::= [Cons] name:id "(" args:{Arg ","}* ")"
 	  | [Id] value:id
 	  | [Key] "&" value:id
 	  | [Ref] "*" value:id
-	  | [Nil] "(" ")"
 
 Arg ::= name:id ":" ast:AST
 

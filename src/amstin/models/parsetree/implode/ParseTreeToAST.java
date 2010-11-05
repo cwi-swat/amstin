@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import amstin.models.ast.AST;
 import amstin.models.ast.Cons;
-import amstin.models.ast.Nil;
 import amstin.models.parsetree.Arg;
 import amstin.models.parsetree.Bool;
 import amstin.models.parsetree.Comment;
@@ -39,7 +38,7 @@ public class ParseTreeToAST {
 
 	private AST implodeTree(Tree tree) {
 		if (tree == null) {
-			return new Nil();
+			return null;
 		}
 		if (tree instanceof Obj) {
 			Cons ast = new Cons();

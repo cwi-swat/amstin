@@ -8,6 +8,22 @@ Alt ::= label:Label? box:Box
 
 Label ::= "[" name:id "]"
 
+Operator ::= [V] "V" 
+		  |  [H] "H"
+		  |  [I] "I"
+		  |  [G] "G"
+		  |  [A] "A"
+		  |  [R] "R"
+		  |  [C] "C"
+		  |  [SL] "SL"
+		  |  [KW] "KW"
+		  |  [Var] "VAR"
+		  |  [Str] "STR"
+		  |  [Num] "NUM"
+		  |  [Ref] "REF"
+		  |  [Def] "DEF"
+
+
 Box ::= [Vertical] "V" options:Option* "[" kids:Box* "]"
      |  [Horizontal] "H" options:Option* "[" kids:Box* "]"
      |  [Indented] "I" options:Option* "[" kids:Box* "]"

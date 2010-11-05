@@ -10,7 +10,6 @@ import amstin.models.ast.Id;
 import amstin.models.ast.Int;
 import amstin.models.ast.Key;
 import amstin.models.ast.List;
-import amstin.models.ast.Nil;
 import amstin.models.ast.Real;
 import amstin.models.ast.Ref;
 import amstin.models.ast.Str;
@@ -54,6 +53,9 @@ public class ASTtoBox {
 	}
 	
 	private Box toBox(AST ast) {
+		if (ast == null) {
+			return null;
+		}
 		if (ast instanceof Cons) {
 			Cons cons = (Cons)ast;
 			Box box = lookupBox(cons.name);
@@ -83,9 +85,6 @@ public class ASTtoBox {
 		}
 		if (ast instanceof Bool) {
 			return text(((Bool)ast).value.toString());
-		}
-		if (ast instanceof Nil) {
-			return null;
 		}
 		throw new RuntimeException("unsupported AST type: " + ast.getClass());
 	}
