@@ -16,7 +16,9 @@ Tree ::= [Obj] "appl" "(" name:id "," "[" args:{Tree ","}* "]" ")"
        | [Ref] "ref" "(" name:id "," type:id ")" loc:Location?
        | [Id] value:id loc:Location?
        | [Str] value:str loc:Location?
+       | [SqStr] value:str loc:Location?
        | [Lit] "lit" "(" value:str ")" loc:Location?
+       | [CILit] "cilit" "(" value:str ")" loc:Location?
        | [Ws] "ws" "(" value:str ")" loc:Location?
        | [Comment] "comment" "(" value:str ")" loc:Location?
        | [Int] value:int loc:Location?

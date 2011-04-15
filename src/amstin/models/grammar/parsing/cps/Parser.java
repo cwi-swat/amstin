@@ -17,6 +17,7 @@ import java.util.regex.Pattern;
 import amstin.models.grammar.Alt;
 import amstin.models.grammar.Bool;
 import amstin.models.grammar.Boot;
+import amstin.models.grammar.CiLit;
 import amstin.models.grammar.Element;
 import amstin.models.grammar.Grammar;
 import amstin.models.grammar.Id;
@@ -33,6 +34,7 @@ import amstin.models.grammar.Opt;
 import amstin.models.grammar.Real;
 import amstin.models.grammar.Ref;
 import amstin.models.grammar.Rule;
+import amstin.models.grammar.SqStr;
 import amstin.models.grammar.Str;
 import amstin.models.grammar.Sym;
 import amstin.models.grammar.Symbol;
@@ -200,6 +202,9 @@ public class Parser {
 		if (sym instanceof Lit) {
 			return parseLit((Lit)sym, cnt, src, pos);
 		}
+		else if (sym instanceof CiLit) {
+			return parseCiLit((CiLit)sym, cnt, src, pos);
+		}
 		else if (sym instanceof Int) {
 			return parseInt((Int)sym, cnt, src, pos);
 		}
@@ -214,6 +219,9 @@ public class Parser {
 		}
 		else if (sym instanceof Str) {
 			return parseStr((Str)sym, cnt, src, pos);
+		}
+		else if (sym instanceof SqStr) {
+			return parseSqStr((SqStr)sym, cnt, src, pos);
 		}
 		else if (sym instanceof Key) {
 			return parseKey((Key)sym, cnt, src, pos);
@@ -499,6 +507,22 @@ public class Parser {
 		}
 		return pos;
 	}
+	public int parseCiLit(CiLit lit, Cnt cnt, String src, int pos) {
+		String reStr = "";
+		for (int i = 0; i < lit.value.length(); i++) {
+			char c = lit.value.charAt(i);
+			reStr += "[" + Character.toUpperCase(c) + Character.toLowerCase(c) + "]";  
+		}
+		Pattern re = Pattern.compile(reStr);
+		Matcher m = re.matcher(src.subSequence(pos, src.length()));
+		if (m.lookingAt()) {
+			amstin.models.parsetree.CiLit litAst = new amstin.models.parsetree.CiLit();
+			litAst.value = lit.value;
+			litAst.loc = makeLoc(pos, lit.value.length());	
+			return cnt.apply(pos + m.end(), litAst);
+		}
+		return pos;
+	}
 
 	public int parseLayout(Cnt cnt, String src, int pos) {
 		Pattern re = Pattern.compile("([\\t\\n\\r\\f ]*(//[^\n]*\n)?)*");
@@ -586,6 +610,24 @@ public class Parser {
 			s = s.replaceAll("\\f", "\f");
 			s = s.replaceAll("\\r", "\r");
 			amstin.models.parsetree.Str strAst = new amstin.models.parsetree.Str();
+			strAst.value = s.substring(1, s.length() - 1);
+			strAst.loc = makeLoc(pos, m.group().length());
+			return cnt.apply(pos + m.end(), strAst);
+		}
+		return pos;
+	}
+	
+	public int parseSqStr(SqStr str, Cnt cnt, String src, int pos) {
+		Pattern re = Pattern.compile("'(\\\\.|[^\'])*\'");
+		Matcher m = re.matcher(src.subSequence(pos, src.length()));
+		if (m.lookingAt()) {
+			String s = m.group();
+			s = s.replaceAll("\\'", "'");
+			s = s.replaceAll("\\n", "\n");
+			s = s.replaceAll("\\t", "\t");
+			s = s.replaceAll("\\f", "\f");
+			s = s.replaceAll("\\r", "\r");
+			amstin.models.parsetree.SqStr strAst = new amstin.models.parsetree.SqStr();
 			strAst.value = s.substring(1, s.length() - 1);
 			strAst.loc = makeLoc(pos, m.group().length());
 			return cnt.apply(pos + m.end(), strAst);

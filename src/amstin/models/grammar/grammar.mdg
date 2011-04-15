@@ -16,11 +16,13 @@
   Symbol ::= [Sym] rule:Rule^
           | [Int] "int"
           | [Str] "str"
+          | [SqStr] "sqstr"
           | [Real] "real"
           | [Bool] "bool"
           | [Id]  "id"
           | [Ref] ref:id "^"
           | [Lit] value:str
+          | [CiLit] value:sqstr
           | [Key] "key"
           | [IterStar] arg:Symbol "*"
           | [Iter] arg:Symbol "+"

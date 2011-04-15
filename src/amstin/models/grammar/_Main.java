@@ -33,9 +33,13 @@ public class _Main {
 		Parser parser1 = new Parser((Grammar) itself1);
 		Grammar itself2 = (Grammar) parser1.parse(GRAMMAR_PKG, src);
 		
+		Parser parser2 = new Parser((Grammar) itself2);
+		Grammar itself3 = (Grammar) parser2.parse(GRAMMAR_PKG, src);
+		
 		System.out.println("grammar0 eq grammar1? " + ModelEquality.equals(itself0, itself1));
 		System.out.println("grammar1 eq grammar2? " + ModelEquality.equals(itself1, itself2));
 		System.out.println("grammar0 eq grammar2? " + ModelEquality.equals(itself0, itself2));
+		System.out.println("grammar0 eq grammar3? " + ModelEquality.equals(itself0, itself3));
 		
 		
 		Grammar meta = Parser.parseGrammar(amstin.models.meta._Main.METAMODEL_MDG);

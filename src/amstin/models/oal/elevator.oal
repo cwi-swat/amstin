@@ -1,0 +1,626 @@
+//Domain 'elevator_r1' Notebook
+//State Model 'Cabin' Descriptions
+//State Model 'Cabin'
+//Object: Cabin
+//Description:
+//None
+//State: 1. Transferring Passengers
+//Description:
+select one myXfer related by self->XFER[R21];
+generate XFER1: Cabin_arrived () to myXfer;
+select one myDoor related by self->DOOR[R4];
+generate DOOR1: Unlock () to myDoor;
+// ...
+
+//State: 2. Securing Doors
+//Description:
+select one myDoor related by self->DOOR[R4];
+myDoor.Lock_enabled = true;
+generate DOOR2: Lock () to myDoor;
+// ...
+
+//State: 3. Moving to Floor
+//Description:
+select one myXfer related by self->XFER[R21];
+generate TRAN1: Move_to_floor (Floor_number:myXfer.Destination_floor, Shaft_ID:self.Shaft) to TRAN;
+// ...
+
+
+//State Model 'Door' Descriptions
+//State Model 'Door'
+//Object: Door
+//Description:
+//None
+//State: 1. Closed
+//Description:
+// if self.Lock_enabled
+// generate Lock to self
+if (self.Lock_enabled)
+    // if cabin set the lock, then it wants to go
+    // this means that an XFER must exist
+    generate DOOR2: Lock () to self;
+else
+    // There's no XFER, check the work list
+    generate XFER_A4: Ready_to_go (Shaft_ID:self.Shaft_ID) to XFER assigner;
+end if;
+// ...
+
+//State: 2. Opening
+//Description:
+// Tell PIO to start opening the door
+// --
+generate PIO1: Open_door (Shaft_ID:self.Shaft_ID) to PIO;
+// ...
+
+//State: 3. Open
+//Description:
+// Set open timer to Open_wait_time
+// --
+create event instance norm_timeout of DOOR9:Normal_open_timeout() to self;
+d_timer = TIM::timer_start(microseconds:self.Open_wait_time * 1000, event_inst: norm_timeout);
+// ...
+
+//State: 4. Closing
+//Description:
+// Tell PIO to start closing the door
+// --
+generate PIO2: Close_door (Shaft_ID:self.Shaft_ID) to PIO;
+// ...
+
+//State: 5. Locked
+//Description:
+// Tell the Cabin we're ready to go
+// --
+select one myCabin related by self->CAB[R4];
+generate CAB3: Doors_secure () to myCabin;
+// ...
+
+//State: 6. Registering_block
+//Description:
+// if we've tried to close the door unsuccessfully too many
+// consecutive times, take the door out of service.
+//
+// Otherwise, set the open wait time to this Bank's block clear time
+// and reopen the doors for a while
+// --
+select one myBank related by self->CAB[R4]->SHAFT[R2]->BANK[R1];
+self.Retries = self.Retries + 1;
+if (self.Retries > myBank.Max_close_attempts)
+    generate DOOR8: Cant_close_door () to self;
+else
+    self.Open_wait_time = myBank.Block_clear_time;
+    generate DOOR6: Open () to self;
+end if;
+// ...
+
+//State: 7. Out of Service
+//Description:
+// pending out of service strategy
+// --
+
+//State: 8. Expediting_Close
+//Description:
+// Cancel the open timer and start closing the door
+// --
+dtimer_exists = TIM::timer_cancel (timer_inst_ref:self.Open_timer);
+generate DOOR10: Done () to self;
+// ...
+
+//State: 9. Unlocking
+//Description:
+// Reset Lock, Retries and Door open timer
+// --
+self.Lock_enabled = false;
+self.Retries = 0;
+select one myBank related by self->CAB[R4]->SHAFT[R2]->BANK[R1];
+self.Open_wait_time = myBank.Pass_load_time;
+generate DOOR10: Done () to self;
+// ...
+
+
+//State Model 'Transfer' Descriptions
+//State Model 'Transfer'
+//Object: Transfer
+//Description:
+//None
+//State: 1. Creating
+//Description:
+// ...
+
+//State: 2. Waiting for Service
+//Description:
+// generate New_transfer to Cabin
+// --
+select one myCab related by self->CAB[R21];
+generate CAB1: New_transfer () to myCab;
+// ...
+
+//State: 3. Completed
+//Description:
+// if there is a call matching the shaft service direction
+// generate Clear to that call
+// if my->Shaft_Level.Stop_Requested
+// generate Clear_Stop to Shaft_Level
+//
+// delete this associative instance and relationship
+// --
+select one mySLEV related by self->SLEV[R21];
+select one mySHAFT related by mySLEV->SHAFT[R28];
+if (mySLEV.Stop_requested)
+    mySLEV.Stop_requested = false;
+    generate UI1:Clear_stop (Floor_number:mySLEV.Floor_number, Shaft_ID:mySLEV.Shaft_ID) to UI;
+end if;
+select any upRequest related by mySHAFT->BLEV[R20] where (selected.Floor_number == self.Destination_floor);
+if (not_empty upRequest)
+    unrelate mySHAFT from upRequest across R20;
+    generate UI2: Clear_direction (Bank_ID:mySHAFT.Bank_ID, Floor_number:mySLEV.Floor_number, Direction:"up") to UI;
+end if;
+select any dnRequest related by mySHAFT->BLEV[R19] where (selected.Floor_number == self.Destination_floor);
+if (not_empty dnRequest)
+    unrelate mySHAFT from dnRequest across R19;
+    generate UI2: Clear_direction (Bank_ID:mySHAFT.Bank_ID, Floor_number:mySLEV.Floor_number, Direction:"down") to UI;
+end if;
+generate XFER_A4: Ready_to_go (Shaft_ID:self.Shaft_ID) to XFER assigner;
+select one myCabin related by self->CAB[R21];
+unrelate mySLEV from myCabin across R21 using self;
+// ...
+
+
+//State Model 'Transfer Assigner' Descriptions
+//State Model 'Transfer Assigner'
+//Object: Transfer
+//Description:
+//None
+//State: 0. NO ASSIGNMENTS REQUESTED
+//Description:
+// ...
+
+//State: 1. Searching Ahead for Calls in the Service Direction
+//Description:
+// Search in the service direction and find the closest:
+// a) Shaft Level with stop requested OR
+// b) Call in the current service direction
+// if either exists at a Shaft Level
+// generate Dest_selected (Shaft_ID, Floor_number) to self
+// else
+// generate No_dest () to self
+//--
+// ---------------------
+// INIT SEARCH
+select any cabinShaft from instances of SHAFT where (selected.ID == rcvd_evt.Shaft_ID);
+select one cabinBank related by cabinShaft->BANK[R1];
+select one theCabin related by cabinShaft->CAB[R2];
+cabinLocation = theCabin.Current_floor; // where the cabin is now
+serviceDir = cabinShaft.Service_direction; // current service direction
+destFloor = cabinLocation; // result of unsuccessful search
+// establish floor increment - and end condition for search
+finc = 0; //scope
+if (serviceDir == "up")
+    finc = 1;
+elif (serviceDir == "down")
+    finc = -1;
+end if;
+// BEGIN SEARCH
+fn = cabinLocation + finc;
+floorselected = false;
+while (fn >= cabinBank.Bottom_floor and fn <= cabinBank.Top_floor) // until we pass the top or bottom floor
+    select any thisShaftLevel from instances of SLEV
+        where (selected.Floor_number == fn and selected.Shaft_ID == cabinShaft.ID);
+    // Does this floor have an Elevator Stop pending?
+    if (thisShaftLevel.Stop_requested) // found an elevator stop - let's go!
+        destFloor = fn;
+        floorselected = true;
+        break;
+    end if;
+    // Has this floor been called in the service direction?
+    select any thisBlev from instances of BLEV
+        where (selected.Bank_ID == cabinBank.ID and selected.Floor_number == fn);
+    if (serviceDir == "up")
+        select one callRequested related by thisBlev->SHAFT[R20];
+        if (not_empty callRequested)
+            destFloor = fn;
+            floorselected = true;
+            break;
+        end if;
+    elif (serviceDir == "down")
+        select one callRequested related by thisBlev->SHAFT[R19];
+        if (not_empty callRequested)
+            destFloor = fn;
+            floorselected = true;
+            break;
+        end if;
+    end if;
+    fn = fn +finc;
+end while;
+// SEARCH COMPLETE - HANDLE RESULT
+select one safeStop related by theCabin->STOP_WIN[R22];
+if (floorselected and (destFloor <= safeStop.Nearest_upper_floor and destFloor >= safeStop.Nearest_lower_floor))
+    generate XFER_A5: Dest_selected (selected_floor_number:destFloor,
+                                     Shaft_ID:cabinShaft.ID, Bank_ID:cabinBank.ID) to XFER assigner;
+else
+    generate XFER_A6: No_dest (Current_floor_number:cabinLocation,
+                               Shaft_ID:cabinShaft.ID, Bank_ID:cabinBank.ID) to XFER assigner;
+end if;
+
+//State: 2. Searching Ahead for Calls Opposite the Service Direction
+//Description:
+// select the Shaft_Level farthest from the cabin in the service direction
+// with a Call opposite the service direction.
+//
+// if such a Shaft Level exists
+// Toggle the Shaft.Service_direction
+// generate Dest_selected (Shaft_ID, Floor_number) to self
+// else
+// generate No_dest () to self
+//--
+// ---------------------
+// INIT SEARCH
+select any cabinShaft from instances of SHAFT where (selected.ID == rcvd_evt.Shaft_ID);
+select one cabinBank related by cabinShaft->BANK[R1];
+select one theCabin related by cabinShaft->CAB[R2];
+cabinLocation = theCabin.Current_floor;
+serviceDir = cabinShaft.Service_direction;
+destFloor = cabinLocation;
+// establish floor increment - and initial value of search
+finc = 0; //scope
+fn = 0;
+searchDir = "init";
+if (serviceDir == "up")
+    finc = -1;
+    fn = cabinBank.Top_floor;
+    searchDir = "down";
+else // down
+    finc = 1;
+    fn = cabinBank.Bottom_floor;
+    searchDir = "up";
+end if;
+// BEGIN SEARCH
+floorselected = false;
+while (fn != cabinLocation) // until reach the cabin's current position
+    select any thisShaftLevel from instances of SLEV
+        where (selected.Floor_number == fn and selected.Shaft_ID == cabinShaft.ID);
+    // Has this floor been called OPPOSITE the service direction?
+    select any thisBlev from instances of BLEV
+        where (selected.Bank_ID == cabinBank.ID and selected.Floor_number == fn);
+    if (serviceDir == "up")
+        select one callRequested related by thisBlev->SHAFT[R19];
+        if (not_empty callRequested)
+            destFloor = fn;
+            floorselected = true;
+            break;
+        end if;
+    elif (serviceDir == "down")
+        select one callRequested related by thisBlev->SHAFT[R20];
+        if (not_empty callRequested)
+            destFloor = fn;
+            floorselected = true;
+            break;
+        end if;
+    end if;
+    fn = fn +finc;
+end while;
+// SEARCH COMPLETE - HANDLE RESULT
+select one safeStop related by theCabin->STOP_WIN[R22];
+if (floorselected and (destFloor <= safeStop.Nearest_upper_floor and destFloor >= safeStop.Nearest_lower_floor))
+    cabinShaft.Service_direction = searchDir; // toggle service direction
+    generate XFER_A5: Dest_selected (selected_floor_number:destFloor,
+                                     Shaft_ID:cabinShaft.ID, Bank_ID:cabinBank.ID) to XFER assigner;
+else
+    generate XFER_A6: No_dest (Current_floor_number:cabinLocation,
+                               Shaft_ID:cabinShaft.ID, Bank_ID:cabinBank.ID) to XFER assigner;
+end if;
+
+//State: 3. Searching Behind for Calls Opposite the Service Direction
+//Description:
+// Search opposite the service direction and find the closest:
+// a) elevator stop OR
+// b) call opposite the service direction
+// if either exists at a Shaft Level
+// Toggle Shaft.Service_direction
+// generate Dest_selected (Shaft_ID, Floor_number) to self
+// else
+// generate No_dest (Shaft_ID, Floor_number) to self
+//--
+// ---------------------
+// INIT SEARCH
+select any cabinShaft from instances of SHAFT where (selected.ID == rcvd_evt.Shaft_ID);
+select one cabinBank related by cabinShaft->BANK[R1];
+select one theCabin related by cabinShaft->CAB[R2];
+cabinLocation = theCabin.Current_floor; // where the cabin is now
+serviceDir = cabinShaft.Service_direction; // current service direction
+destFloor = cabinLocation; // result of unsuccessful search
+// establish floor increment - and end condition for search
+finc = 0; //scope
+searchDir = "init";
+if (serviceDir == "up") // setup for search outward from cabin
+    finc = -1;
+    searchDir = "down";
+else // down
+    finc = 1;
+    searchDir = "up";
+end if;
+// BEGIN SEARCH
+fn = cabinLocation + finc;
+floorselected = false;
+while (fn >= cabinBank.Bottom_floor and fn <= cabinBank.Top_floor) // until we pass the top or bottom floor
+    select any thisShaftLevel from instances of SLEV
+        where (selected.Floor_number == fn and selected.Shaft_ID == cabinShaft.ID);
+    // Does this floor have an Elevator Stop pending?
+    if (thisShaftLevel.Stop_requested) // found an elevator stop - let's go!
+        destFloor = fn;
+        floorselected = true;
+        break;
+    end if;
+    // Has this floor been called opposite the service direction?
+    select any thisBlev from instances of BLEV
+        where (selected.Bank_ID == cabinBank.ID and selected.Floor_number == fn);
+    if (serviceDir == "up")
+        select one callRequested related by thisBlev->SHAFT[R19];
+        if (not_empty callRequested)
+            destFloor = fn;
+            floorselected = true;
+            break;
+        end if;
+    elif (serviceDir == "down")
+        select one callRequested related by thisBlev->SHAFT[R20];
+        if (not_empty callRequested)
+            destFloor = fn;
+            floorselected = true;
+            break;
+        end if;
+    end if;
+    fn = fn + finc;
+end while;
+// SEARCH COMPLETE - HANDLE RESULT
+select one safeStop related by theCabin->STOP_WIN[R22];
+if (floorselected and (destFloor <= safeStop.Nearest_upper_floor and destFloor >= safeStop.Nearest_lower_floor))
+    cabinShaft.Service_direction = searchDir; // toggle the service direction
+    generate XFER_A5: Dest_selected (selected_floor_number:destFloor,
+                                     Shaft_ID:cabinShaft.ID, Bank_ID:cabinBank.ID) to XFER assigner;
+else
+    generate XFER_A6: No_dest (Current_floor_number:cabinLocation,
+                               Shaft_ID:cabinShaft.ID, Bank_ID:cabinBank.ID) to XFER assigner;
+end if;
+// ...
+
+//State: 4. Searching Behind for Calls in the Service Direction
+//Description:
+// select the Shaft_Level farthest from the Cabin in the service direction
+// with a Call matching the service direction.
+//
+// if such a Shaft Level exists
+// generate Dest_selected (Shaft_ID, Floor_number) to self
+// else
+// generate No_dest () to self
+//--
+// ---------------------
+// INIT SEARCH
+select any cabinShaft from instances of SHAFT where (selected.ID == rcvd_evt.Shaft_ID);
+select one cabinBank related by cabinShaft->BANK[R1];
+select one theCabin related by cabinShaft->CAB[R2];
+cabinLocation = theCabin.Current_floor; // where the cabin is now
+serviceDir = cabinShaft.Service_direction; // current service direction
+destFloor = cabinLocation; // result of unsuccessful search
+// establish floor increment - and initial value of search
+finc = 0; //scope
+fn = 0;
+searchDir = "init";
+if (serviceDir == "up")
+    finc = 1;
+    fn = cabinBank.Bottom_floor;
+    searchDir = "up";
+else // down
+    finc = -1;
+    fn = cabinBank.Top_floor;
+    searchDir = "down";
+end if;
+// BEGIN SEARCH
+floorselected = false;
+while (fn != cabinLocation) // until reach the cabin's current position
+    select any thisShaftLevel from instances of SLEV
+        where (selected.Floor_number == fn and selected.Shaft_ID == cabinShaft.ID);
+    // Does this floor have a Call in the ServiceDir direction?
+    select any thisBlev from instances of BLEV
+        where (selected.Bank_ID == cabinBank.ID and selected.Floor_number == fn);
+    if (serviceDir == "up")
+        select one callRequested related by thisBlev->SHAFT[R20];
+        if (not_empty callRequested)
+            destFloor = fn;
+            floorselected = true;
+            break;
+        end if;
+    elif (serviceDir == "down")
+        select one callRequested related by thisBlev->SHAFT[R19];
+        if (not_empty callRequested)
+            destFloor = fn;
+            floorselected = true;
+            break;
+        end if;
+    end if;
+    fn = fn + finc;
+end while;
+// SEARCH COMPLETE - HANDLE RESULT
+select one safeStop related by theCabin->STOP_WIN[R22];
+if (floorselected and (destFloor <= safeStop.Nearest_upper_floor and destFloor >= safeStop.Nearest_lower_floor))
+    generate XFER_A5: Dest_selected (selected_floor_number:destFloor,
+                                     Shaft_ID:cabinShaft.ID, Bank_ID:cabinBank.ID) to XFER assigner;
+else
+    generate XFER_A3: Done () to XFER assigner; // last stage of search - nothing else to do
+end if;
+// ...
+
+//State: 5. CREATING TRANSFER
+//Description:
+// See if there is already an existing Transfer for this Shaft
+// if there isn't then
+// we need to create a new transfer for the
+// destination floor our algorithm selected.
+// if a transfer does exist already AND it directs the cabin to
+// a floor different than the newly selected destination
+// delete the existing transfer and then create one for the new destination
+// But if the transfer exists and specifies the same floor as our "new" destination
+// don't do anything, just quit
+// --
+// if unchanged, the following assertions result in no action taken
+// that's the case where the selected floor matches the existing transfer
+// so if we picked the same destination we already had, we just skip out of
+// of here without doing anything
+newXfer = false;
+swapXfer = false;
+select any existingXfer from instances of XFER where (selected.Shaft_ID == rcvd_evt.Shaft_ID);
+if (empty existingXfer)
+    newXfer = true; // nothing there - just create a new xfer
+elif (existingXfer.Destination_floor != rcvd_evt.selected_floor_number)
+    swapXfer = true; // xfer exists with different floor - swap it with the new xfer
+end if;
+// if it's a swap, first delete the existing Xfer
+if (swapXfer)
+    // all this just to delete a stupid relationship
+    select one theShaft_Level related by existingXfer->SLEV[R21];
+    select one theCabin related by existingXfer->CAB[R21];
+    unrelate theShaft_Level from theCabin across R21 using existingXfer;
+    delete object instance existingXfer;
+end if;
+// if either is true, we create a new transfer
+if (newXfer OR swapXfer)
+    select any theCabin from instances of CAB where (selected.Shaft_ID == rcvd_evt.Shaft_ID);
+    select any theShaftLevel from instances of SLEV
+        where (selected.Shaft_ID == rcvd_evt.Shaft_ID and selected.Floor_number == rcvd_evt.selected_floor_number);
+    create object instance newXfer_instance of XFER;
+    relate theShaftLevel to theCabin across R21 using newXfer_instance;
+    generate XFER2: created () to newXfer_instance;
+end if;
+generate XFER_A3: Done () to XFER assigner;
+// ...
+
+
+//State Model 'Bank_Level' Descriptions
+//State Model 'Bank_Level'
+//Object: Bank_Level
+//Description:
+//None
+//State: 1. Waiting for Cabin Call Request
+//Description:
+// ...
+
+//State: 2. selecting Shaft to Service Call
+//Description:
+// Apply algorithm to select Shaft based on:
+// Closest stopping floor to current level
+// Service direction
+// Notify transfer assigner of new request
+// (no algorithm has been specified yet, so we just select any Shaft in this Bank)
+select any shaftChoice from instances of SHAFT where (selected.Bank_ID == self.Bank_ID);
+if (rcvd_evt.Direction == "up")
+    relate self to shaftChoice across R20;
+elif (rcvd_evt.Direction == "down")
+    relate self to shaftChoice across R19;
+end if;
+generate XFER_A1: Floor_requested (Shaft_ID: shaftChoice.ID) to XFER assigner;
+generate BLEV4: Done () to self;
+// ...
+
+
+//State Model 'Shaft_Level' Descriptions
+//State Model 'Shaft_Level'
+//Object: Shaft_Level
+//Description:
+//None
+//State: 1. Waiting_for_Stop_Request
+//Description:
+// ...
+
+//State: 2. Stop_Requested
+//Description:
+self.Stop_requested = true;
+generate XFER_A1:Floor_requested (Shaft_ID:self.Shaft_ID) to XFER assigner;
+generate SLEV3: Done () to self;
+// ...
+
+
+//State Model 'Stop_Window' Descriptions
+//State Model 'Stop_Window'
+//Object: Stop_Window
+//Description:
+//None
+//State: 1. Update Stop Window
+//Description:
+// Does nothing
+// Bridge to Transport Domain TBD
+// Enables illustration of update on OCM
+// ...
+
+
+//State Model 'Main_INIT' Descriptions
+//State Model 'Main_INIT'
+//Object: Main_INIT
+//Description:
+//None
+//State: 0. Waiting to GO
+//Description:
+// ...
+
+//State: 1. Global scenario setup
+//Description:
+// create the Building
+create object instance theBuilding of BLDNG;
+theBuilding.Name = "Gengar";
+totalFloors = 7;
+// create the Bank in the Building
+create object instance theBank of BANK;
+theBank.Pass_load_time = 10;
+theBank.Block_clear_time = 5;
+theBank.Top_floor = totalFloors;
+theBank.Bottom_floor = 1;
+theBank.Max_close_attempts = 10;
+relate theBank to theBuilding across R24;
+// create the Shaft
+create object instance theShaft of SHAFT;
+theShaft.Service_direction = "up";
+theShaft.In_service = true;
+relate theShaft to theBank across R1;
+// create the Cabin
+create object instance theCabin of CAB;
+theCabin.Current_floor = 1;
+relate theCabin to theShaft across R2;
+// create the Stop Window
+create object instance theSwin of STOP_WIN;
+theSwin.Nearest_upper_floor = totalFloors;
+theSwin.Nearest_lower_floor = 1;
+relate theSwin to theCabin across R22;
+// create the Door
+create object instance theDoor of DOOR;
+theDoor.Retries = 0;
+theDoor.Open_wait_time = 0;
+theDoor.Lock_enabled = false;
+relate theDoor to theCabin across R4;
+// create the Floors, Bank Levels and Shaft Levels
+fn = 1;
+while (fn <= totalFloors)
+    // Add a Floor to the Building
+    create object instance thisFloor of FLOOR;
+    thisFloor.Number = fn;
+    thisFloor.Name = "noname";
+    relate thisFloor to theBuilding across R23;
+    // Add a Shaft Level for this Floor
+    create object instance thisSlev of SLEV;
+    thisSlev.Floor_number = fn;
+    thisSlev.Stop_requested = false;
+    relate thisSlev to theShaft across R28;
+    // Add a Bank Level for this Floor
+    create object instance thisBlev of BLEV;
+    thisBlev.Floor_number = fn;
+    relate thisBlev to theBank across R25;
+    fn = fn + 1;
+end while;
+generate INIT2:Done () to self;
+// ...
+
+//State: 2. Specifics for Scenario 2
+//Description:
+// Scenario #1
+select any theBank from instances of BANK;
+select any theShaft from instances of SHAFT;
+select any theCabin from instances of CAB;
+theCabin.Current_floor = 7;
+// ...
