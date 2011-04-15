@@ -5,7 +5,7 @@ import java.util.regex.Pattern;
 
 import amstin.models.grammar.parsing.oogll.GLL;
 
-public class RegExp implements Terminal, Symbol {
+public class RegExp extends Base implements Terminal{
 
 	private Pattern pattern;
 
@@ -40,6 +40,16 @@ public class RegExp implements Terminal, Symbol {
 	public String toString() {
 		return pattern.toString();
 	}
+
+	@Override
+	public boolean isNullable() {
+		return pattern.matcher("").matches();
+	}
+
+//	@Override
+//	public boolean isInFirst(char c) {
+//		return false;
+//	}
 
 
 }

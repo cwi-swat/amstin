@@ -36,5 +36,4 @@ public class Iter extends Regular {
 		return alt.equals(getAlts().get(1));
 	}
 
-	
 }

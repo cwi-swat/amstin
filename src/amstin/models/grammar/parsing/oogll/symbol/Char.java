@@ -3,7 +3,7 @@ package amstin.models.grammar.parsing.oogll.symbol;
 import amstin.models.grammar.parsing.oogll.GLL;
 
 
-public class Char implements Terminal {
+public class Char extends Base implements Terminal {
 	private final char ch;
 
 	public Char(char ch) {
@@ -38,5 +38,16 @@ public class Char implements Terminal {
 		}
 		return null;
 	}
+
+	@Override
+	public boolean isNullable() {
+		return false;
+	}
+
+//	@Override
+//	public boolean isInFirst(char c) {
+//		return this.ch == c;
+//	}
+
 	
 }

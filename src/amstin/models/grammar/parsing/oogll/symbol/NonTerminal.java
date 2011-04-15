@@ -1,27 +1,16 @@
 package amstin.models.grammar.parsing.oogll.symbol;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import amstin.models.grammar.parsing.oogll.Alt;
+import amstin.models.grammar.parsing.oogll.Item;
 
-public class NonTerminal implements Symbol, Iterable<Alt> {
+public class NonTerminal extends Base implements Iterable<Alt> {
 
-	// TODO: put in factory
-	
-	// Using this table makes everything really really slow...!
-	// (this was to ensure clients do not make duplicate nonterminals
-	// so that pointer equality could be used).
-//	private static Map<String,NonTerminal> nts = new ShareableHashMap<String, NonTerminal>();
-//	public static NonTerminal nt(String name) {
-//		if (!nts.containsKey(name)) {
-//			nts.put(name, new NonTerminal(name));
-//		}
-//		return nts.get(name);
-//		return new NonTerminal(name);
-//	}
-	
 	private final String name;
 	private final List<Alt> alts = new ArrayList<Alt>();
 	private int hashCode;
@@ -64,5 +53,63 @@ public class NonTerminal implements Symbol, Iterable<Alt> {
 	public String getName() {
 		return name;
 	}
+
+	private boolean nullableBusy = false;
+	
+	@Override
+	public boolean isNullable() {
+		if (nullableBusy) {
+			return true;
+		}
+		nullableBusy = true;
+		try {
+			for (Alt a: this) {
+				if (a.isNullable()) {
+					return true;
+				}
+			}
+		}
+		finally {
+			nullableBusy = false;
+		}
+		return false;
+	}
+
+//	private boolean firstBusy = false;
+//	
+//	@Override
+//	public boolean isInFirst(char c) {
+//		if (firstBusy) {
+//			return true;
+//		}
+//		firstBusy = true;
+//		try {
+//			for (Alt a: this) {
+//				if (a.isInFirst(c)) {
+//					return true;
+//				}
+//			}
+//		}
+//		finally {
+//			firstBusy = false;
+//		}
+//		return false;
+//	}
+
+//	private Set<Item> itemsUsingMe = new HashSet<Item>();
+//	
+//	public boolean isInFollow(char c) {
+//		for (Item item: itemsUsingMe) {
+//			if (item.nextItem().isInFirst(c)) {
+//				return true;
+//			}
+//		}
+//	}
+//	
+//	
+//	@Override
+//	public void addContext(Item item) {
+//		contexts.add(item);
+//	}
 	
 }

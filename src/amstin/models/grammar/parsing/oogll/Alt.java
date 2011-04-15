@@ -127,6 +127,7 @@ public class Alt implements IParser {
 				return;
 			}
 			
+			// && test(ctx.charAt(pos), (NonTerminal)sym, i+1)
 			if (sym instanceof NonTerminal) {
 				cu = ctx.create(items[i+1], cu, cn, pos);
 				for (Alt alt: (NonTerminal)sym) {
@@ -143,6 +144,33 @@ public class Alt implements IParser {
 	}
 
 	
+	private boolean test(char c, NonTerminal sym, int i) {
+		return true;
+//		if (inFirst(i, c)) {
+//			return true;
+//		}
+//		if (isNullable(i) && sym.isInFollow(c)) {
+//			
+//		}
+//		return false;
+	}
+	
+	
+	
+
+//	private boolean inFirst(int i, char c) {
+//		for (int j = i; j < arity(); j++) {
+//			if (get(j).isInFirst(c)) {
+//				return true;
+//			}
+//			if (get(j).isNullable()) {
+//				continue;
+//			}
+//			return false;
+//		}
+//		return false;
+//	}
+
 	@Override
 	public String toString() {
 		return nonTerminal + "::=" + elts.toString();
@@ -163,6 +191,24 @@ public class Alt implements IParser {
 
 	public NonTerminal getNonTerminal() {
 		return nonTerminal;
+	}
+	
+	public boolean isNullable() {
+		return isNullable(0);
+	}
+
+	private boolean isNullable(int i) {
+		for (int j = i; j < arity(); j++) {
+			if (!get(j).isNullable()) {
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	public boolean isInFirst(char c) {
+		assert !elts.isEmpty();
+		return false;
 	}
 	
 }

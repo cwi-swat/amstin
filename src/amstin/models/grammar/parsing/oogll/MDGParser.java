@@ -99,7 +99,7 @@ public class MDGParser {
  	
 	public static void main(String[] args) throws InterruptedException {
 //		Grammar g = amstin.models.grammar.parsing.cps.Parser.parseGrammar(_Main.GRAMMAR_MDG);
-		Grammar g = amstin.models.grammar.parsing.cps.Parser.parseGrammar("src/amstin/models/grammar/parsing/gll/test.mdg");
+		Grammar g = amstin.models.grammar.parsing.cps.Parser.parseGrammar("src/amstin/models/grammar/parsing/oogll/test.mdg");
 //		String grammarSrc = amstin.models.grammar.parsing.cps.Parser.readPath("src/amstin/models/grammar/parsing/gll/test.mdg");
 		String src = " ac ";
 		

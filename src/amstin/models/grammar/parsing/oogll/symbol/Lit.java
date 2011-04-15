@@ -2,11 +2,12 @@ package amstin.models.grammar.parsing.oogll.symbol;
 
 import amstin.models.grammar.parsing.oogll.GLL;
 
-public class Lit implements Terminal, Symbol {
+public class Lit extends Base implements Terminal{
 
 	private String literal;
 
 	public Lit(String literal) {
+		assert literal.length() > 0;
 		this.literal = literal;
 	}
 	
@@ -22,6 +23,16 @@ public class Lit implements Terminal, Symbol {
 	public String toString() {
 		return literal;
 	}
+
+	@Override
+	public boolean isNullable() {
+		return false;
+	}
+
+//	@Override
+//	public boolean isInFirst(char c) {
+//		return literal.charAt(0) == c;
+//	}
 
 
 }

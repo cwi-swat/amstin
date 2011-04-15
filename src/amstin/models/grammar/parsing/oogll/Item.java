@@ -1,10 +1,12 @@
 package amstin.models.grammar.parsing.oogll;
 
+import java.util.Iterator;
+
 import amstin.models.grammar.parsing.oogll.sppf.Node;
 import amstin.models.grammar.parsing.oogll.symbol.NonTerminal;
 
 
-public class Item implements IParser {
+public class Item implements IParser, Iterable<Item> {
 
 	private final Alt alt;
 	private final int dot;
@@ -66,6 +68,26 @@ public class Item implements IParser {
 		return alt;
 	}
 
+
+	// this iterator incrementally produces 
+	@Override
+	public Iterator<Item> iterator() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+//	public boolean isInfirst(char c) {
+//		if (alt.get(dot).isNullable()) {
+//			if (dot < alt.arity() - 1) {
+//				// if there's a follow-up symbol
+//				return alt.getItem(dot + 1).isInfirst(c);
+//			}
+//			for (Item item: alt.getParents()) {
+//				
+//			}
+//		}
+//	}
 	
 }
 
