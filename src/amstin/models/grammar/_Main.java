@@ -10,7 +10,7 @@ import amstin.Config;
 import amstin.models.grammar.parsing.cps.Parser;
 import amstin.models.meta.MetaModel;
 import amstin.tools.CheckModel;
-import amstin.tools.ModelToJava;
+import amstin.tools.ModelToJavaScript;
 import amstin.tools.ModelEquality;
 import amstin.tools.ModelToString;
 
@@ -52,8 +52,9 @@ public class _Main {
 			System.out.println("ERROR: " + error);
 		}
 		if (errors.isEmpty()) {
-			FileWriter f = new FileWriter(new File(Config.PKG_DIR + "/models/grammar/Boot.java"));
-			ModelToJava.script(GRAMMAR_PKG, "Boot", itself1, f);
+			File file = new File(Config.PKG_DIR + "/models/grammar/Boot.js");
+			FileWriter f = new FileWriter(file);
+			ModelToJavaScript.script(GRAMMAR_PKG, "Boot", itself1, f);
 			f.flush();
 		}
 		

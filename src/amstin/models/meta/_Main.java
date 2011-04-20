@@ -10,14 +10,14 @@ import amstin.Config;
 import amstin.models.grammar.Grammar;
 import amstin.models.grammar.parsing.cps.Parser;
 import amstin.tools.CheckModel;
-import amstin.tools.ModelToJava;
+import amstin.tools.ModelToJavaScript;
 import amstin.tools.ModelEquality;
 import amstin.tools.ModelToString;
 
 
 public class _Main {
 
-	private static final String BOOT_JAVA = Config.PKG_DIR + "/models/meta/Boot.java";
+	private static final String BOOT_JAVA = Config.PKG_DIR + "/models/meta/Boot.js";
 	
 	public static final String METAMODEL_PKG = Config.PKG + ".models.meta";
 	public static final String METAMODEL_MDG = Config.PKG_DIR + "/models/meta/metamodel.mdg";
@@ -40,7 +40,7 @@ public class _Main {
 		if (errors.isEmpty()) {
 			FileWriter out = new FileWriter(new File(BOOT_JAVA));
 //			PrintWriter out = new PrintWriter(System.out);
-			ModelToJava.script(METAMODEL_PKG, "Boot", metaMetaModel, out);
+			ModelToJavaScript.script(METAMODEL_PKG, "Boot", metaMetaModel, out);
 			out.flush();
 		}
 		
