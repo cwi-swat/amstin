@@ -37,30 +37,27 @@ class SchemaGenerator
     end
   end
 
-  def self.make_prim(name)
-    m = SchemaModel.new
-    m.name = name
-    return m
-  end
-
-  PRIMITIVES = {
-    :str => make_prim("str"),
-    :bool => make_prim("bool"),
-    :int => make_prim("int")
-  }
 
   @@classes = {}
+  @@primitives = {}
   @@current = nil
 
   def self.schema
     s = SchemaModel.new
     s.name = self.to_s
     s.classes = @@classes.values
+    s.primitives = @@primitives.values
     return s
   end
     
 
   class << self
+    def primitive(name)
+      m = SchemaModel.new
+      m.name = name.to_s
+      @@primitives[name] = m
+    end
+      
     def klass(name, opts = {:super => nil}, &block)
       m = get_class(name.to_s)
       m.super = opts[:super] ? opts[:super].klass : nil
@@ -72,7 +69,7 @@ class SchemaGenerator
     def field(name, opts = {:optional => false, :many => false, :inverse => nil})
       f = get_field(@@current, name.to_s)
       t = opts[:type]
-      f.type = PRIMITIVES[t] || t.klass
+      f.type = @@primitives[t] || t.klass
       f.optional = opts[:optional]
       f.many = opts[:many]
       f.inverse = opts[:inverse]
@@ -109,9 +106,14 @@ class SchemaGenerator
 end
 
 class SchemaSchema < SchemaGenerator
+  primitive :str
+  primitive :int
+  primitive :bool
+
   klass(:Schema) do
     field :name, :type => :str
     field :classes, :type => Klass, :optional => true, :many => true, :inverse => Klass.schema
+    field :primitives, :type => Primitive, :optional => true, :many => true
   end
     
   klass(:Type) do
@@ -138,8 +140,8 @@ class SchemaSchema < SchemaGenerator
     field :inverse, :type => Field, :optional => true, :inverse => Field.inverse
   end
 
-  PRIMITIVES.each_value do |p|
-    p.instance_of = Primitive.klass
+  schema.primitives.each do |p|
+    p.instance_of = Primitive.klass # unfortunate .klass because of wrapping
   end
   schema.classes.each do |c|
     c.instance_of = Klass.klass
