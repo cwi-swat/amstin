@@ -1,0 +1,28 @@
+#### This is not right!!! ###
+
+  start Grammar
+  
+  Grammar ::= [Grammar] "start" startSymbol:Rule^ rules:Rule* 
+
+  Rule ::= [Rule] name:key "::=" alts:{Element "|"}+
+
+  Pattern ::= 
+            [Int] "int"
+          | [Str] "str"
+          | [SqStr] "sqstr"
+          | [Real] "real"
+          | [Bool] "bool"
+          | [Id]  "id"
+          | [Lit] value:str
+          | [CiLit] value:sqstr
+          | [Create] "[" name:id "]" Pattern
+          | [Field] name:id ":" data:Pattern
+          | [Ref] rule:Rule^
+          | [RefSpec] ref:id "^"
+          | [Key] "key"
+          | [Sequence] left:Pattern right:Pattern
+          | [IterStar] arg:Pattern "*"
+          | [Iter] arg:Pattern "+"
+          | [Opt] arg:Pattern "?"
+          | [IterSepStar] "{" arg:Pattern sep:str "}" "*"
+          | [IterSep] "{" arg:Pattern sep:str "}" "+"

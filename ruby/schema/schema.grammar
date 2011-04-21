@@ -1,0 +1,22 @@
+start Schema
+
+Schema ::= "schema" name:id classes:Class*
+
+Class ::= [Class] "class" name:key parent:Parent? fields:Field* "end"
+
+Parent ::= "<" supertype:Class^
+
+Field ::= [Field] name:key ":" type:Type Multiplicity? inverse:Inverse?
+
+Type ::= [Primitive] name:"int"
+	| [Primitive] name:"bool"
+	| [Primitive] name:"real"
+	| [Primitive] name:"str"
+	| Class^
+
+// todo? detect enums here
+Multiplicity ::= "*" {many=true, optional=true} 
+	| "?" {optional=true} 
+	| "+" {many=true}
+
+Inverse ::= "/" inverse:Field^

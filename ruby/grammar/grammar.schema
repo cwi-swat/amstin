@@ -1,0 +1,68 @@
+#### This is not right!!! ###
+
+metamodel Grammar
+
+	class Grammar
+	  name: str
+	  start: Rule
+	  rules: Rule*
+	end
+	
+	class Rule
+	  name: str
+	  alts: Pattern*
+	end
+	  
+	abstract class Pattern
+	end
+	
+	class Ref < Pattern
+	   rule: Rule
+	end
+	
+	class Create < Pattern
+	  type: str
+	  parts: Pattern*
+	end	
+	
+	class Field < Pattern
+	  label: Label
+	  symbol: Pattern
+	end
+	
+	class Int < Pattern end
+	class Str < Pattern end
+	class Real < Pattern end
+	class Id < Pattern end
+	class Key < Pattern end
+	
+	class RefSpec < Pattern
+	  name: str
+	end
+	
+	class Lit < Pattern
+	  value: str
+	end
+	
+	class IterStar < Pattern
+	  sub: Pattern
+	end
+	
+	class Iter < Pattern
+	  sub: Pattern
+	end
+	
+	class Opt < Pattern
+	  sub: Pattern
+	end
+	
+	class IterStarSep < Pattern
+	  sub: Pattern
+	  sep: str
+	end
+	
+	class IterSep < Pattern
+	  sub: Pattern
+	  sep: str
+	end
+end

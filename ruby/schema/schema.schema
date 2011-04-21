@@ -1,0 +1,30 @@
+schema Schema
+
+  class Schema
+    name: str
+    classes: Class* / schema
+  end
+
+  abstract class Type end
+  
+  class Primitive < Type
+    name: str
+  end
+  
+  class Class < Type
+    schema: Schema
+    name: str
+    superclass: Class? / subclasses
+    subclasses: Class*
+    fields: Field* / owner
+  end
+  
+  class Field
+    owner: Class
+    name: str
+    type: Type
+    optional: bool
+    many: bool
+    inverse: Field? / inverse
+  end
+end
