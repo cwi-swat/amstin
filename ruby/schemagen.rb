@@ -8,7 +8,7 @@ class SchemaModel < BasicObject
   end
 
   def method_missing(name, *args, &block)
-    if (name.to_s =~ /^([a-zA-Z0-9]*)=$/)
+    if (name.to_s =~ /^([a-zA-Z0-9\_]*)=$/)
       @fields[$1.to_sym] = args[0]
     else
       @fields[name]
@@ -28,6 +28,7 @@ class SchemaGenerator
   ## NB: to use this schemagenerator, be careful with names of classes
   ## defined using klass(): if you use a name that collides with any name
   ## included in Kernel, it'll break. 
+  ## Todo: fix this?
 
   class Wrap < BasicObject
     attr_reader :klass
@@ -62,7 +63,7 @@ class SchemaGenerator
       @@primitives[name] = m
     end
       
-    def klass(wrapped, opts = {:super => nil}, &block)
+    def klass(wrapped, opts = {}, &block)
       m = wrapped.klass
       m.super = opts[:super] ? opts[:super].klass : nil
       m.super.subtypes << m if m.super
@@ -70,7 +71,7 @@ class SchemaGenerator
       yield
     end
 
-    def field(name, opts = {:optional => false, :many => false, :inverse => nil})
+    def field(name, opts = {})
       f = get_field(@@current, name.to_s)
       t = opts[:type]
       f.type = @@primitives[t] || t.klass
@@ -168,6 +169,7 @@ if __FILE__ == $0 then
     c.subtypes.each do |s|
       puts "\tSubtype: #{s.name} (#{s._id})"
     end
+    puts "\tInstanceof: #{c.instance_of}"
     c.fields.each do |f|
       puts "\tFIELD #{f.name} (#{f._id})"
       puts "\t\ttype #{f.type.name} (#{f.type._id})"
