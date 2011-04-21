@@ -138,14 +138,14 @@ class SchemaSchema < SchemaGenerator
     field :inverse, :type => Field, :optional => true, :inverse => Field.inverse
   end
 
-  # only needed in schemaSchema
-  Schema.klass.meta = Klass.klass
-  Type.klass.meta = Klass.klass
-  Primitive.klass.meta = Klass.klass
-  Klass.klass.meta = Klass.klass
-  Field.klass.meta = Klass.klass
   PRIMITIVES.each_value do |p|
-    p.klass = Primitive.klass
+    p.instance_of = Primitive.klass
+  end
+  schema.classes.each do |c|
+    c.instance_of = Klass.klass
+    c.fields.each do |f|
+      f.instance_of = Field.klass
+    end
   end
 
 end
