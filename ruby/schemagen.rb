@@ -7,6 +7,10 @@ class SchemaModel < BasicObject
     @id = @@ids += 1
   end
 
+  def [](s)
+    @fields[s.to_sym]
+  end
+
   def method_missing(name, *args, &block)
     if (name.to_s =~ /^([a-zA-Z0-9\_]*)=$/)
       @fields[$1.to_sym] = args[0]
@@ -43,16 +47,17 @@ class SchemaGenerator
   end
 
 
+  @@schema = nil
   @@classes = {}
   @@primitives = {}
   @@current = nil
 
   def self.schema
-    s = SchemaModel.new
-    s.name = self.to_s
-    s.classes = @@classes.values
-    s.primitives = @@primitives.values
-    return s
+    @@schema ||= SchemaModel.new
+    @@schema.name = self.to_s
+    @@schema.classes = @@classes.values
+    @@schema.primitives = @@primitives.values
+    return @@schema
   end
     
 
@@ -91,6 +96,7 @@ class SchemaGenerator
         return f if f.name == name
       end
       f = SchemaModel.new
+      #puts "Creating field #{name} (#{f._id})"
       f.name = name
       klass.fields << f
       f.owner = klass
@@ -100,6 +106,7 @@ class SchemaGenerator
     def get_class(name)
       @@classes[name] ||= SchemaModel.new
       m = @@classes[name]
+      #puts "Getting class #{name} (#{m._id})"
       m.name = name
       m.fields ||= []
       m.subtypes ||= []
@@ -145,6 +152,7 @@ class SchemaSchema < SchemaGenerator
     field :inverse, :type => Field, :optional => true, :inverse => Field.inverse
   end
 
+  schema.instance_of = Schema.klass
   schema.primitives.each do |p|
     p.instance_of = Primitive.klass # unfortunate .klass because of wrapping
   end
@@ -157,6 +165,7 @@ class SchemaSchema < SchemaGenerator
 
 end
 
+require 'check'
 
 if __FILE__ == $0 then
   ss = SchemaSchema.schema
@@ -179,4 +188,11 @@ if __FILE__ == $0 then
 
     end
   end
+
+  puts ss.name
+  puts ss
+
+  check = Conformance.new(ss, ss)
+  check.run
+  p check.errors
 end
