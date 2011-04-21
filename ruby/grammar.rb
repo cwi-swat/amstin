@@ -115,6 +115,10 @@ class PGen < CyclicClosure
     }
   end
 
+  def cons1(h, t)
+    
+  end
+
   def Grammar(obj)
     recurse(obj.startSymbol)
   end
