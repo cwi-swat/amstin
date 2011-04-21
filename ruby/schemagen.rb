@@ -22,25 +22,21 @@ class SchemaModel < BasicObject
   def _id
     return @id
   end
-
-
-
 end
-
-class Wrap < BasicObject
-  attr_reader :klass
-  def initialize(m, builder)
-    @klass = m
-    @builder = builder
-  end
-
-  def method_missing(name)
-    @builder.get_field(@klass, name.to_s)
-  end
-end
-
 
 class SchemaGenerator
+  class Wrap < BasicObject
+    attr_reader :klass
+    def initialize(m, builder)
+      @klass = m
+      @builder = builder
+    end
+
+    def method_missing(name)
+      @builder.get_field(@klass, name.to_s)
+    end
+  end
+
   def self.make_prim(name)
     m = SchemaModel.new
     m.name = name
@@ -141,6 +137,17 @@ class SchemaSchema < SchemaGenerator
     field :many, :type => :bool
     field :inverse, :type => Field, :optional => true, :inverse => Field.inverse
   end
+
+  # only needed in schemaSchema
+  Schema.klass.meta = Klass.klass
+  Type.klass.meta = Klass.klass
+  Primitive.klass.meta = Klass.klass
+  Klass.klass.meta = Klass.klass
+  Field.klass.meta = Klass.klass
+  PRIMITIVES.each_value do |p|
+    p.klass = Primitive.klass
+  end
+
 end
 
 
