@@ -62,8 +62,8 @@ class SchemaGenerator
       @@primitives[name] = m
     end
       
-    def klass(name, opts = {:super => nil}, &block)
-      m = get_class(name.to_s)
+    def klass(wrapped, opts = {:super => nil}, &block)
+      m = wrapped.klass
       m.super = opts[:super] ? opts[:super].klass : nil
       m.super.subtypes << m if m.super
       @@current = m
@@ -114,20 +114,20 @@ class SchemaSchema < SchemaGenerator
   primitive :int
   primitive :bool
 
-  klass(:Schema) do
+  klass Schema do
     field :name, :type => :str
     field :classes, :type => Klass, :optional => true, :many => true, :inverse => Klass.schema
     field :primitives, :type => Primitive, :optional => true, :many => true
   end
     
-  klass(:Type) do
+  klass Type do
   end
 
-  klass(:Primitive, :super => Type) do
+  klass Primitive, :super => Type do
     field :name, :type => :str
   end
 
-  klass(:Klass, :super => Type) do
+  klass Klass, :super => Type do
     field :name, :type => :str
     field :super, :type => Klass, :optional => true, :inverse => Klass.subtypes
     field :subtypes, :type => Klass, :optional => true, :many => true
@@ -135,7 +135,7 @@ class SchemaSchema < SchemaGenerator
     field :schema, :type => Schema
   end
 
-  klass(:Field) do
+  klass Field do
     field :owner, :type => Klass, :inverse => Klass.fields
     field :name, :type => :str
     field :type, :type => Type
@@ -164,6 +164,9 @@ if __FILE__ == $0 then
     puts "CLASS #{c.name}  (#{c._id})"
     if c.super then
       puts "\tSuper: #{c.super.name}  (#{c.super._id})"
+    end
+    c.subtypes.each do |s|
+      puts "\tSubtype: #{s.name} (#{s._id})"
     end
     c.fields.each do |f|
       puts "\tFIELD #{f.name} (#{f._id})"
