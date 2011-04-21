@@ -25,6 +25,10 @@ class SchemaModel < BasicObject
 end
 
 class SchemaGenerator
+  ## NB: to use this schemagenerator, be careful with names of classes
+  ## defined using klass(): if you use a name that collides with any name
+  ## included in Kernel, it'll break. 
+
   class Wrap < BasicObject
     attr_reader :klass
     def initialize(m, builder)
@@ -70,8 +74,8 @@ class SchemaGenerator
       f = get_field(@@current, name.to_s)
       t = opts[:type]
       f.type = @@primitives[t] || t.klass
-      f.optional = opts[:optional]
-      f.many = opts[:many]
+      f.optional = opts[:optional] || false
+      f.many = opts[:many] || false
       f.inverse = opts[:inverse]
       f.inverse.inverse = f if f.inverse
     end
