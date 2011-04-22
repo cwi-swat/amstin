@@ -17,7 +17,6 @@ class CyclicApply < CyclicThing
     end
     
     @memo[obj] = true
-	#puts "FOOO #{obj.metaclass.name}"
     send(obj.metaclass.name, obj)
   end
 end
