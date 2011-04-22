@@ -47,7 +47,6 @@ class Conformance < CyclicCollectOnSecondArg
   end
 
   def run
-    puts "#{@root.classes}"
     klass = @root.classes.find do |c|
       c.name == @root.metaclass.name
     end
@@ -62,7 +61,7 @@ class Conformance < CyclicCollectOnSecondArg
   end
 
   def Primitive(this, model)
-    puts "PRIM: checking #{model} against #{this}"
+    #puts "PRIM: checking #{model} against #{this}"
     ok = case this.name
         when "str"  then model.is_a?(String)
         when "int"  then model.is_a?(Integer)
@@ -88,7 +87,7 @@ class Conformance < CyclicCollectOnSecondArg
       @errors << "Invalid class: expected #{this.name}, got #{model.metaclass.name}"
     else
       this.fields.each do |f|
-        puts "Model = #{model}, #{f.name}"
+        #puts "Model = #{model}, #{f.name}"
         recurse(f, model[f.name])
       end
     end
