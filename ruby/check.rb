@@ -61,15 +61,13 @@ class Conformance < CyclicCollectOnSecondArg
   end
 
   def Primitive(this, model)
-    #puts "PRIM: checking #{model} against #{this}"
     ok = case this.name
         when "str"  then model.is_a?(String)
         when "int"  then model.is_a?(Integer)
-        when "bool"  then model.is_a?(TrueClass)
-        when "bool"  then model.is_a?(FalseClass)
+        when "bool"  then model.is_a?(TrueClass) || model.is_a?(FalseClass)
         end
     unless ok
-      @errors << "Type mismatch: expected #{this.name}, got #{value}"
+      @errors << "Type mismatch: expected #{this.name}, got #{model}"
     end
   end
 
@@ -79,7 +77,6 @@ class Conformance < CyclicCollectOnSecondArg
       @errors << "Expected class type, not primitive #{model}"
     elsif model.is_a?(Array) then
       # check all elements
-      puts "************* Checking elements of #{model}"
       model.each do |elt|
         recurse(this, elt)
       end
@@ -95,7 +92,7 @@ class Conformance < CyclicCollectOnSecondArg
 
   def Field(this, model)
     klass = "<unknown>"
-    puts "FIELD: Checking #{model} against field #{this.name}"
+    #puts "FIELD: Checking #{model} against field #{this.name}"
     if !this.optional && !this.many && model.nil? then
       @errors << "Field #{klass}.#{this.name} is required"
     elsif this.optional && !this.many && model.nil? then
@@ -108,8 +105,6 @@ class Conformance < CyclicCollectOnSecondArg
       @errors << "Field #{klass}.#{this.name} is not many but got an array"
     elsif this.many && !this.optional && model == [] then
       @errors << "Field #{klass}.#{this.name} is non-optional many but got empty array"
-    elsif this.inverse then
-      # ???
     else
       recurse(this.type, model)
     end

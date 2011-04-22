@@ -25,8 +25,16 @@ class SchemaModel < BasicObject
     "model(#{_id})"
   end
 
+  def hash
+    _id
+  end
+
   def _id
     return @id
+  end
+
+  def inspect
+    to_s
   end
 end
 
@@ -49,13 +57,12 @@ class SchemaGenerator
   end
 
 
-  @@schema = nil
+  @@schema = SchemaModel.new
   @@classes = {}
   @@primitives = {}
   @@current = nil
 
   def self.schema
-    @@schema ||= SchemaModel.new
     @@schema.name = self.to_s
     @@schema.classes = @@classes.values
     @@schema.primitives = @@primitives.values
@@ -74,6 +81,7 @@ class SchemaGenerator
       m = wrapped.klass
       m.super = opts[:super] ? opts[:super].klass : nil
       m.super.subtypes << m if m.super
+      m.schema = @@schema # don't call schema, it sets classes/primitives.
       @@current = m
       yield
     end
