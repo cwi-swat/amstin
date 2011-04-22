@@ -9,8 +9,6 @@ function checkToken(token, kind, result) {
     return false;
 }
 function delta(token) {
-  var newrules = [];
-  var mentioned = [];
   var RuleNum = 1;
   Delta = {
     Grammar: function(token, gram, result, recurse, i) {
@@ -20,11 +18,7 @@ function delta(token) {
       result.start = recurse(gram.start);
       if (newRule == undefined)
         error("parse fail");
-      for (i in newrules)
-        insertGood(result.rules, newrules[i]);
       copy = MakeCopier(gram, result);
-      for (i in mentioned)
-        result.rules.push(copy(mentioned[i]));
     },
     Rule: function(_, obj, result, recurse, i) {
       result.name = obj.name + (RuleNum++);
