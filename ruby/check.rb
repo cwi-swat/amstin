@@ -11,19 +11,33 @@ class CyclicThing
 end
 
 
-class CyclicCollect < CyclicThing
-  def recurse(obj, *args)
-    if @memo[obj] then
-      return 
+class CyclicCollectOnSecondArg < CyclicThing
+  def recurse(obj, arg)
+    if !prim?(arg) then
+      if @memo[arg] then
+        return 
+      else
+        @memo[arg] = true
+      end
     end
-    @memo[obj] = true
-    
-    send(obj.metaclass.name, obj, *args)
+    send(obj.metaclass.name, obj, arg)
+  end
+
+  def prim?(model)
+    model.is_a?(String) || 
+      model.is_a?(Integer) || 
+      model.is_a?(TrueClass) || 
+      model.is_a?(FalseClass) || 
+      model.is_a?(Array)
   end
 end
 
+# problem
+# cyclic visiting on schema: stops to early, because it may find the the same class many times
+# cyclic visiting on mode: stops to early,  because  the same primitive value may occur many times
 
-class Conformance < CyclicCollect
+
+class Conformance < CyclicCollectOnSecondArg
   attr_reader :errors
 
   def initialize(schema, obj)
@@ -33,73 +47,72 @@ class Conformance < CyclicCollect
   end
 
   def run
-    recurse(@root, @obj)
-	@errors
-  end
-
-  def Schema(this, obj)
-    #puts "Visiting: #{this.name}"
-    klass = this.classes.find do |c|
-      c.name == obj.metaclass.name
+    puts "#{@root.classes}"
+    klass = @root.classes.find do |c|
+      c.name == @root.metaclass.name
     end
     if klass then
-      recurse(klass, obj)
+      recurse(klass, @root)
     else
-      @errors << "Cannot find class #{obj.metaclass.name}"
+      @errors << "Cannot find class #{@model.metaclass.name}"
     end
   end
 
   def Type(this)
   end
 
-  def Primitive(this, value)
+  def Primitive(this, model)
+    puts "PRIM: checking #{model} against #{this}"
     ok = case this.name
-        when "str"  then value.is_a?(String)
-        when "bool"  then value == true || value == false
-        when "int"  then value.is_a?(Integer)
+        when "str"  then model.is_a?(String)
+        when "int"  then model.is_a?(Integer)
+        when "bool"  then model.is_a?(TrueClass)
+        when "bool"  then model.is_a?(FalseClass)
         end
     unless ok
       @errors << "Type mismatch: expected #{this.name}, got #{value}"
     end
   end
 
-  def Klass(this, obj)
-    #puts "Checking #{obj} against #{this}"
-    if obj.is_a?(String) || obj.is_a?(Integer) || obj == true || obj == false then
-      @errors << "Expected class type, not primitive #{obj}"
-    elsif obj.is_a?(Array) then
+  def Klass(this, model)
+    puts "KLASS: Checking #{model} against #{this.name}"
+    if model.is_a?(String) || model.is_a?(Integer) || model == true || model == false then
+      @errors << "Expected class type, not primitive #{model}"
+    elsif model.is_a?(Array) then
       # check all elements
-      #puts "Checking elements of #{obj}"
-      obj.each do |elt|
+      puts "************* Checking elements of #{model}"
+      model.each do |elt|
         recurse(this, elt)
       end
-    elsif this.name != obj.metaclass.name then
-      @errors << "Invalid class: expected #{this.name}, got #{obj.metaclass.name}"
+    elsif this.name != model.metaclass.name then
+      @errors << "Invalid class: expected #{this.name}, got #{model.metaclass.name}"
     else
       this.fields.each do |f|
-        #puts "obj = #{obj}, #{f.name}"
-        recurse(f, this.name, obj[f.name])
+        puts "Model = #{model}, #{f.name}"
+        recurse(f, model[f.name])
       end
     end
   end
 
-  def Field(this, klass, obj)
-    if !this.optional && !this.many && obj.nil? then
+  def Field(this, model)
+    klass = "<unknown>"
+    puts "FIELD: Checking #{model} against field #{this.name}"
+    if !this.optional && !this.many && model.nil? then
       @errors << "Field #{klass}.#{this.name} is required"
-    elsif this.optional && !this.many && obj.nil? then
+    elsif this.optional && !this.many && model.nil? then
       return
-    elsif this.optional && this.many && obj == [] then
+    elsif this.optional && this.many && model == [] then
       return
-    elsif this.many && !obj.is_a?(Array) then
+    elsif this.many && !model.is_a?(Array) then
       @errors << "Field #{klass}.#{this.name} is many but did not get array"
-    elsif !this.many && obj.is_a?(Array) then
+    elsif !this.many && model.is_a?(Array) then
       @errors << "Field #{klass}.#{this.name} is not many but got an array"
-    elsif this.many && !this.optional && obj == [] then
+    elsif this.many && !this.optional && model == [] then
       @errors << "Field #{klass}.#{this.name} is non-optional many but got empty array"
     elsif this.inverse then
       # ???
     else
-      recurse(this.type, obj)
+      recurse(this.type, model)
     end
   end
 
