@@ -123,6 +123,32 @@ class PGen < CyclicClosure
     recurse(obj.startSymbol)
   end
 
+  def _Rule(this, input, pos)
+    if (memo...)
+    end
+    this.alts.each do |alt|
+      recurse(alt, input, pos) do |pos1, tree1|
+        yield pos1, factory.Symbol(this, tree1)
+      end
+    end
+  end
+
+  def _Alt(this, input, pos)
+    args = []
+    stop = true;
+    this.elements.each do |elt|      
+      recurse(elt, input, pos) do |pos1, tree1|
+        pos = pos1
+        args << tree1
+        stop = false
+      end
+      return if stop
+      stop = true
+    end
+    yield pos, factory.Appl(this, args)
+  end
+
+
   def Rule(obj)
     alts = obj.alts.map { |x| recurse(x); }
     return memo(lambda { |input, cont, pos|

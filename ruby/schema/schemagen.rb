@@ -1,42 +1,6 @@
 
-class SchemaModel < BasicObject
-  @@ids = 0
-  
-  attr_accessor :metaclass
-	
-  def initialize()
-    @fields = {}
-    @id = @@ids += 1
-  end
+require 'schema/schemamodel'
 
-  def [](s)
-    @fields[s.to_sym]
-  end
-
-  def method_missing(name, *args, &block)
-    if (name.to_s =~ /^([a-zA-Z0-9\_]*)=$/)
-      @fields[$1.to_sym] = args[0]
-    else
-      @fields[name]
-    end
-  end
-
-  def to_s
-    "model(#{_id})"
-  end
-
-  def hash
-    _id
-  end
-
-  def _id
-    return @id
-  end
-
-  def inspect
-    to_s
-  end
-end
 
 class SchemaGenerator
   ## NB: to use this schemagenerator, be careful with names of classes

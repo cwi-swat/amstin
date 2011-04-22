@@ -57,6 +57,14 @@ class Conformance < CyclicCollectOnSecondArg
     end
   end
 
+  def prim?(model)
+    model.is_a?(String) || 
+      model.is_a?(Integer) || 
+      model.is_a?(TrueClass) || 
+      model.is_a?(FalseClass) || 
+      model.is_a?(Array)
+  end
+
   def Type(this)
   end
 
@@ -91,23 +99,29 @@ class Conformance < CyclicCollectOnSecondArg
   end
 
   def Field(this, model)
-    klass = "<unknown>"
-    #puts "FIELD: Checking #{model} against field #{this.name}"
+    return if this.optional && !this.many && model.nil? 
+    return if this.optional && this.many && model == []
+
     if !this.optional && !this.many && model.nil? then
       @errors << "Field #{klass}.#{this.name} is required"
-    elsif this.optional && !this.many && model.nil? then
-      return
-    elsif this.optional && this.many && model == [] then
-      return
     elsif this.many && !model.is_a?(Array) then
       @errors << "Field #{klass}.#{this.name} is many but did not get array"
     elsif !this.many && model.is_a?(Array) then
       @errors << "Field #{klass}.#{this.name} is not many but got an array"
     elsif this.many && !this.optional && model == [] then
       @errors << "Field #{klass}.#{this.name} is non-optional many but got empty array"
-    else
-      recurse(this.type, model)
+    elsif this.inverse && model.is_a?(Array) then
+      # for each element in model, there should be a field named this.inverse.name
+      # that's not null if this.inverse. And it should point to the current thing
+      # e.g. the klass containing "this" field.
+    elsif this.inverse && prim?(model) then
+      @errors << "Primitive field #{this.name} cannot have inverse"
+    elsif this.inverse && !this.inverse.optional && !model.send(this.inverse.name) then
+      @errors << "Inverse of field #{this.name} is non-optional"
     end
+
+
+    recurse(this.type, model)
   end
 
   

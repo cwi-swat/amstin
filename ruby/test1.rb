@@ -1,6 +1,6 @@
 
-require 'schemagen'
-require 'check'
+require 'schema/schemaschema'
+require 'schema/checkschema'
 
 if __FILE__ == $0 then
   ss = SchemaSchema.schema
@@ -13,7 +13,7 @@ if __FILE__ == $0 then
     c.subtypes.each do |s|
       puts "\tSubtype: #{s.name} (#{s._id})"
     end
-    puts "\tInstanceof: #{c.instance_of}"
+    puts "\tInstanceof: #{c.metaclass}"
     c.fields.each do |f|
       puts "\tFIELD #{f.name} (#{f._id})"
       puts "\t\ttype #{f.type.name} (#{f.type._id})"
@@ -28,6 +28,8 @@ if __FILE__ == $0 then
 
   check = Conformance.new(ss, ss)
   check.run
-  p check.errors
+  check.errors.each do |x|
+    puts x
+  end
 end
 

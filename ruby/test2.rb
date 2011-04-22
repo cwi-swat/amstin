@@ -1,6 +1,6 @@
 
-require 'schemagen.rb'
-require 'cyclicmap.rb'
+require 'schema/schemaschema'
+require 'cyclicmap'
 
 class PrintSchema < CyclicApply
 
