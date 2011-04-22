@@ -10,6 +10,18 @@ class CyclicThing
   end
 end
 
+class CyclicApply < CyclicThing
+  def recurse(obj)
+    if @memo[obj] then
+      return @memo[obj]
+    end
+    
+    @memo[obj] = true
+	#puts "FOOO #{obj.metaclass.name}"
+    send(obj.metaclass.name, obj)
+  end
+end
+
 class CyclicMap < CyclicThing
   def recurse(obj)
     if @memo[obj] then

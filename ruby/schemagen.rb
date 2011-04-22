@@ -1,6 +1,10 @@
 
-class SchemaModel < BasicObject
+class ModelObject < BasicObject
   @@ids = 0
+  @@SchemaPointer = nil
+  @@KlassPointer = nil
+  @@FieldPointer = nil
+  @@PrimitiveTypePointer = nil
 
   def initialize()
     @fields = {}
@@ -26,6 +30,34 @@ class SchemaModel < BasicObject
   def _id
     return @id
   end
+  
+  def self.setup(a, b, c, d)
+      @@SchemaPointer = a.klass
+	  @@KlassPointer = b.klass
+	  @@FieldPointer = c.klass
+	  @@PrimitiveTypePointer = d.klass
+	end
+end
+
+class SchemaObject < ModelObject
+	def metaclass
+		@@SchemaPointer
+	end
+end
+class KlassObject < ModelObject
+	def metaclass
+		@@KlassPointer
+	end
+end
+class FieldObject < ModelObject
+	def metaclass
+		@@FieldPointer
+	end
+end
+class PrimitiveTypeObject < ModelObject
+	def metaclass
+		@@PrimitiveTypePointer
+	end
 end
 
 class SchemaGenerator
@@ -53,7 +85,7 @@ class SchemaGenerator
   @@current = nil
 
   def self.schema
-    @@schema ||= SchemaModel.new
+    @@schema ||= SchemaObject.new
     @@schema.name = self.to_s
     @@schema.classes = @@classes.values
     @@schema.primitives = @@primitives.values
@@ -63,7 +95,7 @@ class SchemaGenerator
 
   class << self
     def primitive(name)
-      m = SchemaModel.new
+      m = PrimitiveTypeObject.new
       m.name = name.to_s
       @@primitives[name] = m
     end
@@ -95,7 +127,7 @@ class SchemaGenerator
       klass.fields.each do |f|
         return f if f.name == name
       end
-      f = SchemaModel.new
+      f = FieldObject.new
       #puts "Creating field #{name} (#{f._id})"
       f.name = name
       klass.fields << f
@@ -104,7 +136,7 @@ class SchemaGenerator
     end
 
     def get_class(name)
-      @@classes[name] ||= SchemaModel.new
+      @@classes[name] ||= KlassObject.new
       m = @@classes[name]
       #puts "Getting class #{name} (#{m._id})"
       m.name = name
@@ -152,47 +184,6 @@ class SchemaSchema < SchemaGenerator
     field :inverse, :type => Field, :optional => true, :inverse => Field.inverse
   end
 
-  schema.instance_of = Schema.klass
-  schema.primitives.each do |p|
-    p.instance_of = Primitive.klass # unfortunate .klass because of wrapping
-  end
-  schema.classes.each do |c|
-    c.instance_of = Klass.klass
-    c.fields.each do |f|
-      f.instance_of = Field.klass
-    end
-  end
+  ModelObject.setup(Schema, Klass, Field, Primitive);
 
-end
-
-require 'check'
-
-if __FILE__ == $0 then
-  ss = SchemaSchema.schema
-  puts "****** SCHEMA: #{ss.name} *******"
-  ss.classes.each do |c|
-    puts "CLASS #{c.name}  (#{c._id})"
-    if c.super then
-      puts "\tSuper: #{c.super.name}  (#{c.super._id})"
-    end
-    c.subtypes.each do |s|
-      puts "\tSubtype: #{s.name} (#{s._id})"
-    end
-    puts "\tInstanceof: #{c.instance_of}"
-    c.fields.each do |f|
-      puts "\tFIELD #{f.name} (#{f._id})"
-      puts "\t\ttype #{f.type.name} (#{f.type._id})"
-      puts "\t\toptional #{f.optional}"
-      puts "\t\tmany #{f.many}"
-      puts "\t\tinverse #{f.inverse ? f.inverse.name : nil} (#{f.inverse ? f.inverse._id : nil})"
-
-    end
-  end
-
-  puts ss.name
-  puts ss
-
-  check = Conformance.new(ss, ss)
-  check.run
-  p check.errors
 end
