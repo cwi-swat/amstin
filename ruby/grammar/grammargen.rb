@@ -49,6 +49,7 @@ class GrammarGenerator
       @@current.alts << a
       a.label = label.to_s
       a.owner = @@current
+      a.metaclass = class_for("Pattern")
       a.elements = elts.collect do |e|
         s = SchemaModel.new
         if e.is_a?(Hash) then
@@ -58,6 +59,9 @@ class GrammarGenerator
           s.label = nil
           s.symbol = make_symbol(e)
         end
+        s.metaclass = class_for("Element")
+        s.owner = a
+        s
       end
     end
     
