@@ -31,17 +31,18 @@ class SchemaGenerator
     end
   end
 
+  @@schemas = {}
 
-  @@schema = SchemaModel.new
-  @@classes = ValueHash.new
-  @@primitives = ValueHash.new
-  @@current = nil
+  def self.inherited(subclass)
+    schema = SchemaModel.new
+    @@schemas[subclass.to_s] = schema
+    schema.name = subclass.to_s
+    schema.classes = ValueHash.new
+    schema.primitives = ValueHash.new
+  end
 
   def self.schema
-    @@schema.name = self.to_s
-    @@schema.classes = @@classes
-    @@schema.primitives = @@primitives
-    return @@schema
+    @@schemas[self.to_s]
   end
     
 
@@ -49,14 +50,14 @@ class SchemaGenerator
     def primitive(name)
       m = SchemaModel.new
       m.name = name.to_s
-      @@primitives[name] = m
+      schema.primitives[name] = m
     end
       
     def klass(wrapped, opts = {}, &block)
       m = wrapped.klass
       m.super = opts[:super] ? opts[:super].klass : nil
       m.super.subtypes << m if m.super
-      m.schema = @@schema # don't call schema, it sets classes/primitives.
+      m.schema = schema
       @@current = m
       yield
     end
@@ -64,10 +65,10 @@ class SchemaGenerator
     def field(name, opts = {})
       f = get_field(@@current, name.to_s)
       t = opts[:type]
-      f.type = @@primitives[t] || t.klass
+      f.type = schema.primitives[t] || t.klass
       f.optional = opts[:optional] || false
       f.many = opts[:many] || false
-      f.key? = opts[:key?] || false
+      #f.key? = opts[:key?] || false
       f.inverse = opts[:inverse]
       f.inverse.inverse = f if f.inverse
     end
@@ -90,8 +91,8 @@ class SchemaGenerator
     end
 
     def get_class(name)
-      @@classes[name] ||= SchemaModel.new
-      m = @@classes[name]
+      schema.classes[name] ||= SchemaModel.new
+      m = schema.classes[name]
       #puts "Getting class #{name} (#{m._id})"
       m.name = name
       m.fields ||= ValueHash.new
@@ -103,50 +104,3 @@ class SchemaGenerator
 
 end
 
-class SchemaSchema < SchemaGenerator
-  primitive :str
-  primitive :int
-  primitive :bool
-
-  klass Schema do
-    field :name, :type => :str
-    field :classes, :type => Klass, :optional => true, :many => true, :inverse => Klass.schema
-    field :primitives, :type => Primitive, :optional => true, :many => true
-  end
-    
-  klass Type do
-  end
-
-  klass Primitive, :super => Type do
-    field :name, :type => :str
-  end
-
-  klass Klass, :super => Type do
-    field :name, :type => :str, :key? => true
-    field :super, :type => Klass, :optional => true, :inverse => Klass.subtypes
-    field :subtypes, :type => Klass, :optional => true, :many => true
-    field :fields, :type => Field, :optional => true, :many => true, :inverse => Field.owner
-    field :schema, :type => Schema
-  end
-
-  klass Field do
-    field :owner, :type => Klass, :inverse => Klass.fields, :key? => true
-    field :name, :type => :str, :key? => true
-    field :type, :type => Type
-    field :optional, :type => :bool
-    field :many, :type => :bool
-    field :inverse, :type => Field, :optional => true, :inverse => Field.inverse
-  end
-
-  schema.metaclass = Schema.klass
-  schema.primitives.each do |p|
-    p.metaclass = Primitive.klass # unfortunate .klass because of wrapping
-  end
-  schema.classes.each do |c|
-    c.metaclass = Klass.klass
-    c.fields.each do |f|
-      f.metaclass = Field.klass
-    end
-  end
-  
-end
