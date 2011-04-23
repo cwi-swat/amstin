@@ -47,8 +47,8 @@ if __FILE__ == $0 then
   require 'grammar/grammarschema'
   require 'schema/checkschema'
   
-  c = Conformance.new(GrammarSchema.schema, GrammarGrammar.grammar)
-  c.run
+  c = Conformance.new
+  c.recurse(GrammarSchema.schema, GrammarGrammar.grammar)
   c.errors.each do |x|
     puts x
   end

@@ -1,12 +1,11 @@
 
 class CyclicThing
-  def initialize(root)
-    @root = root
+  def initialize()
     @memo = {}
   end
 
-  def run
-    recurse(@root)
+  def self.run(*args)
+    self.new().recurse(*args)
   end
 end
 

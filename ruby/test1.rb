@@ -13,7 +13,7 @@ if __FILE__ == $0 then
     c.subtypes.each do |s|
       puts "\tSubtype: #{s.name} (#{s._id})"
     end
-    puts "\tInstanceof: #{c.metaclass}"
+    puts "\tInstanceof: #{c.metaclass.name}"
     c.fields.each do |f|
       puts "\tFIELD #{f.name} (#{f._id})"
       puts "\t\ttype #{f.type.name} (#{f.type._id})"
@@ -26,8 +26,8 @@ if __FILE__ == $0 then
 
   puts "Checking #{ss.name}"
 
-  check = Conformance.new(ss, ss)
-  check.run
+  check = Conformance.new
+  check.recurse(ss.classes["Schema"], ss)
   check.errors.each do |x|
     puts x
   end

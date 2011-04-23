@@ -1,22 +1,16 @@
 
 class CyclicThing
-  def initialize(root)
-    @root = root
+  def initialize
     @memo = {}
   end
 
-  def run
-    recurse(@root)
-  end
-
-
-  def prim?(model)
-    model.is_a?(String) || 
-      model.is_a?(Integer) || 
-      model.is_a?(TrueClass) || 
-      model.is_a?(FalseClass) || 
-      model.is_a?(Array) ||
-      model.is_a?(Hash)
+  def prim?(obj)
+    obj.is_a?(String) || 
+      obj.is_a?(Integer) || 
+      obj.is_a?(TrueClass) || 
+      obj.is_a?(FalseClass) || 
+      obj.is_a?(Array) ||
+      obj.is_a?(Hash)
   end
 end
 
@@ -55,79 +49,73 @@ end
 class Conformance < CyclicCollectOnBoth
   attr_reader :errors
 
-  def initialize(schema, obj)
-    super(schema)
-    @obj = obj
+  def initialize()
+    super()
     @errors = []
   end
-
-  def run
-    klass = @root.classes[@obj.metaclass.name]
-    if klass then
-      recurse(klass, @obj)
-    else
-      @errors << "Cannot find class #{@root.metaclass.name}"
-    end
-  end
-
 
   def Type(this)
   end
 
-  def Primitive(this, model)
+  def Primitive(this, obj)
     ok = case this.name
-        when "str"  then model.is_a?(String)
-        when "int"  then model.is_a?(Integer)
-        when "bool"  then model.is_a?(TrueClass) || model.is_a?(FalseClass)
+        when "str"  then obj.is_a?(String)
+        when "int"  then obj.is_a?(Integer)
+        when "bool"  then obj.is_a?(TrueClass) || obj.is_a?(FalseClass)
         end
     unless ok
-      @errors << "Type mismatch: expected #{this.name}, got #{model}"
+      @errors << "Type mismatch: expected #{this.name}, got #{obj}"
     end
   end
 
-  def Klass(this, model)
-    puts "KLASS: Checking #{model} against #{this.name}"
-    if model.is_a?(String) || model.is_a?(Integer) || model == true || model == false then
-      @errors << "Expected class type, not primitive #{model}"
-    elsif model.is_a?(Array) || model.is_a?(Hash) then
+  def Klass(this, obj)
+    puts "KLASS: Checking #{obj} against #{this.name}"
+    if obj.is_a?(String) || obj.is_a?(Integer) || obj == true || obj == false then
+      @errors << "Expected class type, not primitive #{obj}"
+    elsif obj.is_a?(Array) || obj.is_a?(Hash) then
       # check all elements
-      model.each do |elt|
+      obj.each do |elt|
         recurse(this, elt)
       end
-    elsif this.name != model.metaclass.name then
-      @errors << "Invalid class: expected #{this.name}, got #{model.metaclass.name}"
+    elsif !subtypeOf(obj.metaclass, this) then
+      @errors << "Invalid class: expected #{this.name}, got #{obj.metaclass.name}"
     else
       this.fields.each do |f|
-        recurse(f, model[f.name])
+        recurse(f, obj[f.name])
       end
     end
   end
+  
+  def subtypeOf(a, b)
+    return true if a.name == b.name
+    return subtypeOf(a.super, b) if a.super
+  end
 
-  def Field(this, model)
-    puts "FIELD: #{this.name}, #{model}"
-    return if this.optional && !this.many && model.nil? 
-    return if this.optional && this.many && model == []
+  def Field(this, obj)
+    puts "FIELD: #{this.name}, #{obj}"
+    return if this.optional && !this.many && obj.nil? 
+    return if this.optional && this.many && obj == []
 
-    if !this.optional && !this.many && model.nil? then
+    if !this.optional && !this.many && obj.nil? then
       @errors << "Field #{this.name} is required"
-    elsif this.many && !(model.is_a?(Array) || model.is_a?(Hash)) then
+    elsif this.many && !(obj.is_a?(Array) || obj.is_a?(Hash)) then
       @errors << "Field #{this.name} is many but did not get array"
-    elsif !this.many && (model.is_a?(Array) || model.is_a?(Hash)) then
+    elsif !this.many && (obj.is_a?(Array) || obj.is_a?(Hash)) then
       @errors << "Field #{this.name} is not many but got an array"
-    elsif this.many && !this.optional && model == [] then
+    elsif this.many && !this.optional && obj == [] then
       @errors << "Field #{this.name} is non-optional many but got empty array"
-    elsif this.inverse && (model.is_a?(Array) || model.is_a?(Hash)) then
-      # for each element in model, there should be a field named this.inverse.name
+    elsif this.inverse && (obj.is_a?(Array) || obj.is_a?(Hash)) then
+      # for each element in obj, there should be a field named this.inverse.name
       # that's not null if this.inverse. And it should point to the current thing
       # e.g. the klass containing "this" field.
-    elsif this.inverse && prim?(model) then
+    elsif this.inverse && prim?(obj) then
       @errors << "Primitive field #{this.name} cannot have inverse"
-    elsif this.inverse && !this.inverse.optional && !model.send(this.inverse.name) then
+    elsif this.inverse && !this.inverse.optional && !obj.send(this.inverse.name) then
       @errors << "Inverse of field #{this.name} is non-optional"
     end
 
     puts "THIS.Type: #{this.type.name}"
-    recurse(this.type, model)
+    recurse(this.type, obj)
   end
 
   

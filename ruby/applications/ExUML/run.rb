@@ -13,7 +13,8 @@ and a "engine state" schema
    class XMLClass < Klass
      machine: StateMachine
    end
-   
+
+
 We need a list of ports too, I think, that are
 the "event streams" for the objects. There might be
 a finite number of declared ones, or there might be
@@ -30,14 +31,17 @@ def execute(xuml)
   end
   runStep()
     # find some object that can process an event on its port
+    # TODO: should process self=send events first. 
     for obj : machineState.objects (non-deterministic)
       for transition : obj.currentState.transitions
         if transition.event.kind = obj.queue[0].kind
           event = obj.queue.pop()
-          obj.eval(obj.currentState.exitAction, {:db => machineState})
+          if obj.currentState != transtion.target
+            obj.eval(obj.currentState.exitAction, {:db => machineState})
           obj.eval(transition.action, {:event => event, :db => machineState})
-          obj.currentState = transtion.target
-          obj.eval(obj.currentState.enterAction, {:db => machineState})
+          if obj.currentState != transtion.target
+            obj.currentState = transtion.target
+            obj.eval(obj.currentState.enterAction, {:db => machineState})
         end
       end
     end

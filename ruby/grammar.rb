@@ -5,8 +5,8 @@ require 'bootgrammar'
 class PGen < CyclicClosure
   IDPATTERN = "[\\\\]?[a-zA-Z_$][a-zA-Z_$0-9]*"
 
-  def initialize(root)
-    super(root)
+  def initialize()
+    super()
     @keywordRegexp = keywords()
     puts @keywordRegexp
   end
@@ -36,7 +36,6 @@ class PGen < CyclicClosure
     re + ")";
   end
 
-	
   def token(type, pattern)
     lambda { |input, cont, pos|
       if pos >= input.length then
@@ -252,4 +251,4 @@ class PGen < CyclicClosure
   end		
 end
 
-parser = PGen.new(grammarGrammar).run
+parser = PGen.run(grammarGrammar)

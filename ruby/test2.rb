@@ -21,9 +21,9 @@ class PrintSchema < CyclicApply
 end
 
 if __FILE__ == $0 then
-  PrintSchema.new(SchemaSchema.schema).run
+  PrintSchema.run(SchemaSchema.schema)
   
   require 'grammar/grammarschema'
   
-  PrintSchema.new(GrammarSchema.schema).run
+  PrintSchema.run(GrammarSchema.schema)
 end
