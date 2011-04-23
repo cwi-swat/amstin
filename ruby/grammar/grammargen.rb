@@ -4,29 +4,39 @@ require 'grammar/grammarschema'
 
 class GrammarGenerator
 
-  @@schema = GrammarSchema.schema
-  @@grammar = SchemaModel.new
-  @@rules = {}
-  @@tokens = {}
-  @@start = nil
+  THE_SCHEMA = GrammarSchema.schema
+
+  @@grammars = {}
 
   def self.class_for(name)
-    @@schema.classes.find { |c| 
-      c.name == name 
-    }
+    THE_SCHEMA.classes[name]
   end
-  
+
+
+  TOKENS = {}
+  [:str, :int, :bool, :real, :id].each do |x|
+    TOKENS[x] = SchemaModel.new
+    TOKENS[x].metaclass = class_for(name.to_s.capitalize)
+  end
+
+  def self.inherited(subclass)
+    grammar = SchemaModel.new
+    grammar.metaclass = class_for("Grammar")
+    grammar.name = subclass.to_s
+    grammar.rules = ValueHash.new
+    grammar.start = nil
+    @@grammars[subclass.to_s] = grammar
+  end
+
+
   def self.grammar
-    @@grammar.metaclass = class_for("Grammar")
-    @@grammar.rules = @@rules.values
-    @@grammar.name = self.to_s
-    return @@grammar
+    @@grammars[self.to_s]
   end
 
   class << self
 
     def start(r)
-      @@grammar.start = r
+      grammar.start = r
     end
 
     def rule(r)
@@ -53,7 +63,7 @@ class GrammarGenerator
     
     def make_symbol(e)
       if e.is_a?(Symbol)
-        get_token(e)
+        TOKENS[e]
       else
         e
       end
@@ -111,17 +121,9 @@ class GrammarGenerator
       get_rule(name.to_s)
     end
 
-    def get_token(name)
-      @@tokens[name] ||= SchemaModel.new
-      m = @@tokens[name]
-      m.metaclass = class_for(name.to_s.upcase)
-      return m
-    end
-      
-
     def get_rule(name)
-      @@rules[name] ||= SchemaModel.new
-      m = @@rules[name]
+      grammar.rules[name] ||= SchemaModel.new
+      m = grammar.rules[name]
       m.metaclass = class_for("Rule")
       m.name = name
       m.alts ||= []
@@ -129,49 +131,5 @@ class GrammarGenerator
     end
       
   end
-  
-  
 end
-
-class GrammarGrammar < GrammarGenerator
-  start Grammar
-
-  rule Grammar do
-    alt :Grammar,  lit("grammar"), {name: :str}, lit("start"), {startSymbol: call(Rule)}, {rules: iter_star(Rule)}
-  end
-
-  rule Rule do
-    alt :Rule, {name: :key}, lit("::="), {alts: iter_sep(Pattern, "|")}
-  end
-
-  rule Pattern do
-    alt :Pattern, lit("["), {label: :id}, lit("]"), {elements: iter_star(Element)}
-    alt :Pattern, {elements: iter_star(Element)}
-  end
-
-  rule Element do
-    alt :Element, {symbol: Sym}
-    alt :Element, {label: :id}, lit(":"), {symbol: Sym}
-  end
-
-  rule Sym do
-    alt :Int, lit("int")
-    alt :Str, lit("str")
-    alt :SqStr, lit("sqstr")
-    alt :Real, lit("real")
-    alt :Bool, lit("bool")
-    alt :Id, lit("id")
-    alt :Key, lit("key")
-    alt :Ref, {ref: :id}, lit("^")
-    alt :Lit, {value: :str}
-    alt :CiLit, {value: :str}
-    alt :Call, {rule: call(Rule)}
-    alt :Opt, {arg: Sym}, lit("?")
-    alt :Iter, {arg: Sym}, lit("+")
-    alt :IterStar, {arg: Sym}, lit("*")
-    alt :IterSep,  lit("{"), {arg: Sym}, {sep: :str}, lit("}"), lit("+")
-    alt :IterStarSep, lit("{"), {arg: Sym}, {sep: :str}, lit("}"), lit("*")
-  end
-end
-
 

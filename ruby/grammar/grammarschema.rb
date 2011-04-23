@@ -1,5 +1,6 @@
 
 require 'schema/schemagen'
+require 'schema/schemaschema'
 
 # incomplete & incorrect
 
@@ -88,6 +89,19 @@ class GrammarSchema < SchemaGenerator
     field :arg, :type => Sym
     field :sep, :type => :str
   end
+
+  # this should be automatic
+  schema.metaclass = SchemaSchema::Schema.klass
+  schema.primitives.each do |p|
+    p.metaclass = SchemaSchema::Primitive.klass
+  end
+  schema.classes.each do |c|
+    c.metaclass = SchemaSchema::Klass.klass
+    c.fields.each do |f|
+      f.metaclass = SchemaSchema::Field.klass
+    end
+  end
+  
 end
 
 if __FILE__ == $0 then
