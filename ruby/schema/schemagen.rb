@@ -5,6 +5,9 @@ class ValueHash < Hash
   def each(&block)
     values.each &block
   end
+  def find(&block)
+    values.find &block
+  end
   def each_with_index(&block)
     values.each_with_index &block
   end
@@ -64,6 +67,7 @@ class SchemaGenerator
       f.type = @@primitives[t] || t.klass
       f.optional = opts[:optional] || false
       f.many = opts[:many] || false
+      f.key? = opts[:key?] || false
       f.inverse = opts[:inverse]
       f.inverse.inverse = f if f.inverse
     end
@@ -118,7 +122,7 @@ class SchemaSchema < SchemaGenerator
   end
 
   klass Klass, :super => Type do
-    field :name, :type => :str
+    field :name, :type => :str, :key? => true
     field :super, :type => Klass, :optional => true, :inverse => Klass.subtypes
     field :subtypes, :type => Klass, :optional => true, :many => true
     field :fields, :type => Field, :optional => true, :many => true, :inverse => Field.owner
@@ -126,8 +130,8 @@ class SchemaSchema < SchemaGenerator
   end
 
   klass Field do
-    field :owner, :type => Klass, :inverse => Klass.fields
-    field :name, :type => :str
+    field :owner, :type => Klass, :inverse => Klass.fields, :key? => true
+    field :name, :type => :str, :key? => true
     field :type, :type => Type
     field :optional, :type => :bool
     field :many, :type => :bool
