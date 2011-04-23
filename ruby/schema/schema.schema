@@ -26,5 +26,6 @@ schema Schema
     optional: bool
     many: bool
     inverse: Field? / inverse
+    key: bool
   end
 end

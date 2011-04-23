@@ -20,8 +20,10 @@ class PrintSchema < CyclicApply
   end
 end
 
-PrintSchema.new(SchemaSchema.schema).run
-
-require 'grammar/grammarschema'
-
-PrintSchema.new(GrammarSchema.schema).run
+if __FILE__ == $0 then
+  PrintSchema.new(SchemaSchema.schema).run
+  
+  require 'grammar/grammarschema'
+  
+  PrintSchema.new(GrammarSchema.schema).run
+end

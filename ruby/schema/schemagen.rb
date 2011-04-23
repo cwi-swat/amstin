@@ -2,14 +2,9 @@
 require 'schema/schemamodel'
 
 class ValueHash < Hash
+  include Enumerable
   def each(&block)
     values.each &block
-  end
-  def find(&block)
-    values.find &block
-  end
-  def each_with_index(&block)
-    values.each_with_index &block
   end
 end
 
@@ -68,7 +63,7 @@ class SchemaGenerator
       f.type = schema.primitives[t] || t.klass
       f.optional = opts[:optional] || false
       f.many = opts[:many] || false
-      #f.key? = opts[:key?] || false
+      f.key = opts[:key] || false
       f.inverse = opts[:inverse]
       f.inverse.inverse = f if f.inverse
     end
@@ -103,4 +98,3 @@ class SchemaGenerator
   end
 
 end
-

@@ -22,19 +22,20 @@ class SchemaSchema < SchemaGenerator
   end
 
   klass Klass, :super => Type do
-    field :name, :type => :str
+    field :schema, :type => Schema
+    field :name, :type => :str, :key => true
     field :super, :type => Klass, :optional => true, :inverse => Klass.subtypes
     field :subtypes, :type => Klass, :optional => true, :many => true
     field :fields, :type => Field, :optional => true, :many => true, :inverse => Field.owner
-    field :schema, :type => Schema
   end
 
   klass Field do
-    field :owner, :type => Klass, :inverse => Klass.fields
-    field :name, :type => :str
+    field :owner, :type => Klass, :inverse => Klass.fields, :key => true
+    field :name, :type => :str, :key => true
     field :type, :type => Type
     field :optional, :type => :bool
     field :many, :type => :bool
+    field :key, :type => :bool
     field :inverse, :type => Field, :optional => true, :inverse => Field.inverse
   end
 

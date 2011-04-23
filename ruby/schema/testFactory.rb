@@ -12,3 +12,5 @@ begin
   puts "There is a problem"
 rescue
 end
+
+puts "Reached the end"

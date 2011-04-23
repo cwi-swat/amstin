@@ -19,9 +19,9 @@ class SchemaModel < BasicObject
 
   def method_missing(name, *args, &block)
     if (name.to_s =~ /^([a-zA-Z0-9\_]*)=$/)
-      @fields[$1.to_sym] = args[0]
+      self[$1] = args[0]
     else
-      @fields[name]
+      return self[name]
     end
   end
 
