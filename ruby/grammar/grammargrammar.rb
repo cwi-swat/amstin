@@ -25,7 +25,7 @@ class GrammarGrammar < GrammarGenerator
   rule Sym do
     alt :Int, lit("int")
     alt :Str, lit("str")
-    alt :SqStr, lit("sqstr")
+    alt :Sqstr, lit("sqstr")
     alt :Real, lit("real")
     alt :Bool, lit("bool")
     alt :Id, lit("id")

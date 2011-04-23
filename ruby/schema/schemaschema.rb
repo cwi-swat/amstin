@@ -3,6 +3,7 @@
 require 'schema/schemagen'
 
 class SchemaSchema < SchemaGenerator
+
   primitive :str
   primitive :int
   primitive :bool

@@ -14,18 +14,18 @@ class GrammarGenerator
 
 
   TOKENS = {}
-  [:str, :int, :bool, :real, :id].each do |x|
+  [:str, :int, :bool, :real, :id, :sqstr].each do |x|
     TOKENS[x] = SchemaModel.new
-    TOKENS[x].metaclass = class_for(name.to_s.capitalize)
+    TOKENS[x].metaclass = class_for(x.to_s.capitalize)
   end
 
   def self.inherited(subclass)
-    grammar = SchemaModel.new
-    grammar.metaclass = class_for("Grammar")
-    grammar.name = subclass.to_s
-    grammar.rules = ValueHash.new
-    grammar.start = nil
-    @@grammars[subclass.to_s] = grammar
+    g = SchemaModel.new
+    g.metaclass = class_for("Grammar")
+    g.name = subclass.to_s
+    g.rules = ValueHash.new
+    g.start = nil
+    @@grammars[subclass.to_s] = g
   end
 
 
@@ -78,7 +78,7 @@ class GrammarGenerator
       m.metaclass = class_for("Lit")
       m.value = s
       return m
-    end
+     end
    
     def call(r)
       m = SchemaModel.new
@@ -108,9 +108,8 @@ class GrammarGenerator
     end
     
     def regular(sym, type, sep = nil)
-      c = class_for(type)
       m = SchemaModel.new
-      m.metaclass = c
+      m.metaclass = class_for(type)
       m.arg = sym
       m.sep = sep if sep
       return m

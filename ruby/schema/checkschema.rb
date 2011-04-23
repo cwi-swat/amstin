@@ -8,6 +8,16 @@ class CyclicThing
   def run
     recurse(@root)
   end
+
+
+  def prim?(model)
+    model.is_a?(String) || 
+      model.is_a?(Integer) || 
+      model.is_a?(TrueClass) || 
+      model.is_a?(FalseClass) || 
+      model.is_a?(Array) ||
+      model.is_a?(Hash)
+  end
 end
 
 
@@ -22,14 +32,18 @@ class CyclicCollectOnSecondArg < CyclicThing
     end
     send(obj.metaclass.name, obj, arg)
   end
+end
 
-  def prim?(model)
-    model.is_a?(String) || 
-      model.is_a?(Integer) || 
-      model.is_a?(TrueClass) || 
-      model.is_a?(FalseClass) || 
-      model.is_a?(Array) ||
-      model.is_a?(Hash)
+class CyclicCollectOnBoth < CyclicThing
+  def recurse(obj, arg)
+    if !prim?(arg) then
+      if @memo[[obj, arg]] then
+        return 
+      else
+        @memo[[obj, arg]] = true
+      end
+    end
+    send(obj.metaclass.name, obj, arg)
   end
 end
 
@@ -38,7 +52,7 @@ end
 # cyclic visiting on mode: stops to early,  because  the same primitive value may occur many times
 
 
-class Conformance < CyclicCollectOnSecondArg
+class Conformance < CyclicCollectOnBoth
   attr_reader :errors
 
   def initialize(schema, obj)
@@ -48,22 +62,14 @@ class Conformance < CyclicCollectOnSecondArg
   end
 
   def run
-    klass = @root.classes[@root.metaclass.name]
+    klass = @root.classes[@obj.metaclass.name]
     if klass then
-      recurse(klass, @root)
+      recurse(klass, @obj)
     else
-      @errors << "Cannot find class #{@model.metaclass.name}"
+      @errors << "Cannot find class #{@root.metaclass.name}"
     end
   end
 
-  def prim?(model)
-    model.is_a?(String) || 
-      model.is_a?(Integer) || 
-      model.is_a?(TrueClass) || 
-      model.is_a?(FalseClass) || 
-      model.is_a?(Array) ||
-      model.is_a?(Hash)
-  end
 
   def Type(this)
   end
@@ -92,24 +98,24 @@ class Conformance < CyclicCollectOnSecondArg
       @errors << "Invalid class: expected #{this.name}, got #{model.metaclass.name}"
     else
       this.fields.each do |f|
-        #puts "Model = #{model}, #{f.name}"
         recurse(f, model[f.name])
       end
     end
   end
 
   def Field(this, model)
+    puts "FIELD: #{this.name}, #{model}"
     return if this.optional && !this.many && model.nil? 
     return if this.optional && this.many && model == []
 
     if !this.optional && !this.many && model.nil? then
-      @errors << "Field #{klass}.#{this.name} is required"
+      @errors << "Field #{this.name} is required"
     elsif this.many && !(model.is_a?(Array) || model.is_a?(Hash)) then
-      @errors << "Field #{klass}.#{this.name} is many but did not get array"
+      @errors << "Field #{this.name} is many but did not get array"
     elsif !this.many && (model.is_a?(Array) || model.is_a?(Hash)) then
-      @errors << "Field #{klass}.#{this.name} is not many but got an array"
+      @errors << "Field #{this.name} is not many but got an array"
     elsif this.many && !this.optional && model == [] then
-      @errors << "Field #{klass}.#{this.name} is non-optional many but got empty array"
+      @errors << "Field #{this.name} is non-optional many but got empty array"
     elsif this.inverse && (model.is_a?(Array) || model.is_a?(Hash)) then
       # for each element in model, there should be a field named this.inverse.name
       # that's not null if this.inverse. And it should point to the current thing
@@ -120,7 +126,7 @@ class Conformance < CyclicCollectOnSecondArg
       @errors << "Inverse of field #{this.name} is non-optional"
     end
 
-
+    puts "THIS.Type: #{this.type.name}"
     recurse(this.type, model)
   end
 

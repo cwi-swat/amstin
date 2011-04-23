@@ -41,16 +41,13 @@ class GrammarSchema < SchemaGenerator
   klass Str, :super => Sym do
   end
 
-  klass SqStr, :super => Sym do
+  klass Sqstr, :super => Sym do
   end
 
   klass Real, :super => Sym do
   end
 
   klass Bool, :super => Sym do
-  end
-
-  klass Id, :super => Sym do 
   end
 
   klass Id, :super => Sym do 
@@ -67,6 +64,11 @@ class GrammarSchema < SchemaGenerator
   klass CiLit, :super => Sym do
     field :value, :type => :str
   end
+
+  klass Call, :super => Sym do 
+    field :rule, :type => Rule
+  end
+
 
   klass Opt, :super => Sym do
     field :arg, :type => Sym

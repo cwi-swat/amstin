@@ -1,7 +1,7 @@
 
 class SchemaModel < BasicObject
   @@ids = 0
-  
+
   attr_accessor :metaclass
 	
   def initialize()
