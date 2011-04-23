@@ -52,7 +52,7 @@ class CheckedObject
   end
 
   def []=(field_name, v)
-    puts "Setting #{field_name} to #{v}"
+    #puts "Setting #{field_name} to #{v}"
     field = @metaclass.fields[field_name]
     raise "Assign to invalid field '#{field_name}'" unless field
     raise "Can't assign to many-valued field '#{field_name}'" if field.many

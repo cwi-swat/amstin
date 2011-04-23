@@ -17,7 +17,7 @@ class Copy
     target = @factory[klass.name]
     @memo[source] = target
     klass.fields.each do |field|
-      puts "Copying #{field.name} #{field.type.name}"
+      #puts "Copying #{field.name} #{field.type.name}"
       if {"int"=>1,"str"=>1,"bool"=>1}[field.type.name]
         target[field.name] = source[field.name]
       elsif !field.many
