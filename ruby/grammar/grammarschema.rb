@@ -1,5 +1,8 @@
 
+require 'schema/schemagen'
+
 # incomplete & incorrect
+
 
 class GrammarSchema < SchemaGenerator
   primitive :str
@@ -13,30 +16,99 @@ class GrammarSchema < SchemaGenerator
 
   klass Rule do
     field :name, :type => :str
-    field :alts, :type => Alt, :many => true, :inverse => Alt.owner
+    field :alts, :type => Pattern, :many => true, :inverse => Pattern.owner
   end
 
-  klass Alt do
+  klass Pattern do
     field :label, :type => :str, :optional => true
     field :owner, :type => Rule
-    field :elements, :type => Symbol, :optional => true, :many => true, :inverse => Symbol.owner
+    field :elements, :type => Element, :optional => true, :many => true, :inverse => Element.owner
   end
 
-  klass Symbol do
-    # inheritance still?
-    field :owner, :type => Alt
+  klass Element do
+    field :symbol, :type => Sym
     field :label, :type => :str, :optional => true
-  end
-
-  klass Id, :super => Symbol {}
-  klass Str, :super => Symbol {}
-  klass Int, :super => Symbol {}
-  klass Real, :super => Symbol {}
-  klass Bool, :super => Symbol {}
-
-  klass Ref, :super => Symbol do
-    field :id, :type => :str
+    field :owner, :type => Pattern
   end
   
+  klass Sym do
+  end
 
+  klass Int, :super => Sym do
+  end
+
+  klass Str, :super => Sym do
+  end
+
+  klass SqStr, :super => Sym do
+  end
+
+  klass Real, :super => Sym do
+  end
+
+  klass Bool, :super => Sym do
+  end
+
+  klass Id, :super => Sym do 
+  end
+
+  klass Id, :super => Sym do 
+  end
+
+  klass Ref, :super => Sym do
+    field :ref, :type => :str
+  end
+
+  klass Lit, :super => Sym do
+    field :value, :type => :str
+  end
+
+  klass CiLit, :super => Sym do
+    field :value, :type => :str
+  end
+
+  klass Opt, :super => Sym do
+    field :arg, :type => Sym
+  end
+
+  klass Iter, :super => Sym do
+    field :arg, :type => Sym
+  end
+
+  klass IterStar, :super => Sym do
+    field :arg, :type => Sym
+  end
+
+  klass IterSep, :super => Sym do
+    field :arg, :type => Sym
+    field :sep, :type => :str
+  end
+
+  klass IterStarSep, :super => Sym do
+    field :arg, :type => Sym
+    field :sep, :type => :str
+  end
+end
+
+if __FILE__ == $0 then
+  ss = GrammarSchema.schema
+  puts "****** SCHEMA: #{ss.name} *******"
+  ss.classes.each do |c|
+    puts "CLASS #{c.name}  (#{c._id})"
+    if c.super then
+      puts "\tSuper: #{c.super.name}  (#{c.super._id})"
+    end
+    c.subtypes.each do |s|
+      puts "\tSubtype: #{s.name} (#{s._id})"
+    end
+    puts "\tInstanceof: #{c.metaclass}"
+    c.fields.each do |f|
+      puts "\tFIELD #{f.name} (#{f._id})"
+      puts "\t\ttype #{f.type.name} (#{f.type._id})"
+      puts "\t\toptional #{f.optional}"
+      puts "\t\tmany #{f.many}"
+      puts "\t\tinverse #{f.inverse ? f.inverse.name : nil} (#{f.inverse ? f.inverse._id : nil})"
+
+    end
+  end
 end
