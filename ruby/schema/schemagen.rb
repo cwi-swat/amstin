@@ -1,6 +1,14 @@
 
 require 'schema/schemamodel'
 
+class ValueHash < Hash
+  def each(&block)
+    values.each &block
+  end
+  def each_with_index(&block)
+    values.each_with_index &block
+  end
+end
 
 class SchemaGenerator
   ## NB: to use this schemagenerator, be careful with names of classes
@@ -22,14 +30,14 @@ class SchemaGenerator
 
 
   @@schema = SchemaModel.new
-  @@classes = {}
-  @@primitives = {}
+  @@classes = ValueHash.new
+  @@primitives = ValueHash.new
   @@current = nil
 
   def self.schema
     @@schema.name = self.to_s
-    @@schema.classes = @@classes.values
-    @@schema.primitives = @@primitives.values
+    @@schema.classes = @@classes
+    @@schema.primitives = @@primitives
     return @@schema
   end
     
@@ -72,7 +80,7 @@ class SchemaGenerator
       f = SchemaModel.new
       #puts "Creating field #{name} (#{f._id})"
       f.name = name
-      klass.fields << f
+      klass.fields[name] = f
       f.owner = klass
       return f
     end
@@ -82,7 +90,7 @@ class SchemaGenerator
       m = @@classes[name]
       #puts "Getting class #{name} (#{m._id})"
       m.name = name
-      m.fields ||= []
+      m.fields ||= ValueHash.new
       m.subtypes ||= []
       return m
     end

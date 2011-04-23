@@ -9,9 +9,7 @@ class Factory
   end
 
   def method_missing(sym, *args, &block)
-    klass = @schema.classes.find do |c|
-      c.name == sym.to_s
-    end
+    klass = @schema.classes[sym.to_s]
     raise "No such class #{sym}" unless klass
     m = SchemaModel.new
     klass.fields.each_with_index do |f, i|

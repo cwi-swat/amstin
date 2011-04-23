@@ -28,7 +28,8 @@ class CyclicCollectOnSecondArg < CyclicThing
       model.is_a?(Integer) || 
       model.is_a?(TrueClass) || 
       model.is_a?(FalseClass) || 
-      model.is_a?(Array)
+      model.is_a?(Array) ||
+      model.is_a?(Hash)
   end
 end
 
@@ -47,9 +48,7 @@ class Conformance < CyclicCollectOnSecondArg
   end
 
   def run
-    klass = @root.classes.find do |c|
-      c.name == @root.metaclass.name
-    end
+    klass = @root.classes[@root.metaclass.name]
     if klass then
       recurse(klass, @root)
     else
@@ -62,7 +61,8 @@ class Conformance < CyclicCollectOnSecondArg
       model.is_a?(Integer) || 
       model.is_a?(TrueClass) || 
       model.is_a?(FalseClass) || 
-      model.is_a?(Array)
+      model.is_a?(Array) ||
+      model.is_a?(Hash)
   end
 
   def Type(this)
@@ -83,7 +83,7 @@ class Conformance < CyclicCollectOnSecondArg
     puts "KLASS: Checking #{model} against #{this.name}"
     if model.is_a?(String) || model.is_a?(Integer) || model == true || model == false then
       @errors << "Expected class type, not primitive #{model}"
-    elsif model.is_a?(Array) then
+    elsif model.is_a?(Array) || model.is_a?(Hash) then
       # check all elements
       model.each do |elt|
         recurse(this, elt)
@@ -104,13 +104,13 @@ class Conformance < CyclicCollectOnSecondArg
 
     if !this.optional && !this.many && model.nil? then
       @errors << "Field #{klass}.#{this.name} is required"
-    elsif this.many && !model.is_a?(Array) then
+    elsif this.many && !(model.is_a?(Array) || model.is_a?(Hash)) then
       @errors << "Field #{klass}.#{this.name} is many but did not get array"
-    elsif !this.many && model.is_a?(Array) then
+    elsif !this.many && (model.is_a?(Array) || model.is_a?(Hash)) then
       @errors << "Field #{klass}.#{this.name} is not many but got an array"
     elsif this.many && !this.optional && model == [] then
       @errors << "Field #{klass}.#{this.name} is non-optional many but got empty array"
-    elsif this.inverse && model.is_a?(Array) then
+    elsif this.inverse && (model.is_a?(Array) || model.is_a?(Hash)) then
       # for each element in model, there should be a field named this.inverse.name
       # that's not null if this.inverse. And it should point to the current thing
       # e.g. the klass containing "this" field.
