@@ -63,7 +63,7 @@ class CheckedObject
       raise "Can't assign nil to required field '#{field_name}'" if !field.optional
     else
       case field.type.name
-        when "str" then raise "Expected string found #{v}" unless v.is_a?(String)
+        when "str" then raise "Expected string found #{v.class} #{v}" unless v.is_a?(String)
         when "int" then raise "Expected int found #{v}" unless v.is_a?(Integer)
         when "bool" then raise "Expected bool found #{v}" unless v.is_a?(TrueClass) || v.is_a?(FalseClass)
         else 

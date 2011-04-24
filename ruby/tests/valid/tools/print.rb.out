@@ -136,6 +136,12 @@ Schema
           many: false
           key: false
           inverse: nil
+        #2 Field
+          name: rules
+          optional: false
+          many: true
+          key: false
+          inverse: grammar
     #1 Klass
       name: Rule
       super: nil
@@ -144,109 +150,97 @@ Schema
           name: name
           optional: false
           many: false
-          key: false
+          key: true
           inverse: nil
         #1 Field
+          name: grammar
+          optional: false
+          many: false
+          key: false
+          inverse: rules
+        #2 Field
           name: alts
           optional: false
           many: true
           key: false
-          inverse: owner
+          inverse: nil
     #2 Klass
+      name: Sequence
+      super: nil
+      fields
+        #0 Field
+          name: elements
+          optional: false
+          many: true
+          key: false
+          inverse: nil
+    #3 Klass
       name: Pattern
       super: nil
       fields
+    #4 Klass
+      name: Create
+      super: Sequence
+      fields
         #0 Field
-          name: owner
+          name: name
           optional: false
           many: false
           key: false
           inverse: nil
         #1 Field
-          name: label
-          optional: true
-          many: false
-          key: false
-          inverse: nil
-        #2 Field
           name: elements
-          optional: true
+          optional: false
           many: true
           key: false
-          inverse: owner
-    #3 Klass
-      name: Element
-      super: nil
+          inverse: nil
+    #5 Klass
+      name: Field
+      super: Pattern
       fields
         #0 Field
-          name: owner
+          name: name
           optional: false
           many: false
           key: false
           inverse: nil
         #1 Field
-          name: symbol
+          name: arg
           optional: false
           many: false
           key: false
           inverse: nil
-        #2 Field
-          name: label
-          optional: true
-          many: false
-          key: false
-          inverse: nil
-    #4 Klass
-      name: Sym
-      super: nil
-      fields
-    #5 Klass
-      name: Int
-      super: Sym
-      fields
     #6 Klass
-      name: Str
-      super: Sym
+      name: Int
+      super: Pattern
       fields
     #7 Klass
-      name: Sqstr
-      super: Sym
+      name: Str
+      super: Pattern
       fields
     #8 Klass
-      name: Real
-      super: Sym
+      name: Sqstr
+      super: Pattern
       fields
     #9 Klass
-      name: Bool
-      super: Sym
+      name: Real
+      super: Pattern
       fields
     #10 Klass
-      name: Id
-      super: Sym
+      name: Bool
+      super: Pattern
       fields
     #11 Klass
-      name: Ref
-      super: Sym
+      name: Id
+      super: Pattern
       fields
-        #0 Field
-          name: ref
-          optional: false
-          many: false
-          key: false
-          inverse: nil
     #12 Klass
-      name: Lit
-      super: Sym
+      name: Key
+      super: Pattern
       fields
-        #0 Field
-          name: value
-          optional: false
-          many: false
-          key: false
-          inverse: nil
     #13 Klass
-      name: CiLit
-      super: Sym
+      name: Lit
+      super: Pattern
       fields
         #0 Field
           name: value
@@ -255,28 +249,28 @@ Schema
           key: false
           inverse: nil
     #14 Klass
-      name: Call
-      super: Sym
+      name: CiLit
+      super: Pattern
       fields
         #0 Field
-          name: rule
+          name: value
           optional: false
           many: false
           key: false
           inverse: nil
     #15 Klass
-      name: Opt
-      super: Sym
+      name: Ref
+      super: Pattern
       fields
         #0 Field
-          name: arg
+          name: name
           optional: false
           many: false
           key: false
           inverse: nil
     #16 Klass
-      name: Iter
-      super: Sym
+      name: Opt
+      super: Pattern
       fields
         #0 Field
           name: arg
@@ -285,8 +279,18 @@ Schema
           key: false
           inverse: nil
     #17 Klass
-      name: IterStar
-      super: Sym
+      name: Call
+      super: Pattern
+      fields
+        #0 Field
+          name: rule
+          optional: false
+          many: false
+          key: false
+          inverse: nil
+    #18 Klass
+      name: Iter
+      super: Pattern
       fields
         #0 Field
           name: arg
@@ -294,9 +298,19 @@ Schema
           many: false
           key: false
           inverse: nil
-    #18 Klass
+    #19 Klass
+      name: IterStar
+      super: Pattern
+      fields
+        #0 Field
+          name: arg
+          optional: false
+          many: false
+          key: false
+          inverse: nil
+    #20 Klass
       name: IterSep
-      super: Sym
+      super: Pattern
       fields
         #0 Field
           name: arg
@@ -310,9 +324,9 @@ Schema
           many: false
           key: false
           inverse: nil
-    #19 Klass
+    #21 Klass
       name: IterStarSep
-      super: Sym
+      super: Pattern
       fields
         #0 Field
           name: arg

@@ -9,24 +9,29 @@ metamodel Grammar
 	end
 	
 	class Rule
+	  grammar: Grammar / rules
 	  name: str
-	  alts: Pattern*
-	end
-	  
-	abstract class Pattern
+	  alts: Sequence*
 	end
 	
-	class Ref < Pattern
+	class Sequence
+    elements: Pattern*
+  end 
+
+  class Create < Sequence
+    name: str
+    elements: Pattern*
+  end 
+	
+	class Pattern
+	end
+	
+	class Call < Pattern
 	   rule: Rule
 	end
 	
-	class Create < Pattern
-	  type: str
-	  parts: Pattern*
-	end	
-	
 	class Field < Pattern
-	  label: Label
+	  name: name
 	  symbol: Pattern
 	end
 	
@@ -36,7 +41,7 @@ metamodel Grammar
 	class Id < Pattern end
 	class Key < Pattern end
 	
-	class RefSpec < Pattern
+	class Ref < Pattern
 	  name: str
 	end
 	
@@ -45,24 +50,24 @@ metamodel Grammar
 	end
 	
 	class IterStar < Pattern
-	  sub: Pattern
+	  sub: Rule
 	end
 	
 	class Iter < Pattern
-	  sub: Pattern
+	  sub: Rule
 	end
 	
 	class Opt < Pattern
-	  sub: Pattern
+	  sub: Rule
 	end
 	
 	class IterStarSep < Pattern
-	  sub: Pattern
+	  sub: Rule
 	  sep: str
 	end
 	
 	class IterSep < Pattern
-	  sub: Pattern
+	  sub: Rule
 	  sep: str
 	end
 end

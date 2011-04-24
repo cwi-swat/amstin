@@ -1,1 +1,330 @@
-need a test here
+Grammar
+  name: GrammarGrammar
+  start: Grammar
+  rules
+    #0 Rule
+      name: Grammar
+      alts
+        #0 Create
+          name: Grammar
+          elements
+            #0 Lit
+              value: grammar
+            #1 Field
+              name: name
+            #2 Lit
+              value: start
+            #3 Field
+              name: start
+            #4 Field
+              name: rules
+    #1 Rule
+      name: Rule
+      alts
+        #0 Create
+          name: Rule
+          elements
+            #0 Field
+              name: name
+            #1 Lit
+              value: ::=
+            #2 Field
+              name: alts
+    #2 Rule
+      name: Sequence
+      alts
+        #0 Create
+          name: Sequence
+          elements
+            #0 Field
+              name: sequence
+        #1 Create
+          name: Create
+          elements
+            #0 Lit
+              value: [
+            #1 Field
+              name: name
+            #2 Lit
+              value: ]
+            #3 Field
+              name: sequence
+    #3 Rule
+      name: Pattern
+      alts
+        #0 Create
+          name: Int
+          elements
+            #0 Lit
+              value: int
+        #1 Create
+          name: Str
+          elements
+            #0 Lit
+              value: str
+        #2 Create
+          name: Sqstr
+          elements
+            #0 Lit
+              value: sqstr
+        #3 Create
+          name: Real
+          elements
+            #0 Lit
+              value: real
+        #4 Create
+          name: Bool
+          elements
+            #0 Lit
+              value: bool
+        #5 Create
+          name: Id
+          elements
+            #0 Lit
+              value: id
+        #6 Create
+          name: Key
+          elements
+            #0 Lit
+              value: key
+        #7 Create
+          name: Field
+          elements
+            #0 Field
+              name: name
+            #1 Field
+              name: arg
+        #8 Create
+          name: Ref
+          elements
+            #0 Field
+              name: ref
+            #1 Lit
+              value: ^
+        #9 Create
+          name: Lit
+          elements
+            #0 Field
+              name: value
+        #10 Create
+          name: CiLit
+          elements
+            #0 Field
+              name: value
+        #11 Create
+          name: Call
+          elements
+            #0 Field
+              name: rule
+        #12 Create
+          name: Opt
+          elements
+            #0 Field
+              name: arg
+            #1 Lit
+              value: ?
+        #13 Create
+          name: Iter
+          elements
+            #0 Field
+              name: arg
+            #1 Lit
+              value: +
+        #14 Create
+          name: IterStar
+          elements
+            #0 Field
+              name: arg
+            #1 Lit
+              value: *
+        #15 Create
+          name: IterSep
+          elements
+            #0 Lit
+              value: {
+            #1 Field
+              name: arg
+            #2 Field
+              name: sep
+            #3 Lit
+              value: }
+            #4 Lit
+              value: +
+        #16 Create
+          name: IterStarSep
+          elements
+            #0 Lit
+              value: {
+            #1 Field
+              name: arg
+            #2 Field
+              name: sep
+            #3 Lit
+              value: }
+            #4 Lit
+              value: *
+Grammar
+  name: GrammarGrammar
+  start: Grammar
+  rules
+    #0 Rule
+      name: Grammar
+      alts
+        #0 Create
+          name: Grammar
+          elements
+            #0 Lit
+              value: grammar
+            #1 Field
+              name: name
+            #2 Lit
+              value: start
+            #3 Field
+              name: start
+            #4 Field
+              name: rules
+    #1 Rule
+      name: Rule
+      alts
+        #0 Create
+          name: Rule
+          elements
+            #0 Field
+              name: name
+            #1 Lit
+              value: ::=
+            #2 Field
+              name: alts
+    #2 Rule
+      name: Sequence
+      alts
+        #0 Create
+          name: Sequence
+          elements
+            #0 Field
+              name: sequence
+        #1 Create
+          name: Create
+          elements
+            #0 Lit
+              value: [
+            #1 Field
+              name: name
+            #2 Lit
+              value: ]
+            #3 Field
+              name: sequence
+    #3 Rule
+      name: Pattern
+      alts
+        #0 Create
+          name: Int
+          elements
+            #0 Lit
+              value: int
+        #1 Create
+          name: Str
+          elements
+            #0 Lit
+              value: str
+        #2 Create
+          name: Sqstr
+          elements
+            #0 Lit
+              value: sqstr
+        #3 Create
+          name: Real
+          elements
+            #0 Lit
+              value: real
+        #4 Create
+          name: Bool
+          elements
+            #0 Lit
+              value: bool
+        #5 Create
+          name: Id
+          elements
+            #0 Lit
+              value: id
+        #6 Create
+          name: Key
+          elements
+            #0 Lit
+              value: key
+        #7 Create
+          name: Field
+          elements
+            #0 Field
+              name: name
+            #1 Field
+              name: arg
+        #8 Create
+          name: Ref
+          elements
+            #0 Field
+              name: ref
+            #1 Lit
+              value: ^
+        #9 Create
+          name: Lit
+          elements
+            #0 Field
+              name: value
+        #10 Create
+          name: CiLit
+          elements
+            #0 Field
+              name: value
+        #11 Create
+          name: Call
+          elements
+            #0 Field
+              name: rule
+        #12 Create
+          name: Opt
+          elements
+            #0 Field
+              name: arg
+            #1 Lit
+              value: ?
+        #13 Create
+          name: Iter
+          elements
+            #0 Field
+              name: arg
+            #1 Lit
+              value: +
+        #14 Create
+          name: IterStar
+          elements
+            #0 Field
+              name: arg
+            #1 Lit
+              value: *
+        #15 Create
+          name: IterSep
+          elements
+            #0 Lit
+              value: {
+            #1 Field
+              name: arg
+            #2 Field
+              name: sep
+            #3 Lit
+              value: }
+            #4 Lit
+              value: +
+        #16 Create
+          name: IterStarSep
+          elements
+            #0 Lit
+              value: {
+            #1 Field
+              name: arg
+            #2 Field
+              name: sep
+            #3 Lit
+              value: }
+            #4 Lit
+              value: *

@@ -11,11 +11,11 @@ class Copy
     return target if target
     
     klass = source.schema_class
-    raise "Unknown class '#{m}'" unless klass
+    raise "Source does not have a schema_class #{source}" unless klass
     target = @factory[klass.name]
     @memo[source] = target
     klass.fields.each do |field|
-      #puts "Copying #{field.name} #{field.type.name}"
+      #puts "Copying #{field.name} #{source[field.name].class} #{source[field.name]}"
       if {"int"=>1,"str"=>1,"bool"=>1}[field.type.name]
         target[field.name] = source[field.name]
       elsif !field.many

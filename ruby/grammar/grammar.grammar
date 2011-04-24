@@ -1,11 +1,15 @@
 #### This is not right!!! ###
 
+  grammar GrammarGrammar
   start Grammar
   
-  Grammar ::= [Grammar] "start" startSymbol:Rule^ rules:Rule* 
+  Grammar ::= [Grammar] "start" start:Rule^ rules:Rule* 
 
-  Rule ::= [Rule] name:key "::=" alts:{Element "|"}+
+  Rule ::= [Rule] name:key "::=" alts:{Alt "|"}+
 
+  Alt ::= [Sequence] items:Pattern*
+          | [Create] "[" name:id "]" items:Pattern*
+          
   Pattern ::= 
             [Int] "int"
           | [Str] "str"
@@ -15,14 +19,12 @@
           | [Id]  "id"
           | [Lit] value:str
           | [CiLit] value:sqstr
-          | [Create] "[" name:id "]" Pattern
           | [Field] name:id ":" data:Pattern
-          | [Ref] rule:Rule^
-          | [RefSpec] ref:id "^"
+          | [Ref] ref:id "^"
           | [Key] "key"
-          | [Sequence] left:Pattern right:Pattern
-          | [IterStar] arg:Pattern "*"
-          | [Iter] arg:Pattern "+"
-          | [Opt] arg:Pattern "?"
-          | [IterSepStar] "{" arg:Pattern sep:str "}" "*"
-          | [IterSep] "{" arg:Pattern sep:str "}" "+"
+          | [Call] rule:Rule^
+          | [IterStar] arg:Rule^ "*"
+          | [Iter] arg:Rule^ "+"
+          | [Opt] arg:Rule^ "?"
+          | [IterSepStar] "{" arg:Rule^ sep:str "}" "*"
+          | [IterSep] "{" arg:Rule^ sep:str "}" "+"

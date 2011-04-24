@@ -2,47 +2,55 @@
 require 'grammar/grammargen'
 
 class GrammarGrammar < GrammarGenerator
+
   start Grammar
 
   rule Grammar do
-    alt :Grammar,  lit("grammar"), {name: :str}, lit("start"), {startSymbol: call(Rule)}, {rules: iter_star(Rule)}
+    alt [:Grammar], "grammar", {:name => :str}, "start", {:start => ref(Rule)}, {rules: iter_star(Rule)}
   end
 
   rule Rule do
-    alt :Rule, {name: :key}, lit("::="), {alts: iter_sep(Pattern, "|")}
+    alt [:Rule], {:name => :key}, "::=", {:alts => iter_sep(Sequence, "|")}
+  end
+
+  rule Sequence do
+    alt [:Sequence], {:sequence => iter_star(Pattern)}
+    alt [:Create], "[", {:name => :str}, "]", {:sequence => iter_star(Pattern)}
   end
 
   rule Pattern do
-    alt :Pattern, lit("["), {label: :id}, lit("]"), {elements: iter_star(Element)}
-    alt :Pattern, {elements: iter_star(Element)}
-  end
-
-  rule Element do
-    alt :Element, {symbol: Sym}
-    alt :Element, {label: :id}, lit(":"), {symbol: Sym}
-  end
-
-  rule Sym do
-    alt :Int, lit("int")
-    alt :Str, lit("str")
-    alt :Sqstr, lit("sqstr")
-    alt :Real, lit("real")
-    alt :Bool, lit("bool")
-    alt :Id, lit("id")
-    alt :Key, lit("key")
-    alt :Ref, {ref: :id}, lit("^")
-    alt :Lit, {value: :str}
-    alt :CiLit, {value: :str}
-    alt :Call, {rule: call(Rule)}
-    alt :Opt, {arg: Sym}, lit("?")
-    alt :Iter, {arg: Sym}, lit("+")
-    alt :IterStar, {arg: Sym}, lit("*")
-    alt :IterSep,  lit("{"), {arg: Sym}, {sep: :str}, lit("}"), lit("+")
-    alt :IterStarSep, lit("{"), {arg: Sym}, {sep: :str}, lit("}"), lit("*")
+    alt [:Int], "int"
+    alt [:Str], "str"
+    alt [:Sqstr], "sqstr"
+    alt [:Real], "real"
+    alt [:Bool], "bool"
+    alt [:Id], "id"
+    alt [:Key], "key"
+    alt [:Field], {:name => :id}, {:arg => call(Pattern)}
+    alt [:Ref], {:ref => :id}, "^"
+    alt [:Lit], {:value => :str}
+    alt [:CiLit], {:value => :str}
+    alt [:Call], {:rule => ref(Rule)}
+    alt [:Opt], {:arg => ref(Rule)}, "?"
+    alt [:Iter], {:arg => ref(Rule)}, "+"
+    alt [:IterStar], {:arg => ref(Rule)}, "*"
+    alt [:IterSep], "{", {:arg => ref(Rule)}, {:sep => :str}, "}", "+"
+    alt [:IterStarSep], "{", {:arg => ref(Rule)}, {:sep => :str}, "}", "*"
   end
 end
 
 
 if __FILE__ == $0 then
-  puts "need a test here"
+  require 'schema/schemaschema'
+  require 'tools/print'
+  require 'tools/copy'
+  require 'schema/factory'
+
+  Print.recurse(GrammarGrammar.grammar, GrammarSchema.print_paths)
+  
+  G = Copy.new(Factory.new(GrammarSchema.schema)).copy(GrammarGrammar.grammar)
+  
+  Print.recurse(G, GrammarSchema.print_paths)
+
 end
+

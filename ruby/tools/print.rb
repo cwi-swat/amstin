@@ -31,10 +31,10 @@ class Print
               recurse(obj[field.name], sub_path || {}, indent, field.name)
             else
               print " "*indent, field.name, "\n"
-              indent += 2
+              subindent = indent + 2
               obj[field.name].each_with_index do |sub, i|
-                print " "*indent, "#", i, " "
-                recurse(sub, sub_path || {}, indent, field.name)
+                print " "*subindent, "#", i, " "
+                recurse(sub, sub_path || {}, subindent, field.name)
               end
             end
           elsif !field.many && key(field.type) && (!field.inverse || field.inverse.name != inverse)

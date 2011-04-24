@@ -10,85 +10,95 @@ class GrammarSchema < SchemaGenerator
   primitive :int
   primitive :bool
 
+  def self.print_paths
+    { :rules => { :alts => { :elements => {} } } }
+  end
+  
   klass Grammar do
     field :name, :type => :str
     field :start, :type => Rule
+    field :rules, :type => Rule, :many => true
   end
 
   klass Rule do
+    field :name, :type => :str, :key => true
+    field :grammar, :type => Grammar, :inverse => Grammar.rules
+    field :alts, :type => Sequence, :many => true
+  end
+
+  klass Sequence do
+    field :elements, :type => Pattern, :many => true
+  end
+
+  klass Create, :super => Sequence do
     field :name, :type => :str
-    field :alts, :type => Pattern, :many => true, :inverse => Pattern.owner
+    field :elements, :type => Pattern, :many => true
   end
 
   klass Pattern do
-    field :label, :type => :str, :optional => true
-    field :owner, :type => Rule
-    field :elements, :type => Element, :optional => true, :many => true, :inverse => Element.owner
   end
 
-  klass Element do
-    field :symbol, :type => Sym
-    field :label, :type => :str, :optional => true
-    field :owner, :type => Pattern
+  klass Field, :super => Pattern do
+    field :name, :type => :str
+    field :arg, :type => Pattern
   end
   
-  klass Sym do
+  klass Int, :super => Pattern do
   end
 
-  klass Int, :super => Sym do
+  klass Str, :super => Pattern do
   end
 
-  klass Str, :super => Sym do
+  klass Sqstr, :super => Pattern do
   end
 
-  klass Sqstr, :super => Sym do
+  klass Real, :super => Pattern do
   end
 
-  klass Real, :super => Sym do
+  klass Bool, :super => Pattern do
   end
 
-  klass Bool, :super => Sym do
+  klass Id, :super => Pattern do 
   end
 
-  klass Id, :super => Sym do 
+  klass Key, :super => Pattern do 
   end
 
-  klass Ref, :super => Sym do
-    field :ref, :type => :str
-  end
-
-  klass Lit, :super => Sym do
+  klass Lit, :super => Pattern do
     field :value, :type => :str
   end
 
-  klass CiLit, :super => Sym do
+  klass CiLit, :super => Pattern do
     field :value, :type => :str
   end
 
-  klass Call, :super => Sym do 
+  klass Ref, :super => Pattern do
+    field :name, :type => :str
+  end
+
+  klass Opt, :super => Pattern do
+    field :arg, :type => Pattern
+  end
+
+  klass Call, :super => Pattern do 
     field :rule, :type => Rule
   end
 
-
-  klass Opt, :super => Sym do
-    field :arg, :type => Sym
+  klass Iter, :super => Pattern do
+    field :arg, :type => Rule
   end
 
-  klass Iter, :super => Sym do
-    field :arg, :type => Sym
+  klass IterStar, :super => Pattern do
+    field :arg, :type => Rule
   end
 
-  klass IterStar, :super => Sym do
-    field :arg, :type => Sym
-  end
-
-  klass IterSep, :super => Sym do
-    field :arg, :type => Sym
+  klass IterSep, :super => Pattern do
+    field :arg, :type => Rule
     field :sep, :type => :str
   end
 
-  klass IterStarSep, :super => Sym do
-    field :arg, :type => Sym
+  klass IterStarSep, :super => Pattern do
+    field :arg, :type => Rule
     field :sep, :type => :str
   end
 

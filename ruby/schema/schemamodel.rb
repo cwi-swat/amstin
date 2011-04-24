@@ -26,7 +26,7 @@ class SchemaModel < BasicObject
   end
 
   def to_s
-    "model(#{_id})"
+    "<#{schema_class && schema_class.name} #{_id} #{@fields.keys}>"
   end
 
   def hash

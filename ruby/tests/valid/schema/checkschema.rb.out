@@ -1,28 +1,28 @@
 Checking SchemaSchema
-KLASS: Checking model(1) against Schema
+KLASS: Checking <Schema 1 [:name, :classes, :primitives]> against Schema
 FIELD: name, SchemaSchema
 THIS.Type: str
-FIELD: classes, {"Schema"=>model(5), "Klass"=>model(7), "Primitive"=>model(9), "Type"=>model(11), "Field"=>model(17)}
+FIELD: classes, {"Schema"=><Klass 5 [:name, :fields, :subtypes, :super, :schema]>, "Klass"=><Klass 7 [:name, :fields, :subtypes, :super, :schema]>, "Primitive"=><Klass 9 [:name, :fields, :subtypes, :super, :schema]>, "Type"=><Klass 11 [:name, :fields, :subtypes, :super, :schema]>, "Field"=><Klass 17 [:name, :fields, :subtypes, :super, :schema]>}
 THIS.Type: Klass
-KLASS: Checking {"Schema"=>model(5), "Klass"=>model(7), "Primitive"=>model(9), "Type"=>model(11), "Field"=>model(17)} against Klass
-KLASS: Checking model(5) against Klass
-FIELD: schema, model(1)
+KLASS: Checking {"Schema"=><Klass 5 [:name, :fields, :subtypes, :super, :schema]>, "Klass"=><Klass 7 [:name, :fields, :subtypes, :super, :schema]>, "Primitive"=><Klass 9 [:name, :fields, :subtypes, :super, :schema]>, "Type"=><Klass 11 [:name, :fields, :subtypes, :super, :schema]>, "Field"=><Klass 17 [:name, :fields, :subtypes, :super, :schema]>} against Klass
+KLASS: Checking <Klass 5 [:name, :fields, :subtypes, :super, :schema]> against Klass
+FIELD: schema, <Schema 1 [:name, :classes, :primitives]>
 THIS.Type: Schema
 FIELD: name, Schema
 THIS.Type: str
 FIELD: super, 
 FIELD: subtypes, []
-FIELD: fields, {"name"=>model(6), "classes"=>model(8), "primitives"=>model(10)}
+FIELD: fields, {"name"=><Field 6 [:name, :owner, :type, :optional, :many, :key, :inverse]>, "classes"=><Field 8 [:name, :owner, :type, :optional, :many, :key, :inverse]>, "primitives"=><Field 10 [:name, :owner, :type, :optional, :many, :key, :inverse]>}
 THIS.Type: Field
-KLASS: Checking {"name"=>model(6), "classes"=>model(8), "primitives"=>model(10)} against Field
-KLASS: Checking model(6) against Field
-FIELD: owner, model(5)
+KLASS: Checking {"name"=><Field 6 [:name, :owner, :type, :optional, :many, :key, :inverse]>, "classes"=><Field 8 [:name, :owner, :type, :optional, :many, :key, :inverse]>, "primitives"=><Field 10 [:name, :owner, :type, :optional, :many, :key, :inverse]>} against Field
+KLASS: Checking <Field 6 [:name, :owner, :type, :optional, :many, :key, :inverse]> against Field
+FIELD: owner, <Klass 5 [:name, :fields, :subtypes, :super, :schema]>
 THIS.Type: Klass
 FIELD: name, name
 THIS.Type: str
-FIELD: type, model(2)
+FIELD: type, <Primitive 2 [:name]>
 THIS.Type: Type
-KLASS: Checking model(2) against Type
+KLASS: Checking <Primitive 2 [:name]> against Type
 FIELD: optional, false
 THIS.Type: bool
 FIELD: many, false
@@ -30,43 +30,43 @@ THIS.Type: bool
 FIELD: key, false
 THIS.Type: bool
 FIELD: inverse, 
-KLASS: Checking model(8) against Field
+KLASS: Checking <Field 8 [:name, :owner, :type, :optional, :many, :key, :inverse]> against Field
 FIELD: name, classes
 THIS.Type: str
-FIELD: type, model(7)
+FIELD: type, <Klass 7 [:name, :fields, :subtypes, :super, :schema]>
 THIS.Type: Type
-KLASS: Checking model(7) against Type
+KLASS: Checking <Klass 7 [:name, :fields, :subtypes, :super, :schema]> against Type
 FIELD: optional, true
 THIS.Type: bool
 FIELD: many, true
 THIS.Type: bool
 FIELD: key, false
 THIS.Type: bool
-FIELD: inverse, model(13)
+FIELD: inverse, <Field 13 [:name, :owner, :type, :optional, :many, :key, :inverse]>
 THIS.Type: Field
-KLASS: Checking model(13) against Field
-FIELD: owner, model(7)
+KLASS: Checking <Field 13 [:name, :owner, :type, :optional, :many, :key, :inverse]> against Field
+FIELD: owner, <Klass 7 [:name, :fields, :subtypes, :super, :schema]>
 THIS.Type: Klass
-KLASS: Checking model(7) against Klass
+KLASS: Checking <Klass 7 [:name, :fields, :subtypes, :super, :schema]> against Klass
 FIELD: name, Klass
 THIS.Type: str
-FIELD: super, model(11)
+FIELD: super, <Klass 11 [:name, :fields, :subtypes, :super, :schema]>
 THIS.Type: Klass
-KLASS: Checking model(11) against Klass
+KLASS: Checking <Klass 11 [:name, :fields, :subtypes, :super, :schema]> against Klass
 FIELD: name, Type
 THIS.Type: str
-FIELD: subtypes, [model(9), model(7)]
+FIELD: subtypes, [<Klass 9 [:name, :fields, :subtypes, :super, :schema]>, <Klass 7 [:name, :fields, :subtypes, :super, :schema]>]
 THIS.Type: Klass
-KLASS: Checking [model(9), model(7)] against Klass
-KLASS: Checking model(9) against Klass
+KLASS: Checking [<Klass 9 [:name, :fields, :subtypes, :super, :schema]>, <Klass 7 [:name, :fields, :subtypes, :super, :schema]>] against Klass
+KLASS: Checking <Klass 9 [:name, :fields, :subtypes, :super, :schema]> against Klass
 FIELD: name, Primitive
 THIS.Type: str
 FIELD: subtypes, []
-FIELD: fields, {"name"=>model(12)}
+FIELD: fields, {"name"=><Field 12 [:name, :owner, :type, :optional, :many, :key, :inverse]>}
 THIS.Type: Field
-KLASS: Checking {"name"=>model(12)} against Field
-KLASS: Checking model(12) against Field
-FIELD: owner, model(9)
+KLASS: Checking {"name"=><Field 12 [:name, :owner, :type, :optional, :many, :key, :inverse]>} against Field
+KLASS: Checking <Field 12 [:name, :owner, :type, :optional, :many, :key, :inverse]> against Field
+FIELD: owner, <Klass 9 [:name, :fields, :subtypes, :super, :schema]>
 THIS.Type: Klass
 FIELD: name, name
 THIS.Type: str
@@ -80,10 +80,10 @@ FIELD: fields, {}
 THIS.Type: Field
 KLASS: Checking {} against Field
 FIELD: subtypes, []
-FIELD: fields, {"schema"=>model(13), "name"=>model(14), "super"=>model(15), "subtypes"=>model(16), "fields"=>model(18)}
+FIELD: fields, {"schema"=><Field 13 [:name, :owner, :type, :optional, :many, :key, :inverse]>, "name"=><Field 14 [:name, :owner, :type, :optional, :many, :key, :inverse]>, "super"=><Field 15 [:name, :owner, :type, :optional, :many, :key, :inverse]>, "subtypes"=><Field 16 [:name, :owner, :type, :optional, :many, :key, :inverse]>, "fields"=><Field 18 [:name, :owner, :type, :optional, :many, :key, :inverse]>}
 THIS.Type: Field
-KLASS: Checking {"schema"=>model(13), "name"=>model(14), "super"=>model(15), "subtypes"=>model(16), "fields"=>model(18)} against Field
-KLASS: Checking model(14) against Field
+KLASS: Checking {"schema"=><Field 13 [:name, :owner, :type, :optional, :many, :key, :inverse]>, "name"=><Field 14 [:name, :owner, :type, :optional, :many, :key, :inverse]>, "super"=><Field 15 [:name, :owner, :type, :optional, :many, :key, :inverse]>, "subtypes"=><Field 16 [:name, :owner, :type, :optional, :many, :key, :inverse]>, "fields"=><Field 18 [:name, :owner, :type, :optional, :many, :key, :inverse]>} against Field
+KLASS: Checking <Field 14 [:name, :owner, :type, :optional, :many, :key, :inverse]> against Field
 FIELD: name, name
 THIS.Type: str
 FIELD: optional, false
@@ -92,7 +92,7 @@ FIELD: many, false
 THIS.Type: bool
 FIELD: key, true
 THIS.Type: bool
-KLASS: Checking model(15) against Field
+KLASS: Checking <Field 15 [:name, :owner, :type, :optional, :many, :key, :inverse]> against Field
 FIELD: name, super
 THIS.Type: str
 FIELD: optional, true
@@ -101,9 +101,9 @@ FIELD: many, false
 THIS.Type: bool
 FIELD: key, false
 THIS.Type: bool
-FIELD: inverse, model(16)
+FIELD: inverse, <Field 16 [:name, :owner, :type, :optional, :many, :key, :inverse]>
 THIS.Type: Field
-KLASS: Checking model(16) against Field
+KLASS: Checking <Field 16 [:name, :owner, :type, :optional, :many, :key, :inverse]> against Field
 FIELD: name, subtypes
 THIS.Type: str
 FIELD: optional, true
@@ -112,33 +112,33 @@ FIELD: many, true
 THIS.Type: bool
 FIELD: key, false
 THIS.Type: bool
-FIELD: inverse, model(15)
+FIELD: inverse, <Field 15 [:name, :owner, :type, :optional, :many, :key, :inverse]>
 THIS.Type: Field
-KLASS: Checking model(18) against Field
+KLASS: Checking <Field 18 [:name, :owner, :type, :optional, :many, :key, :inverse]> against Field
 FIELD: name, fields
 THIS.Type: str
-FIELD: type, model(17)
+FIELD: type, <Klass 17 [:name, :fields, :subtypes, :super, :schema]>
 THIS.Type: Type
-KLASS: Checking model(17) against Type
+KLASS: Checking <Klass 17 [:name, :fields, :subtypes, :super, :schema]> against Type
 FIELD: optional, true
 THIS.Type: bool
 FIELD: many, true
 THIS.Type: bool
 FIELD: key, false
 THIS.Type: bool
-FIELD: inverse, model(19)
+FIELD: inverse, <Field 19 [:name, :owner, :type, :optional, :many, :key, :inverse]>
 THIS.Type: Field
-KLASS: Checking model(19) against Field
-FIELD: owner, model(17)
+KLASS: Checking <Field 19 [:name, :owner, :type, :optional, :many, :key, :inverse]> against Field
+FIELD: owner, <Klass 17 [:name, :fields, :subtypes, :super, :schema]>
 THIS.Type: Klass
-KLASS: Checking model(17) against Klass
+KLASS: Checking <Klass 17 [:name, :fields, :subtypes, :super, :schema]> against Klass
 FIELD: name, Field
 THIS.Type: str
 FIELD: subtypes, []
-FIELD: fields, {"owner"=>model(19), "name"=>model(20), "type"=>model(21), "optional"=>model(22), "many"=>model(23), "key"=>model(24), "inverse"=>model(25)}
+FIELD: fields, {"owner"=><Field 19 [:name, :owner, :type, :optional, :many, :key, :inverse]>, "name"=><Field 20 [:name, :owner, :type, :optional, :many, :key, :inverse]>, "type"=><Field 21 [:name, :owner, :type, :optional, :many, :key, :inverse]>, "optional"=><Field 22 [:name, :owner, :type, :optional, :many, :key, :inverse]>, "many"=><Field 23 [:name, :owner, :type, :optional, :many, :key, :inverse]>, "key"=><Field 24 [:name, :owner, :type, :optional, :many, :key, :inverse]>, "inverse"=><Field 25 [:name, :owner, :type, :optional, :many, :key, :inverse]>}
 THIS.Type: Field
-KLASS: Checking {"owner"=>model(19), "name"=>model(20), "type"=>model(21), "optional"=>model(22), "many"=>model(23), "key"=>model(24), "inverse"=>model(25)} against Field
-KLASS: Checking model(20) against Field
+KLASS: Checking {"owner"=><Field 19 [:name, :owner, :type, :optional, :many, :key, :inverse]>, "name"=><Field 20 [:name, :owner, :type, :optional, :many, :key, :inverse]>, "type"=><Field 21 [:name, :owner, :type, :optional, :many, :key, :inverse]>, "optional"=><Field 22 [:name, :owner, :type, :optional, :many, :key, :inverse]>, "many"=><Field 23 [:name, :owner, :type, :optional, :many, :key, :inverse]>, "key"=><Field 24 [:name, :owner, :type, :optional, :many, :key, :inverse]>, "inverse"=><Field 25 [:name, :owner, :type, :optional, :many, :key, :inverse]>} against Field
+KLASS: Checking <Field 20 [:name, :owner, :type, :optional, :many, :key, :inverse]> against Field
 FIELD: name, name
 THIS.Type: str
 FIELD: optional, false
@@ -147,31 +147,31 @@ FIELD: many, false
 THIS.Type: bool
 FIELD: key, true
 THIS.Type: bool
-KLASS: Checking model(21) against Field
+KLASS: Checking <Field 21 [:name, :owner, :type, :optional, :many, :key, :inverse]> against Field
 FIELD: name, type
 THIS.Type: str
-FIELD: type, model(11)
+FIELD: type, <Klass 11 [:name, :fields, :subtypes, :super, :schema]>
 THIS.Type: Type
-KLASS: Checking model(11) against Type
+KLASS: Checking <Klass 11 [:name, :fields, :subtypes, :super, :schema]> against Type
 FIELD: optional, false
 THIS.Type: bool
 FIELD: many, false
 THIS.Type: bool
 FIELD: key, false
 THIS.Type: bool
-KLASS: Checking model(22) against Field
+KLASS: Checking <Field 22 [:name, :owner, :type, :optional, :many, :key, :inverse]> against Field
 FIELD: name, optional
 THIS.Type: str
-FIELD: type, model(4)
+FIELD: type, <Primitive 4 [:name]>
 THIS.Type: Type
-KLASS: Checking model(4) against Type
+KLASS: Checking <Primitive 4 [:name]> against Type
 FIELD: optional, false
 THIS.Type: bool
 FIELD: many, false
 THIS.Type: bool
 FIELD: key, false
 THIS.Type: bool
-KLASS: Checking model(23) against Field
+KLASS: Checking <Field 23 [:name, :owner, :type, :optional, :many, :key, :inverse]> against Field
 FIELD: name, many
 THIS.Type: str
 FIELD: optional, false
@@ -180,7 +180,7 @@ FIELD: many, false
 THIS.Type: bool
 FIELD: key, false
 THIS.Type: bool
-KLASS: Checking model(24) against Field
+KLASS: Checking <Field 24 [:name, :owner, :type, :optional, :many, :key, :inverse]> against Field
 FIELD: name, key
 THIS.Type: str
 FIELD: optional, false
@@ -189,7 +189,7 @@ FIELD: many, false
 THIS.Type: bool
 FIELD: key, false
 THIS.Type: bool
-KLASS: Checking model(25) against Field
+KLASS: Checking <Field 25 [:name, :owner, :type, :optional, :many, :key, :inverse]> against Field
 FIELD: name, inverse
 THIS.Type: str
 FIELD: optional, true
@@ -198,7 +198,7 @@ FIELD: many, false
 THIS.Type: bool
 FIELD: key, false
 THIS.Type: bool
-FIELD: inverse, model(25)
+FIELD: inverse, <Field 25 [:name, :owner, :type, :optional, :many, :key, :inverse]>
 THIS.Type: Field
 FIELD: name, owner
 THIS.Type: str
@@ -208,42 +208,42 @@ FIELD: many, false
 THIS.Type: bool
 FIELD: key, true
 THIS.Type: bool
-FIELD: inverse, model(18)
+FIELD: inverse, <Field 18 [:name, :owner, :type, :optional, :many, :key, :inverse]>
 THIS.Type: Field
 FIELD: name, schema
 THIS.Type: str
-FIELD: type, model(5)
+FIELD: type, <Klass 5 [:name, :fields, :subtypes, :super, :schema]>
 THIS.Type: Type
-KLASS: Checking model(5) against Type
+KLASS: Checking <Klass 5 [:name, :fields, :subtypes, :super, :schema]> against Type
 FIELD: optional, false
 THIS.Type: bool
 FIELD: many, false
 THIS.Type: bool
 FIELD: key, false
 THIS.Type: bool
-FIELD: inverse, model(8)
+FIELD: inverse, <Field 8 [:name, :owner, :type, :optional, :many, :key, :inverse]>
 THIS.Type: Field
-KLASS: Checking model(10) against Field
+KLASS: Checking <Field 10 [:name, :owner, :type, :optional, :many, :key, :inverse]> against Field
 FIELD: name, primitives
 THIS.Type: str
-FIELD: type, model(9)
+FIELD: type, <Klass 9 [:name, :fields, :subtypes, :super, :schema]>
 THIS.Type: Type
-KLASS: Checking model(9) against Type
+KLASS: Checking <Klass 9 [:name, :fields, :subtypes, :super, :schema]> against Type
 FIELD: optional, true
 THIS.Type: bool
 FIELD: many, true
 THIS.Type: bool
 FIELD: key, false
 THIS.Type: bool
-FIELD: primitives, {:str=>model(2), :int=>model(3), :bool=>model(4)}
+FIELD: primitives, {:str=><Primitive 2 [:name]>, :int=><Primitive 3 [:name]>, :bool=><Primitive 4 [:name]>}
 THIS.Type: Primitive
-KLASS: Checking {:str=>model(2), :int=>model(3), :bool=>model(4)} against Primitive
-KLASS: Checking model(2) against Primitive
+KLASS: Checking {:str=><Primitive 2 [:name]>, :int=><Primitive 3 [:name]>, :bool=><Primitive 4 [:name]>} against Primitive
+KLASS: Checking <Primitive 2 [:name]> against Primitive
 FIELD: name, str
 THIS.Type: str
-KLASS: Checking model(3) against Primitive
+KLASS: Checking <Primitive 3 [:name]> against Primitive
 FIELD: name, int
 THIS.Type: str
-KLASS: Checking model(4) against Primitive
+KLASS: Checking <Primitive 4 [:name]> against Primitive
 FIELD: name, bool
 THIS.Type: str

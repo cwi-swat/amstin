@@ -2,11 +2,11 @@ start Schema
 
 Schema ::= "schema" name:id classes:Class*
 
-Class ::= [Class] "class" name:key parent:Parent? fields:Field* "end"
+Class ::= [Class] "class" name:key Parent? fields:Field* "end"
 
-Parent ::= "<" supertype:Class^
+Parent ::= "<" super:Class^
 
-Field ::= [Field] name:key ":" type:Type Multiplicity? inverse:Inverse?
+Field ::= [Field] name:key ":" type:Type Multiplicity? Inverse?
 
 Type ::= [Primitive] name:"int"
 	| [Primitive] name:"bool"

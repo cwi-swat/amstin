@@ -1,33 +1,34 @@
 
 require 'schema/schemamodel'
+require 'schema/factory'
 require 'grammar/grammarschema'
 
 class GrammarGenerator
 
   THE_SCHEMA = GrammarSchema.schema
-
+  Factory = Factory.new(GrammarSchema.schema)
+  
   @@grammars = {}
 
   def self.class_for(name)
-    THE_SCHEMA.classes[name]
+    klass = THE_SCHEMA.classes[name]
+    raise "Unknown class #{name}" unless klass
+    return klass
   end
 
-
-  TOKENS = {}
-  [:str, :int, :bool, :real, :id, :sqstr].each do |x|
-    TOKENS[x] = SchemaModel.new
-    TOKENS[x].schema_class = class_for(x.to_s.capitalize)
-  end
+  TOKENS = {
+    :str => Factory.Str(),
+    :int => Factory.Int(),
+    :real => Factory.Real(),
+    :id => Factory.Id(),
+    :key => Factory.Key(),
+    :sqstr => Factory.Sqstr()
+  }
 
   def self.inherited(subclass)
-    g = SchemaModel.new
-    g.schema_class = class_for("Grammar")
-    g.name = subclass.to_s
-    g.rules = ValueHash.new
-    g.start = nil
+    g = Factory.Grammar(subclass.to_s)
     @@grammars[subclass.to_s] = g
   end
-
 
   def self.grammar
     @@grammars[self.to_s]
@@ -40,81 +41,67 @@ class GrammarGenerator
     end
 
     def rule(r)
+      grammar.rules << r
       @@current = r
       yield
     end
 
-    def alt(label, *elts)
-      a = SchemaModel.new
-      @@current.alts << a
-      a.label = label.to_s
-      a.owner = @@current
-      a.schema_class = class_for("Pattern")
-      a.elements = elts.collect do |e|
-        s = SchemaModel.new
-        if e.is_a?(Hash) then
-          s.label = e.keys.first
-          s.symbol = make_symbol(e.values.first)
-        else
-          s.label = nil
-          s.symbol = make_symbol(e)
-        end
-        s.schema_class = class_for("Element")
-        s.owner = a
-        s
+    def alt(*elts)
+      if elts[0].is_a?(Array)
+        a = Factory.Create(elts.shift.first.to_s)
+      else
+        a = Factory.Sequence()
       end
+      elts.each do |e|
+        if e.is_a?(String) then
+          a.elements << Factory.Lit(e)
+        elsif e.is_a?(Hash) then
+          e.each do |k, v|
+            a.elements << Factory.Field(k.to_s, make_symbol(v))
+          end
+        else
+          a.elements << make_symbol(e)
+        end
+      end
+      @@current.alts << a
     end
     
     def make_symbol(e)
       if e.is_a?(Symbol)
-        TOKENS[e]
-      else
-        e
+        r = TOKENS[e]
+        raise "Unrecognized grammar symbol #{e}" unless r
+        return r
       end
+      return e
     end
     
-    def lit(s)
-      m = SchemaModel.new
-      m.schema_class = class_for("Lit")
-      m.value = s
-      return m
-     end
-   
     def call(r)
-      m = SchemaModel.new
-      m.schema_class = class_for("Call")
-      m.rule = r
-      return m
+      Factory.Call(r)
+    end
+    
+    def ref(r)
+      Factory.Ref(r.name)
     end
 
     def iter(sym)
-      regular(sym, "Iter")
+      Factory.Iter(sym)
     end
     
     def iter_star(sym)
-      regular(sym, "IterStar")
+      Factory.IterStar(sym)
     end
     
     def iter_sep(sym, sep)
-      regular(sym, "IterSep", sep)
+      Factory.IterSep(sym, sep)
     end
 
     def iter_star_sep(sym, sep)
-      regular(sym, "IterStarSep", sep)
+      Factory.IterStarSep(sym, sep)
     end
     
     def opt(sym)
-      regular(sym, "Opt")
-    end
-    
-    def regular(sym, type, sep = nil)
-      m = SchemaModel.new
-      m.schema_class = class_for(type)
-      m.arg = sym
-      m.sep = sep if sep
-      return m
-    end
-      
+      Factory.Opt(sym)
+    end  
 
     def cilit(s)
       # todo
@@ -125,11 +112,11 @@ class GrammarGenerator
     end
 
     def get_rule(name)
-      grammar.rules[name] ||= SchemaModel.new
       m = grammar.rules[name]
-      m.schema_class = class_for("Rule")
-      m.name = name
-      m.alts ||= []
+      if !m
+        m = Factory.Rule(name)
+        grammar.rules << m
+      end
       return m
     end
       
