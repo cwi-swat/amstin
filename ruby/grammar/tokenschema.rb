@@ -23,6 +23,8 @@ class TokenSchema < SchemaGenerator
     field :value, :type => :str
   end
 
+  # TODO: eof
+
   klass Type do
   end
 
@@ -40,5 +42,6 @@ class TokenSchema < SchemaGenerator
 
   klass Id, :super => Type do
   end
+
 
 end
