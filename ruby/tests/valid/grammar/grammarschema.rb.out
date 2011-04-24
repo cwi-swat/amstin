@@ -17,12 +17,6 @@ Schema
           many: false
           key: false
           inverse: nil
-        #2 Field
-          name: rules
-          optional: false
-          many: false
-          key: false
-          inverse: grammar
     #1 Klass
       name: Rule
       super: nil
@@ -31,105 +25,87 @@ Schema
           name: name
           optional: false
           many: false
-          key: true
+          key: false
           inverse: nil
         #1 Field
-          name: grammar
-          optional: false
-          many: false
-          key: false
-          inverse: rules
-        #2 Field
           name: alts
           optional: false
           many: true
           key: false
-          inverse: nil
+          inverse: owner
     #2 Klass
-      name: Sym
+      name: Pattern
       super: nil
       fields
-    #3 Klass
-      name: Create
-      super: Sym
-      fields
         #0 Field
-          name: label
+          name: owner
           optional: false
           many: false
           key: false
           inverse: nil
         #1 Field
-          name: arg
+          name: label
+          optional: true
+          many: false
+          key: false
+          inverse: nil
+        #2 Field
+          name: elements
+          optional: true
+          many: true
+          key: false
+          inverse: owner
+    #3 Klass
+      name: Element
+      super: nil
+      fields
+        #0 Field
+          name: owner
           optional: false
+          many: false
+          key: false
+          inverse: nil
+        #1 Field
+          name: symbol
+          optional: false
+          many: false
+          key: false
+          inverse: nil
+        #2 Field
+          name: label
+          optional: true
           many: false
           key: false
           inverse: nil
     #4 Klass
-      name: Atom
-      super: Sym
+      name: Sym
+      super: nil
       fields
     #5 Klass
-      name: Field
+      name: Int
       super: Sym
       fields
-        #0 Field
-          name: label
-          optional: false
-          many: false
-          key: false
-          inverse: nil
-        #1 Field
-          name: arg
-          optional: false
-          many: false
-          key: false
-          inverse: nil
     #6 Klass
-      name: Int
-      super: Atom
+      name: Str
+      super: Sym
       fields
     #7 Klass
-      name: Str
-      super: Atom
+      name: Sqstr
+      super: Sym
       fields
     #8 Klass
-      name: Sqstr
-      super: Atom
+      name: Real
+      super: Sym
       fields
     #9 Klass
-      name: Real
-      super: Atom
+      name: Bool
+      super: Sym
       fields
     #10 Klass
-      name: Bool
-      super: Atom
+      name: Id
+      super: Sym
       fields
     #11 Klass
-      name: Id
-      super: Atom
-      fields
-    #12 Klass
-      name: Lit
-      super: Atom
-      fields
-        #0 Field
-          name: value
-          optional: false
-          many: false
-          key: false
-          inverse: nil
-    #13 Klass
-      name: CiLit
-      super: Atom
-      fields
-        #0 Field
-          name: value
-          optional: false
-          many: false
-          key: false
-          inverse: nil
-    #14 Klass
       name: Ref
       super: Sym
       fields
@@ -139,7 +115,27 @@ Schema
           many: false
           key: false
           inverse: nil
-    #15 Klass
+    #12 Klass
+      name: Lit
+      super: Sym
+      fields
+        #0 Field
+          name: value
+          optional: false
+          many: false
+          key: false
+          inverse: nil
+    #13 Klass
+      name: CiLit
+      super: Sym
+      fields
+        #0 Field
+          name: value
+          optional: false
+          many: false
+          key: false
+          inverse: nil
+    #14 Klass
       name: Call
       super: Sym
       fields
@@ -149,7 +145,7 @@ Schema
           many: false
           key: false
           inverse: nil
-    #16 Klass
+    #15 Klass
       name: Opt
       super: Sym
       fields
@@ -159,7 +155,7 @@ Schema
           many: false
           key: false
           inverse: nil
-    #17 Klass
+    #16 Klass
       name: Iter
       super: Sym
       fields
@@ -169,7 +165,7 @@ Schema
           many: false
           key: false
           inverse: nil
-    #18 Klass
+    #17 Klass
       name: IterStar
       super: Sym
       fields
@@ -179,7 +175,7 @@ Schema
           many: false
           key: false
           inverse: nil
-    #19 Klass
+    #18 Klass
       name: IterSep
       super: Sym
       fields
@@ -195,7 +191,7 @@ Schema
           many: false
           key: false
           inverse: nil
-    #20 Klass
+    #19 Klass
       name: IterStarSep
       super: Sym
       fields
