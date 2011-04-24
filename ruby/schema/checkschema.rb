@@ -24,7 +24,7 @@ class CyclicCollectOnSecondArg < CyclicThing
         @memo[arg] = true
       end
     end
-    send(obj.metaclass.name, obj, arg)
+    send(obj.schema_class.name, obj, arg)
   end
 end
 
@@ -37,7 +37,7 @@ class CyclicCollectOnBoth < CyclicThing
         @memo[[obj, arg]] = true
       end
     end
-    send(obj.metaclass.name, obj, arg)
+    send(obj.schema_class.name, obj, arg)
   end
 end
 
@@ -77,8 +77,8 @@ class Conformance < CyclicCollectOnBoth
       obj.each do |elt|
         recurse(this, elt)
       end
-    elsif !subtypeOf(obj.metaclass, this) then
-      @errors << "Invalid class: expected #{this.name}, got #{obj.metaclass.name}"
+    elsif !subtypeOf(obj.schema_class, this) then
+      @errors << "Invalid class: expected #{this.name}, got #{obj.schema_class.name}"
     else
       this.fields.each do |f|
         recurse(f, obj[f.name])

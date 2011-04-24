@@ -16,7 +16,7 @@ class CyclicApply < CyclicThing
     end
     
     @memo[obj] = true
-    send(obj.metaclass.name, obj)
+    send(obj.schema_class.name, obj)
   end
 end
 

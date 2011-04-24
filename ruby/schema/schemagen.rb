@@ -68,7 +68,6 @@ class SchemaGenerator
       f.inverse.inverse = f if f.inverse
     end
 
-
     def const_missing(name)
       Wrap.new(get_class(name.to_s), self)
     end

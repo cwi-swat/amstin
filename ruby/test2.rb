@@ -2,6 +2,7 @@
 require 'schema/schemaschema'
 require 'cyclicmap'
 
+# if you really want to print something, try using tools/print.rb
 class PrintSchema < CyclicApply
 
   def Schema(o)
@@ -24,6 +25,5 @@ if __FILE__ == $0 then
   PrintSchema.run(SchemaSchema.schema)
   
   require 'grammar/grammarschema'
-  
   PrintSchema.run(GrammarSchema.schema)
 end

@@ -16,12 +16,12 @@ class GrammarGenerator
   TOKENS = {}
   [:str, :int, :bool, :real, :id, :sqstr].each do |x|
     TOKENS[x] = SchemaModel.new
-    TOKENS[x].metaclass = class_for(x.to_s.capitalize)
+    TOKENS[x].schema_class = class_for(x.to_s.capitalize)
   end
 
   def self.inherited(subclass)
     g = SchemaModel.new
-    g.metaclass = class_for("Grammar")
+    g.schema_class = class_for("Grammar")
     g.name = subclass.to_s
     g.rules = ValueHash.new
     g.start = nil
@@ -49,7 +49,7 @@ class GrammarGenerator
       @@current.alts << a
       a.label = label.to_s
       a.owner = @@current
-      a.metaclass = class_for("Pattern")
+      a.schema_class = class_for("Pattern")
       a.elements = elts.collect do |e|
         s = SchemaModel.new
         if e.is_a?(Hash) then
@@ -59,7 +59,7 @@ class GrammarGenerator
           s.label = nil
           s.symbol = make_symbol(e)
         end
-        s.metaclass = class_for("Element")
+        s.schema_class = class_for("Element")
         s.owner = a
         s
       end
@@ -75,14 +75,14 @@ class GrammarGenerator
     
     def lit(s)
       m = SchemaModel.new
-      m.metaclass = class_for("Lit")
+      m.schema_class = class_for("Lit")
       m.value = s
       return m
      end
    
     def call(r)
       m = SchemaModel.new
-      m.metaclass = class_for("Call")
+      m.schema_class = class_for("Call")
       m.rule = r
       return m
     end
@@ -109,7 +109,7 @@ class GrammarGenerator
     
     def regular(sym, type, sep = nil)
       m = SchemaModel.new
-      m.metaclass = class_for(type)
+      m.schema_class = class_for(type)
       m.arg = sym
       m.sep = sep if sep
       return m
@@ -127,7 +127,7 @@ class GrammarGenerator
     def get_rule(name)
       grammar.rules[name] ||= SchemaModel.new
       m = grammar.rules[name]
-      m.metaclass = class_for("Rule")
+      m.schema_class = class_for("Rule")
       m.name = name
       m.alts ||= []
       return m
@@ -135,4 +135,3 @@ class GrammarGenerator
       
   end
 end
-

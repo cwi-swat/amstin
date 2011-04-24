@@ -4,15 +4,15 @@ class Factory
   end
 
   def [](class_name)
-    metaclass = @schema.classes[class_name.to_s]
-    raise "Unknown class '#{class_name}'" unless metaclass
-    obj = CheckedObject.new(metaclass)
+    schema_class = @schema.classes[class_name.to_s]
+    raise "Unknown class '#{class_name}'" unless schema_class
+    obj = CheckedObject.new(schema_class, self)
     return obj
   end
   
   def method_missing(m, *args)
     obj = self[m.to_s]
-    obj.metaclass.fields.each_with_index do |field, i|
+    obj.schema_class.fields.each_with_index do |field, i|
       break if i >= args.length
       obj[field.name] = args[i]
     end
@@ -22,18 +22,17 @@ end
 
 class CheckedObject
 
-  attr_reader :metaclass
+  attr_reader :schema_class
+  attr_reader :_factory
   
-  def initialize(metaclass)
+  def initialize(schema_class, factory)
     @hash = {}
-    @metaclass = metaclass
-    metaclass.fields.each do |field|
+    @schema_class = schema_class
+    @_factory = factory
+    schema_class.fields.each do |field|
       if field.many
         # TODO: check for primitive many-valued???
-        key = nil
-        field.type.fields.each do |f|
-          key = f if f.key  # TODO: gets last key. should check for whether key is primitive
-        end
+        key = key(field.type)
         if key
           _primitive_set(field.name, ManyIndexedField.new(self, field, key))
         else
@@ -44,16 +43,20 @@ class CheckedObject
       end
     end
   end
+  
+  def key(type)
+    type.fields.find { |f| f.key && f.type.schema_class.name == "Primitive" }
+  end  
 
   def [](field_name)
-    field = @metaclass.fields[field_name]; 
+    field = @schema_class.fields[field_name]; 
     raise "Accessing non-existant field '#{field_name}'" unless field
     return @hash[field_name]
   end
 
   def []=(field_name, v)
     #puts "Setting #{field_name} to #{v}"
-    field = @metaclass.fields[field_name]
+    field = @schema_class.fields[field_name]
     raise "Assign to invalid field '#{field_name}'" unless field
     raise "Can't assign to many-valued field '#{field_name}'" if field.many
     if v.nil?
@@ -63,9 +66,11 @@ class CheckedObject
         when "str" then raise "Expected string found #{v}" unless v.is_a?(String)
         when "int" then raise "Expected int found #{v}" unless v.is_a?(Integer)
         when "bool" then raise "Expected bool found #{v}" unless v.is_a?(TrueClass) || v.is_a?(FalseClass)
-        else unless subtypeOf(v.metaclass, field.type)
-          raise "Expected #{field.type.name} found #{v.metaclass.name}" 
-        end
+        else 
+          raise "Inserting into the wrong model" unless _factory.equal?(v._factory)
+          unless subtypeOf(v.schema_class, field.type)
+            raise "Expected #{field.type.name} found #{v.schema_class.name}" 
+          end
       end
     end
     #if hash[field_name].primequal(v)  # SCARY!!!
@@ -149,6 +154,7 @@ class ManyIndexedField
   end
   
   def _primitive_insert(v)
+    raise "Inserting into the wrong model" unless @realself._factory.equal?(v._factory)
     k = v.send(@key.name)
     change = @hash[k] != v
     @hash[k] = v if change
@@ -195,6 +201,7 @@ class ManyField
   end
 
   def _primitive_insert(v)
+    raise "Inserting into the wrong model" unless @realself._factory.equal?(v._factory)
     add = !@list.index(v)
     @list << v if add
     return add

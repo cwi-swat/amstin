@@ -1,6 +1,4 @@
 
-require 'cyclicmap'
-
 class Copy
   def initialize(factory)
     @factory = factory
@@ -12,7 +10,7 @@ class Copy
     target = @memo[source]
     return target if target
     
-    klass = source.metaclass
+    klass = source.schema_class
     raise "Unknown class '#{m}'" unless klass
     target = @factory[klass.name]
     @memo[source] = target

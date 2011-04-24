@@ -93,38 +93,24 @@ class GrammarSchema < SchemaGenerator
   end
 
   # this should be automatic
-  schema.metaclass = SchemaSchema::Schema.klass
+  schema.schema_class = SchemaSchema::Schema.klass
   schema.primitives.each do |p|
-    p.metaclass = SchemaSchema::Primitive.klass
+    p.schema_class = SchemaSchema::Primitive.klass
   end
   schema.classes.each do |c|
-    c.metaclass = SchemaSchema::Klass.klass
+    c.schema_class = SchemaSchema::Klass.klass
     c.fields.each do |f|
-      f.metaclass = SchemaSchema::Field.klass
+      f.schema_class = SchemaSchema::Field.klass
     end
   end
   
 end
 
 if __FILE__ == $0 then
-  ss = GrammarSchema.schema
-  puts "****** SCHEMA: #{ss.name} *******"
-  ss.classes.each do |c|
-    puts "CLASS #{c.name}  (#{c._id})"
-    if c.super then
-      puts "\tSuper: #{c.super.name}  (#{c.super._id})"
-    end
-    c.subtypes.each do |s|
-      puts "\tSubtype: #{s.name} (#{s._id})"
-    end
-    puts "\tInstanceof: #{c.metaclass}"
-    c.fields.each do |f|
-      puts "\tFIELD #{f.name} (#{f._id})"
-      puts "\t\ttype #{f.type.name} (#{f.type._id})"
-      puts "\t\toptional #{f.optional}"
-      puts "\t\tmany #{f.many}"
-      puts "\t\tinverse #{f.inverse ? f.inverse.name : nil} (#{f.inverse ? f.inverse._id : nil})"
 
-    end
-  end
+  require 'schema/schemaschema'
+  require 'tools/print'
+  
+  Print.recurse(GrammarSchema.schema, SchemaSchema.print_paths)
+  
 end

@@ -1,12 +1,11 @@
 
-require 'test2'
+require 'schema/schemaschema'
 require 'tools/copy'
+require 'tools/print'
 require 'schema/factory'
-
-PrintSchema.run(SchemaSchema.schema)
 
 newSchema = Copy.new(Factory.new(SchemaSchema.schema)).copy(SchemaSchema.schema)
 
-PrintSchema.run(newSchema)
+Print.recurse(newSchema, SchemaSchema.print_paths)
 
 puts "WOA: #{newSchema.classes['Klass'].schema.name}"
