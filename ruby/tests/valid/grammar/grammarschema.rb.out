@@ -1,0 +1,213 @@
+Schema
+  name: GrammarSchema
+  classes
+    #0 Klass
+      name: Grammar
+      super: nil
+      fields
+        #0 Field
+          name: name
+          optional: false
+          many: false
+          key: false
+          inverse: nil
+        #1 Field
+          name: start
+          optional: false
+          many: false
+          key: false
+          inverse: nil
+        #2 Field
+          name: rules
+          optional: false
+          many: false
+          key: false
+          inverse: grammar
+    #1 Klass
+      name: Rule
+      super: nil
+      fields
+        #0 Field
+          name: name
+          optional: false
+          many: false
+          key: true
+          inverse: nil
+        #1 Field
+          name: grammar
+          optional: false
+          many: false
+          key: false
+          inverse: rules
+        #2 Field
+          name: alts
+          optional: false
+          many: true
+          key: false
+          inverse: nil
+    #2 Klass
+      name: Sym
+      super: nil
+      fields
+    #3 Klass
+      name: Create
+      super: Sym
+      fields
+        #0 Field
+          name: label
+          optional: false
+          many: false
+          key: false
+          inverse: nil
+        #1 Field
+          name: arg
+          optional: false
+          many: false
+          key: false
+          inverse: nil
+    #4 Klass
+      name: Atom
+      super: Sym
+      fields
+    #5 Klass
+      name: Field
+      super: Sym
+      fields
+        #0 Field
+          name: label
+          optional: false
+          many: false
+          key: false
+          inverse: nil
+        #1 Field
+          name: arg
+          optional: false
+          many: false
+          key: false
+          inverse: nil
+    #6 Klass
+      name: Int
+      super: Atom
+      fields
+    #7 Klass
+      name: Str
+      super: Atom
+      fields
+    #8 Klass
+      name: Sqstr
+      super: Atom
+      fields
+    #9 Klass
+      name: Real
+      super: Atom
+      fields
+    #10 Klass
+      name: Bool
+      super: Atom
+      fields
+    #11 Klass
+      name: Id
+      super: Atom
+      fields
+    #12 Klass
+      name: Lit
+      super: Atom
+      fields
+        #0 Field
+          name: value
+          optional: false
+          many: false
+          key: false
+          inverse: nil
+    #13 Klass
+      name: CiLit
+      super: Atom
+      fields
+        #0 Field
+          name: value
+          optional: false
+          many: false
+          key: false
+          inverse: nil
+    #14 Klass
+      name: Ref
+      super: Sym
+      fields
+        #0 Field
+          name: ref
+          optional: false
+          many: false
+          key: false
+          inverse: nil
+    #15 Klass
+      name: Call
+      super: Sym
+      fields
+        #0 Field
+          name: rule
+          optional: false
+          many: false
+          key: false
+          inverse: nil
+    #16 Klass
+      name: Opt
+      super: Sym
+      fields
+        #0 Field
+          name: arg
+          optional: false
+          many: false
+          key: false
+          inverse: nil
+    #17 Klass
+      name: Iter
+      super: Sym
+      fields
+        #0 Field
+          name: arg
+          optional: false
+          many: false
+          key: false
+          inverse: nil
+    #18 Klass
+      name: IterStar
+      super: Sym
+      fields
+        #0 Field
+          name: arg
+          optional: false
+          many: false
+          key: false
+          inverse: nil
+    #19 Klass
+      name: IterSep
+      super: Sym
+      fields
+        #0 Field
+          name: arg
+          optional: false
+          many: false
+          key: false
+          inverse: nil
+        #1 Field
+          name: sep
+          optional: false
+          many: false
+          key: false
+          inverse: nil
+    #20 Klass
+      name: IterStarSep
+      super: Sym
+      fields
+        #0 Field
+          name: arg
+          optional: false
+          many: false
+          key: false
+          inverse: nil
+        #1 Field
+          name: sep
+          optional: false
+          many: false
+          key: false
+          inverse: nil

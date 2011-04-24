@@ -57,3 +57,11 @@ class SchemaSchema < SchemaGenerator
   end
   
 end
+
+if __FILE__ == $0 then
+
+  require 'tools/print'
+  
+  Print.recurse(SchemaSchema.schema, SchemaSchema.print_paths)
+  
+end

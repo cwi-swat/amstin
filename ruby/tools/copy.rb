@@ -29,3 +29,18 @@ class Copy
     return target
   end
 end
+
+
+if __FILE__ == $0 then
+
+  require 'schema/schemaschema'
+  require 'tools/print'
+  require 'schema/factory'
+  
+  newSchema = Copy.new(Factory.new(SchemaSchema.schema)).copy(SchemaSchema.schema)
+  
+  Print.recurse(newSchema, SchemaSchema.print_paths)
+  
+  puts "WOA: #{newSchema.classes['Klass'].schema.name}"
+
+end

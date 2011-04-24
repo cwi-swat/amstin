@@ -1,0 +1,249 @@
+Checking SchemaSchema
+KLASS: Checking model(1) against Schema
+FIELD: name, SchemaSchema
+THIS.Type: str
+FIELD: classes, {"Schema"=>model(5), "Klass"=>model(7), "Primitive"=>model(9), "Type"=>model(11), "Field"=>model(17)}
+THIS.Type: Klass
+KLASS: Checking {"Schema"=>model(5), "Klass"=>model(7), "Primitive"=>model(9), "Type"=>model(11), "Field"=>model(17)} against Klass
+KLASS: Checking model(5) against Klass
+FIELD: schema, model(1)
+THIS.Type: Schema
+FIELD: name, Schema
+THIS.Type: str
+FIELD: super, 
+FIELD: subtypes, []
+FIELD: fields, {"name"=>model(6), "classes"=>model(8), "primitives"=>model(10)}
+THIS.Type: Field
+KLASS: Checking {"name"=>model(6), "classes"=>model(8), "primitives"=>model(10)} against Field
+KLASS: Checking model(6) against Field
+FIELD: owner, model(5)
+THIS.Type: Klass
+FIELD: name, name
+THIS.Type: str
+FIELD: type, model(2)
+THIS.Type: Type
+KLASS: Checking model(2) against Type
+FIELD: optional, false
+THIS.Type: bool
+FIELD: many, false
+THIS.Type: bool
+FIELD: key, false
+THIS.Type: bool
+FIELD: inverse, 
+KLASS: Checking model(8) against Field
+FIELD: name, classes
+THIS.Type: str
+FIELD: type, model(7)
+THIS.Type: Type
+KLASS: Checking model(7) against Type
+FIELD: optional, true
+THIS.Type: bool
+FIELD: many, true
+THIS.Type: bool
+FIELD: key, false
+THIS.Type: bool
+FIELD: inverse, model(13)
+THIS.Type: Field
+KLASS: Checking model(13) against Field
+FIELD: owner, model(7)
+THIS.Type: Klass
+KLASS: Checking model(7) against Klass
+FIELD: name, Klass
+THIS.Type: str
+FIELD: super, model(11)
+THIS.Type: Klass
+KLASS: Checking model(11) against Klass
+FIELD: name, Type
+THIS.Type: str
+FIELD: subtypes, [model(9), model(7)]
+THIS.Type: Klass
+KLASS: Checking [model(9), model(7)] against Klass
+KLASS: Checking model(9) against Klass
+FIELD: name, Primitive
+THIS.Type: str
+FIELD: subtypes, []
+FIELD: fields, {"name"=>model(12)}
+THIS.Type: Field
+KLASS: Checking {"name"=>model(12)} against Field
+KLASS: Checking model(12) against Field
+FIELD: owner, model(9)
+THIS.Type: Klass
+FIELD: name, name
+THIS.Type: str
+FIELD: optional, false
+THIS.Type: bool
+FIELD: many, false
+THIS.Type: bool
+FIELD: key, false
+THIS.Type: bool
+FIELD: fields, {}
+THIS.Type: Field
+KLASS: Checking {} against Field
+FIELD: subtypes, []
+FIELD: fields, {"schema"=>model(13), "name"=>model(14), "super"=>model(15), "subtypes"=>model(16), "fields"=>model(18)}
+THIS.Type: Field
+KLASS: Checking {"schema"=>model(13), "name"=>model(14), "super"=>model(15), "subtypes"=>model(16), "fields"=>model(18)} against Field
+KLASS: Checking model(14) against Field
+FIELD: name, name
+THIS.Type: str
+FIELD: optional, false
+THIS.Type: bool
+FIELD: many, false
+THIS.Type: bool
+FIELD: key, true
+THIS.Type: bool
+KLASS: Checking model(15) against Field
+FIELD: name, super
+THIS.Type: str
+FIELD: optional, true
+THIS.Type: bool
+FIELD: many, false
+THIS.Type: bool
+FIELD: key, false
+THIS.Type: bool
+FIELD: inverse, model(16)
+THIS.Type: Field
+KLASS: Checking model(16) against Field
+FIELD: name, subtypes
+THIS.Type: str
+FIELD: optional, true
+THIS.Type: bool
+FIELD: many, true
+THIS.Type: bool
+FIELD: key, false
+THIS.Type: bool
+FIELD: inverse, model(15)
+THIS.Type: Field
+KLASS: Checking model(18) against Field
+FIELD: name, fields
+THIS.Type: str
+FIELD: type, model(17)
+THIS.Type: Type
+KLASS: Checking model(17) against Type
+FIELD: optional, true
+THIS.Type: bool
+FIELD: many, true
+THIS.Type: bool
+FIELD: key, false
+THIS.Type: bool
+FIELD: inverse, model(19)
+THIS.Type: Field
+KLASS: Checking model(19) against Field
+FIELD: owner, model(17)
+THIS.Type: Klass
+KLASS: Checking model(17) against Klass
+FIELD: name, Field
+THIS.Type: str
+FIELD: subtypes, []
+FIELD: fields, {"owner"=>model(19), "name"=>model(20), "type"=>model(21), "optional"=>model(22), "many"=>model(23), "key"=>model(24), "inverse"=>model(25)}
+THIS.Type: Field
+KLASS: Checking {"owner"=>model(19), "name"=>model(20), "type"=>model(21), "optional"=>model(22), "many"=>model(23), "key"=>model(24), "inverse"=>model(25)} against Field
+KLASS: Checking model(20) against Field
+FIELD: name, name
+THIS.Type: str
+FIELD: optional, false
+THIS.Type: bool
+FIELD: many, false
+THIS.Type: bool
+FIELD: key, true
+THIS.Type: bool
+KLASS: Checking model(21) against Field
+FIELD: name, type
+THIS.Type: str
+FIELD: type, model(11)
+THIS.Type: Type
+KLASS: Checking model(11) against Type
+FIELD: optional, false
+THIS.Type: bool
+FIELD: many, false
+THIS.Type: bool
+FIELD: key, false
+THIS.Type: bool
+KLASS: Checking model(22) against Field
+FIELD: name, optional
+THIS.Type: str
+FIELD: type, model(4)
+THIS.Type: Type
+KLASS: Checking model(4) against Type
+FIELD: optional, false
+THIS.Type: bool
+FIELD: many, false
+THIS.Type: bool
+FIELD: key, false
+THIS.Type: bool
+KLASS: Checking model(23) against Field
+FIELD: name, many
+THIS.Type: str
+FIELD: optional, false
+THIS.Type: bool
+FIELD: many, false
+THIS.Type: bool
+FIELD: key, false
+THIS.Type: bool
+KLASS: Checking model(24) against Field
+FIELD: name, key
+THIS.Type: str
+FIELD: optional, false
+THIS.Type: bool
+FIELD: many, false
+THIS.Type: bool
+FIELD: key, false
+THIS.Type: bool
+KLASS: Checking model(25) against Field
+FIELD: name, inverse
+THIS.Type: str
+FIELD: optional, true
+THIS.Type: bool
+FIELD: many, false
+THIS.Type: bool
+FIELD: key, false
+THIS.Type: bool
+FIELD: inverse, model(25)
+THIS.Type: Field
+FIELD: name, owner
+THIS.Type: str
+FIELD: optional, false
+THIS.Type: bool
+FIELD: many, false
+THIS.Type: bool
+FIELD: key, true
+THIS.Type: bool
+FIELD: inverse, model(18)
+THIS.Type: Field
+FIELD: name, schema
+THIS.Type: str
+FIELD: type, model(5)
+THIS.Type: Type
+KLASS: Checking model(5) against Type
+FIELD: optional, false
+THIS.Type: bool
+FIELD: many, false
+THIS.Type: bool
+FIELD: key, false
+THIS.Type: bool
+FIELD: inverse, model(8)
+THIS.Type: Field
+KLASS: Checking model(10) against Field
+FIELD: name, primitives
+THIS.Type: str
+FIELD: type, model(9)
+THIS.Type: Type
+KLASS: Checking model(9) against Type
+FIELD: optional, true
+THIS.Type: bool
+FIELD: many, true
+THIS.Type: bool
+FIELD: key, false
+THIS.Type: bool
+FIELD: primitives, {:str=>model(2), :int=>model(3), :bool=>model(4)}
+THIS.Type: Primitive
+KLASS: Checking {:str=>model(2), :int=>model(3), :bool=>model(4)} against Primitive
+KLASS: Checking model(2) against Primitive
+FIELD: name, str
+THIS.Type: str
+KLASS: Checking model(3) against Primitive
+FIELD: name, int
+THIS.Type: str
+KLASS: Checking model(4) against Primitive
+FIELD: name, bool
+THIS.Type: str

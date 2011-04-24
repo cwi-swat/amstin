@@ -13,62 +13,64 @@ class GrammarSchema < SchemaGenerator
   klass Grammar do
     field :name, :type => :str
     field :start, :type => Rule
+    field :rules, :type => Rule
   end
 
   klass Rule do
-    field :name, :type => :str
-    field :alts, :type => Pattern, :many => true, :inverse => Pattern.owner
+    field :name, :type => :str, :key => true
+    field :grammar, :type => Grammar, :inverse => Grammar.rules
+    field :alts, :type => Sym, :many => true
   end
 
-  klass Pattern do
-    field :label, :type => :str, :optional => true
-    field :owner, :type => Rule
-    field :elements, :type => Element, :optional => true, :many => true, :inverse => Element.owner
-  end
-
-  klass Element do
-    field :symbol, :type => Sym
-    field :label, :type => :str, :optional => true
-    field :owner, :type => Pattern
-  end
-  
   klass Sym do
   end
 
-  klass Int, :super => Sym do
+  klass Create, :super => Sym do
+    field :label, :type => :str
+    field :arg, :type => Atom
   end
 
-  klass Str, :super => Sym do
+  klass Field, :super => Sym do
+    field :label, :type => :str
+    field :arg, :type => Atom
+  end
+  
+  klass Atom, :super => Sym do
+  end
+  
+  klass Int, :super => Atom do
   end
 
-  klass Sqstr, :super => Sym do
+  klass Str, :super => Atom do
   end
 
-  klass Real, :super => Sym do
+  klass Sqstr, :super => Atom do
   end
 
-  klass Bool, :super => Sym do
+  klass Real, :super => Atom do
   end
 
-  klass Id, :super => Sym do 
+  klass Bool, :super => Atom do
+  end
+
+  klass Id, :super => Atom do 
+  end
+
+  klass Lit, :super => Atom do
+    field :value, :type => :str
+  end
+
+  klass CiLit, :super => Atom do
+    field :value, :type => :str
   end
 
   klass Ref, :super => Sym do
     field :ref, :type => :str
   end
 
-  klass Lit, :super => Sym do
-    field :value, :type => :str
-  end
-
-  klass CiLit, :super => Sym do
-    field :value, :type => :str
-  end
-
   klass Call, :super => Sym do 
     field :rule, :type => Rule
   end
-
 
   klass Opt, :super => Sym do
     field :arg, :type => Sym
