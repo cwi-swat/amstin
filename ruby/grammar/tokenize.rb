@@ -3,20 +3,6 @@ require 'schema/bootfactory'
 require 'grammar/tokenschema'
 
 
-# class Literals < CyclicShyCollect
-#   def initialize(grammar)
-#     super(grammar)
-#   end
-
-#   def Lit(this)
-#   end
-
-#   def CiLit(this)
-#   end
-
-# end
-
-
 class Tokenize
   IDPATTERN = "[\\\\]?[a-zA-Z_$][a-zA-Z_$0-9]*"
 
@@ -46,16 +32,16 @@ class Tokenize
     return @stream
   end  
 
-  def match(re, type)
+  def match(re, kind)
     if @src =~ re then
-      token($&, type)
+      token($&, kind)
     end
   end
 
-  def token(str, type)
+  def token(str, kind)
     l = str.length
-    puts "TOKEN: #{str}, #{type}, line = #{@line}, start = #{@pos}, end = #{@pos + l}"
-    t = @factory.Token(@stream, @line, @pos, @pos += l, l, @factory.send(type), str)
+    puts "TOKEN: #{str}, #{kind}, line = #{@line}, start = #{@pos}, end = #{@pos + l}"
+    t = @factory.Token(@stream, @line, @pos, @pos += l, l, kind.to_s, str)
     skip(l)
     @stream.tokens << t
     return t
@@ -63,7 +49,9 @@ class Tokenize
 
   def skip(l)
     # ugh, I don't like this
+    skipped = @src[0..l-1]
     @src = @src[l..@src.length]
+    return skipped
   end
   
   def skip_ws
@@ -77,14 +65,21 @@ class Tokenize
       @pos += 1
       i += 1
     end
-    skip(i)
+    s = skip(i)
+    if @stream.tokens.empty? then
+      @stream.layout = s # wrong, somehow???
+    else
+      @stream.tokens.last.layout = s
+    end
   end
 
 end
 
+require 'tools/print'
 
 if __FILE__ == $0 then
   t = Tokenize.new("begin|end")
-  p t.tokenize("bla", "\n\n\n\nbegin 4 4 true false   \n true false end ")
-  
+  m = t.tokenize("bla", "\n\n\n\nbegin 4 4 true false   \n true false end ")  
+  p m
+  Print.recurse(m, { :tokens => { :kind => {} } })
 end

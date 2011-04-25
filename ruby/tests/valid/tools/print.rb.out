@@ -269,21 +269,21 @@ Schema
           key: false
           inverse: nil
     #16 Klass
-      name: Opt
-      super: Pattern
-      fields
-        #0 Field
-          name: arg
-          optional: false
-          many: false
-          key: false
-          inverse: nil
-    #17 Klass
       name: Call
       super: Pattern
       fields
         #0 Field
           name: rule
+          optional: false
+          many: false
+          key: false
+          inverse: nil
+    #17 Klass
+      name: Opt
+      super: Pattern
+      fields
+        #0 Field
+          name: arg
           optional: false
           many: false
           key: false

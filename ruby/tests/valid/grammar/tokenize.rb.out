@@ -6,4 +6,77 @@ TOKEN: false, Bool, line = 4, start = 19, end = 24
 TOKEN: true, Bool, line = 5, start = 29, end = 33
 TOKEN: false, Bool, line = 5, start = 34, end = 39
 TOKEN: end, Lit, line = 5, start = 40, end = 43
-< 22 [:path, :tokens]>
+<Stream 43>
+Stream
+  path: bla
+  tokens
+    #0 Token
+      line: 4
+      start: 4
+      end: 9
+      length: 5
+      kind: Lit
+      value: begin
+      layout:  
+    #1 Token
+      line: 4
+      start: 10
+      end: 11
+      length: 1
+      kind: Int
+      value: 4
+      layout:  
+    #2 Token
+      line: 4
+      start: 12
+      end: 13
+      length: 1
+      kind: Int
+      value: 4
+      layout:  
+    #3 Token
+      line: 4
+      start: 14
+      end: 18
+      length: 4
+      kind: Bool
+      value: true
+      layout:  
+    #4 Token
+      line: 4
+      start: 19
+      end: 24
+      length: 5
+      kind: Bool
+      value: false
+      layout:    
+ 
+    #5 Token
+      line: 5
+      start: 29
+      end: 33
+      length: 4
+      kind: Bool
+      value: true
+      layout:  
+    #6 Token
+      line: 5
+      start: 34
+      end: 39
+      length: 5
+      kind: Bool
+      value: false
+      layout:  
+    #7 Token
+      line: 5
+      start: 40
+      end: 43
+      length: 3
+      kind: Lit
+      value: end
+      layout:  
+  layout: 
+
+
+
+

@@ -6,7 +6,7 @@ class GrammarGrammar < GrammarGenerator
   start Grammar
 
   rule Grammar do
-    alt [:Grammar], "grammar", {:name => :str}, "start", {:start => ref(Rule)}, {rules: iter_star(Rule)}
+    alt [:Grammar], "grammar", {:name => :id}, "start", {:start => ref(Rule)}, {rules: iter_star(Rule)}
   end
 
   rule Rule do

@@ -17,6 +17,7 @@ class Factory
       #puts "Arg: #{args[i]}"
       m[f.name] = args[i]
     end
+    m.schema_class = klass
     return m
   end
 end

@@ -76,12 +76,13 @@ class GrammarSchema < SchemaGenerator
     field :name, :type => :str
   end
 
-  klass Opt, :super => Pattern do
-    field :arg, :type => Pattern
-  end
 
   klass Call, :super => Pattern do 
     field :rule, :type => Rule
+  end
+
+  klass Opt, :super => Pattern do
+    field :arg, :type => Pattern
   end
 
   klass Iter, :super => Pattern do

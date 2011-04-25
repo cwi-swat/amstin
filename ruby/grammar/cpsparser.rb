@@ -1,5 +1,49 @@
 
-require 'ostruct'
+require 'cyclicmap'
+require 'grammar/grammargrammar'
+
+class CollectLiterals < CyclicExecOtherwise
+  def initialize
+    super
+    @literals = []
+  end
+
+  def pattern
+    @literals.join("|")
+  end
+
+  def ci_pattern(cl)
+    re = "("
+    cl.each_char do |c|
+      re += "[#{c.upcase}#{c.downcase}]"
+    end
+    re + ")";
+  end
+
+
+  def Lit(this)
+    @literals << Regexp.escape(this.value)
+  end
+
+  def CiLit(this)
+    @literals << ci_pattern(this.value)
+  end
+
+  def _(this)
+    this.schema_class.fields.each do |f|
+      v = this[f.name]
+      # todo: check on f.type
+      recurse(this[f.name]) if v && v.is_a?(CheckedObject)
+      if f.many then
+        v.each do |elt|
+          recurse(elt) if elt && elt.is_a?(CheckedObject)
+        end
+      end
+    end
+  end
+
+end
+
 
 class CPSParser
 
@@ -13,7 +57,7 @@ class CPSParser
   end
 
   def recurse(obj, *args, &block)
-    send(obj.klass, obj, *args, &block)
+    send(obj.schema_class.name, obj, *args, &block)
   end
 
   def token(pos)
@@ -54,14 +98,12 @@ class CPSParser
   end
 
   def Rule(this, pos, &block)
-    #puts "Parsing rule: #{pos}"
     entry = @table[this, pos]
     if entry.conts.empty? then
-      #puts "First "
       entry.conts << block
-      #p entry.conts
-      recurse(this.pattern, pos) do |pos1, tree1|
-        if !entry.subsumed?(pos1) then
+      this.alts.each do |alt|
+        recurse(alt, pos) do |pos1, tree1|
+          return if entry.subsumed?(pos1) 
           entry.results[pos1] = tree1
           entry.conts.each do |c|
             c.call(pos1, {this.name.to_sym => tree1})
@@ -69,60 +111,108 @@ class CPSParser
         end
       end
     else
-      #puts "Else"
       entry.conts << block
-      entry.results.each do |pos1, tree1|
-        block.call(pos1, tree1)
+      # NB: keys to prevent modifying hash during iterations
+      entry.results.keys.each do |pos1|
+        block.call(pos1, entry.results[pos1])
       end
     end
   end
 
-  def Seq(this, pos, &block)
-    #puts "Parsing seq: #{pos}"
-    #puts "seq = #{this.inspect}"
-    recurse(this.left, pos) do |pos1, tree1|
-      #puts "Parsied left of seq: #{pos1}"
-      recurse(this.right, pos1) do |pos2, tree2|
-        #puts "Parsied right of seq: #{pos1}"
-        block.call(pos2, flatten1([tree1, tree2]))
+  def Sequence(this, pos, &block)
+    f = lambda do |i, pos, lst| 
+      if i == this.elements.length then
+        block.call(pos, lst)
+      else
+        recurse(this.elements[i], pos) do |pos1, tree|
+          f.call(i + 1, pos1, [*lst, tree])
+        end
       end
     end
+    f.call(0, pos, [])
   end
 
-  def flatten1(list)
-    list.inject([]) do |l, x|
-      l + (x.is_a?(Array) ? x : [x])
+  def Create(this, pos, &block)
+    f = lambda do |i, pos, lst| 
+      if i == this.elements.length then
+        block.call(pos, {this.name => lst})
+      else
+        recurse(this.elements[i], pos) do |pos1, tree|
+          f.call(i + 1, pos1, [*lst, tree])
+        end
+      end
+    end
+    f.call(0, pos, [])
+  end
+
+  def Field(this, pos, &block)
+    recurse(this.arg, pos) do |pos1, tree|
+      block.call(pos1, {this.name => tree})
     end
   end
 
-  def Or(this, pos, &block)
-    #puts "Parsing or: #{pos}"
-    #puts "Left: #{this.left.inspect}"
-    #puts "Parsing or-left"
-    recurse(this.left, pos, &block)
-    #puts "Parsing or-right"
-    recurse(this.right, pos, &block)
-    #puts "Bot or hands failed"
+  %w(Int Str SqStr Real Bool).each do |tk|
+    class_eval %Q{
+      def #{tk}(this, pos, &block)
+        return if eof?(pos)
+        tk = token(pos)
+        block.call(pos + 1, tk) if tk.kind == "#{tk}"
+      end
+    }
   end
+
+  %w(Id Key Ref Call).each do |tk|
+    class_eval %Q{
+      def #{tk}(this, pos, &block)
+        puts "Parsing id"
+        return if eof?(pos)
+        tk = token(pos)
+        block.call(pos + 1, tk) if tk.kind == "Id"
+      end
+    }
+  end
+
+  def Lit(this, pos, &block)
+    puts "Parsing lit: #{this.value}"
+    return if eof?(pos)
+    tk = token(pos)
+    if tk.kind == "Lit" && tk.value == this.value then
+      puts "Parsed lit: #{tk}"
+      block.call(pos + 1, tk)
+    end
+  end
+
+  def CiLit(this, pos, &block)
+    return if eof?(pos)
+    tk = token(pos)
+    if tk.kind == "Lit" && tk.value.downcase == this.value.downcase then
+      block.call(pos + 1, tk)
+    end
+  end
+
 
   def Opt(this, pos, &block)
     block.call(pos, [])
     recurse(this.arg, pos, &block)
   end
 
+  ## NB: iters are right-recursive (otherwise we have to memoize them)
+  ## This also means that iter'ed symbols should not be nullable
+
   def Iter(this, pos, &block)
     recurse(this.arg, pos) do |pos1, tree1|
       recurse(this, pos) do |pos2, tree2|
-        block.call(pos2, [:cons1, tree1, tree2])
+        block.call(pos2, [tree1, tree2])
       end
     end
     recurse(this.arg, pos, &block)
   end
 
   def IterStar(this, pos, &block)
-    recurse(this, pos) do |pos1, tree1|
-      recurse(this.arg, pos) do |pos2, tree2|
-        block.call(pos2, [:cons, tree1, tree2])
+    puts "Parsing iterstar pos = #{pos}, this = #{this}"
+    recurse(this.arg, pos) do |pos1, tree1|
+      recurse(this, pos) do |pos2, tree2|
+        block.call(pos2, [tree1, tree2])
       end
     end
     block.call(pos, [])
@@ -130,9 +220,9 @@ class CPSParser
 
   def IterSep(this, pos, &block)
     recurse(this.arg, pos) do |pos1, tree1|
-      recurse(this.sep, pos1) do |pos2, tree2|
-        recurse(this, pos) do |pos3, tree3|
-          block.call(pos3, [tree1, tree2, tree3])
+      recurse(this.sep, pos1) do |pos2, _|
+        recurse(this, pos2) do |pos3, tree3|
+          block.call(pos3, [tree1, tree3])
         end
       end
     end
@@ -146,75 +236,29 @@ class CPSParser
     block.call(pos, [])
   end
 
-  def Token(this, pos, &block)
-    return if eof?(pos)
-    tk = token(pos)
-    if tk.type == this.type then
-      block.call(pos + 1, tk)
-    end
-  end
-
-  def Lit(this, pos, &block)
-    return if eof?(pos)
-    tk = token(pos)
-    if tk.type == "Lit" && tk.value == this.value then
-      block.call(pos + 1, tk)
-    end
-  end
-
-  def CiLit(this, pos, &block)
-    return if eof?(pos)
-    tk = token(pos)
-    if tk.type == "Lit" && tk.value.downcase == this.value.downcase then
-      block.call(pos + 1, tk)
-    end
-  end
 end
 
 
 require 'grammar/tokenize'
-
-g = OpenStruct.new
-exp = OpenStruct.new
-exp.klass = "Rule"
-exp.name = "Exp"
-
-int = OpenStruct.new
-int.klass = "Int"
-
-
-plus = OpenStruct.new
-plus.klass = "Lit"
-plus.value = "+"
-
-seq1 = OpenStruct.new
-seq1.klass = "Seq"
-seq1.left = plus
-seq1.right = exp
-
-seq = OpenStruct.new
-seq.klass = "Seq"
-seq.left = exp
-seq.right = seq1
-
-alts = OpenStruct.new
-alts.klass = "Or"
-alts.right = int
-alts.left = seq
-exp.pattern = alts
-
-g.klass = "Grammar"
-g.start = exp
-
-
-t = Tokenize.new("\\+")
-input = t.tokenize("bla", "1 + 2 + 3")  
 require 'tools/print'
+
+
+G = GrammarGrammar.grammar
+
+c = CollectLiterals.new
+c.recurse(G)
+puts c.pattern
+
+t = Tokenize.new(c.pattern)
+input = t.tokenize("bla", "grammar Grammar start Grammar
+  Exp ::= [Int] int
+       |  [Add] Exp \"+\" Exp
+")  
 
 #Print.recurse(input, { :tokens => { :type => {} } })
 
 p = CPSParser.new(input)
-p.run(g) do |pos, tree|
+p.run(G) do |pos, tree|
   p pos
   p tree
 end

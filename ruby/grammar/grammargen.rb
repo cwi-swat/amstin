@@ -103,6 +103,11 @@ class GrammarGenerator
       Factory.Opt(sym)
     end  
 
+
+    def lit(sym)
+      Factory.Lit(sym)
+    end
+
     def cilit(s)
       # todo
     end

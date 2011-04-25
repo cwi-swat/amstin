@@ -1,6 +1,7 @@
 
 
 require 'schema/schemagen'
+require 'schema/schemaschema'
 
 
 class TokenSchema < SchemaGenerator
@@ -11,6 +12,7 @@ class TokenSchema < SchemaGenerator
   klass Stream do
     field :path, :type => :str
     field :tokens, :type => Token, :optional => true, :many => true, :inverse => Token.stream
+    field :layout, :type => :str
   end
     
   klass Token do
@@ -19,28 +21,21 @@ class TokenSchema < SchemaGenerator
     field :start, :type => :int
     field :end, :type => :int
     field :length, :type => :int
-    field :type, :type => Type
+    field :kind, :type => :str
     field :value, :type => :str
+    field :layout, :type => :str
   end
 
-  # TODO: eof
-
-  klass Type do
+  # this should be automatic
+  schema.schema_class = SchemaSchema::Schema.klass
+  schema.primitives.each do |p|
+    p.schema_class = SchemaSchema::Primitive.klass
   end
-
-  klass Str, :super => Type do
-  end
-
-  klass Int, :super => Type do
-  end
-
-  klass Bool, :super => Type do
-  end
-
-  klass Lit, :super => Type do
-  end
-
-  klass Id, :super => Type do
+  schema.classes.each do |c|
+    c.schema_class = SchemaSchema::Klass.klass
+    c.fields.each do |f|
+      f.schema_class = SchemaSchema::Field.klass
+    end
   end
 
 

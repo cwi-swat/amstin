@@ -1,6 +1,6 @@
 
 class CyclicThing
-  def initialize()
+  def initialize
     @memo = {}
   end
 
@@ -28,7 +28,7 @@ class CyclicMap < CyclicThing
     
     result = BootstrapModel.new 
     @memo[obj] = result
-    send(obj.klass, obj, result)
+    send(obj.schema_class.name, obj, result)
     return result
   end
 end
@@ -40,7 +40,7 @@ class CyclicClosure < CyclicThing
     end
     ref = nil
     @memo[obj] = lambda { |*x| ref.call(*x) }
-    ref = send(obj.klass, obj)
+    ref = send(obj.schema_class.name, obj)
   end
 end
 
@@ -50,8 +50,24 @@ class CyclicCollect < CyclicThing
       return 
     end
     @memo[obj] = true
-    send(obj.klass, obj)
+    send(obj.schema_class.name, obj)
   end
 end
+
+class CyclicExecOtherwise < CyclicThing
+  def recurse(obj)
+    if @memo[obj] then
+      return 
+    end
+    @memo[obj] = true
+    msg = obj.schema_class.name
+    if respond_to?(msg) then
+      send(msg, obj)
+    else
+      send(:_, obj)
+    end
+  end
+end
+    
 
 
