@@ -4,397 +4,47 @@ Grammar
   rules
     #0 Rule
       name: Grammar
-      alts
-        #0 Sequence
-          name: Grammar
-          elements
-            #0 Lit
-              value: grammar
-            #1 Field
-              name: name
-              arg: Id
-            #2 Lit
-              value: start
-            #3 Field
-              name: start
-              arg: Ref
-                name: Rule
-            #4 Field
-              name: rules
-              arg: IterStar
-                arg: Rule
+      arg: Alt
     #1 Rule
       name: Rule
-      alts
-        #0 Sequence
-          name: Rule
-          elements
-            #0 Field
-              name: name
-              arg: Key
-            #1 Lit
-              value: ::=
-            #2 Field
-              name: alts
-              arg: IterSep
-                arg: Sequence
-                sep: |
+      arg: Alt
     #2 Rule
-      name: Sequence
-      alts
-        #0 Sequence
-          name: Sequence
-          elements
-            #0 Opt
-              arg: Call
-                rule: Create
-            #1 Field
-              name: sequence
-              arg: IterStar
-                arg: Pattern
+      name: Alts
+      arg: Alt
     #3 Rule
       name: Create
-      alts
-        #0 Sequence
-          name: nil
-          elements
-            #0 Lit
-              value: [
-            #1 Field
-              name: name
-              arg: Id
-            #2 Lit
-              value: ]
+      arg: Alt
     #4 Rule
+      name: Sequence
+      arg: Alt
+    #5 Rule
+      name: Field
+      arg: Alt
+    #6 Rule
       name: Pattern
-      alts
-        #0 Sequence
-          name: Int
-          elements
-            #0 Lit
-              value: int
-        #1 Sequence
-          name: Str
-          elements
-            #0 Lit
-              value: str
-        #2 Sequence
-          name: Sqstr
-          elements
-            #0 Lit
-              value: sqstr
-        #3 Sequence
-          name: Real
-          elements
-            #0 Lit
-              value: real
-        #4 Sequence
-          name: Bool
-          elements
-            #0 Lit
-              value: bool
-        #5 Sequence
-          name: Id
-          elements
-            #0 Lit
-              value: id
-        #6 Sequence
-          name: Key
-          elements
-            #0 Lit
-              value: key
-        #7 Sequence
-          name: Field
-          elements
-            #0 Field
-              name: name
-              arg: Id
-            #1 Field
-              name: arg
-              arg: Call
-        #8 Sequence
-          name: Ref
-          elements
-            #0 Field
-              name: ref
-              arg: Id
-            #1 Lit
-              value: ^
-        #9 Sequence
-          name: Lit
-          elements
-            #0 Field
-              name: value
-              arg: Str
-        #10 Sequence
-          name: CiLit
-          elements
-            #0 Field
-              name: value
-              arg: Str
-        #11 Sequence
-          name: Call
-          elements
-            #0 Field
-              name: rule
-              arg: Ref
-                name: Rule
-        #12 Sequence
-          name: Opt
-          elements
-            #0 Field
-              name: arg
-              arg: Ref
-                name: Rule
-            #1 Lit
-              value: ?
-        #13 Sequence
-          name: Iter
-          elements
-            #0 Field
-              name: arg
-              arg: Ref
-                name: Rule
-            #1 Lit
-              value: +
-        #14 Sequence
-          name: IterStar
-          elements
-            #0 Field
-              name: arg
-              arg: Ref
-                name: Rule
-            #1 Lit
-              value: *
-        #15 Sequence
-          name: IterSep
-          elements
-            #0 Lit
-              value: {
-            #1 Field
-              name: arg
-              arg: Ref
-                name: Rule
-            #2 Field
-              name: sep
-              arg: Str
-            #3 Lit
-              value: }
-            #4 Lit
-              value: +
-        #16 Sequence
-          name: IterStarSep
-          elements
-            #0 Lit
-              value: {
-            #1 Field
-              name: arg
-              arg: Ref
-                name: Rule
-            #2 Field
-              name: sep
-              arg: Str
-            #3 Lit
-              value: }
-            #4 Lit
-              value: *
+      arg: Alt
 Grammar
   name: GrammarGrammar
   start: Grammar
   rules
     #0 Rule
       name: Grammar
-      alts
-        #0 Sequence
-          name: Grammar
-          elements
-            #0 Lit
-              value: grammar
-            #1 Field
-              name: name
-              arg: Id
-            #2 Lit
-              value: start
-            #3 Field
-              name: start
-              arg: Ref
-                name: Rule
-            #4 Field
-              name: rules
-              arg: IterStar
-                arg: Rule
+      arg: Alt
     #1 Rule
       name: Rule
-      alts
-        #0 Sequence
-          name: Rule
-          elements
-            #0 Field
-              name: name
-              arg: Key
-            #1 Lit
-              value: ::=
-            #2 Field
-              name: alts
-              arg: IterSep
-                arg: Sequence
-                sep: |
+      arg: Alt
     #2 Rule
-      name: Sequence
-      alts
-        #0 Sequence
-          name: Sequence
-          elements
-            #0 Opt
-              arg: Call
-                rule: Create
-            #1 Field
-              name: sequence
-              arg: IterStar
-                arg: Pattern
+      name: Alts
+      arg: Alt
     #3 Rule
       name: Create
-      alts
-        #0 Sequence
-          name: nil
-          elements
-            #0 Lit
-              value: [
-            #1 Field
-              name: name
-              arg: Id
-            #2 Lit
-              value: ]
+      arg: Alt
     #4 Rule
+      name: Sequence
+      arg: Alt
+    #5 Rule
+      name: Field
+      arg: Alt
+    #6 Rule
       name: Pattern
-      alts
-        #0 Sequence
-          name: Int
-          elements
-            #0 Lit
-              value: int
-        #1 Sequence
-          name: Str
-          elements
-            #0 Lit
-              value: str
-        #2 Sequence
-          name: Sqstr
-          elements
-            #0 Lit
-              value: sqstr
-        #3 Sequence
-          name: Real
-          elements
-            #0 Lit
-              value: real
-        #4 Sequence
-          name: Bool
-          elements
-            #0 Lit
-              value: bool
-        #5 Sequence
-          name: Id
-          elements
-            #0 Lit
-              value: id
-        #6 Sequence
-          name: Key
-          elements
-            #0 Lit
-              value: key
-        #7 Sequence
-          name: Field
-          elements
-            #0 Field
-              name: name
-              arg: Id
-            #1 Field
-              name: arg
-              arg: Call
-        #8 Sequence
-          name: Ref
-          elements
-            #0 Field
-              name: ref
-              arg: Id
-            #1 Lit
-              value: ^
-        #9 Sequence
-          name: Lit
-          elements
-            #0 Field
-              name: value
-              arg: Str
-        #10 Sequence
-          name: CiLit
-          elements
-            #0 Field
-              name: value
-              arg: Str
-        #11 Sequence
-          name: Call
-          elements
-            #0 Field
-              name: rule
-              arg: Ref
-                name: Rule
-        #12 Sequence
-          name: Opt
-          elements
-            #0 Field
-              name: arg
-              arg: Ref
-                name: Rule
-            #1 Lit
-              value: ?
-        #13 Sequence
-          name: Iter
-          elements
-            #0 Field
-              name: arg
-              arg: Ref
-                name: Rule
-            #1 Lit
-              value: +
-        #14 Sequence
-          name: IterStar
-          elements
-            #0 Field
-              name: arg
-              arg: Ref
-                name: Rule
-            #1 Lit
-              value: *
-        #15 Sequence
-          name: IterSep
-          elements
-            #0 Lit
-              value: {
-            #1 Field
-              name: arg
-              arg: Ref
-                name: Rule
-            #2 Field
-              name: sep
-              arg: Str
-            #3 Lit
-              value: }
-            #4 Lit
-              value: +
-        #16 Sequence
-          name: IterStarSep
-          elements
-            #0 Lit
-              value: {
-            #1 Field
-              name: arg
-              arg: Ref
-                name: Rule
-            #2 Field
-              name: sep
-              arg: Str
-            #3 Lit
-              value: }
-            #4 Lit
-              value: *
+      arg: Alt

@@ -23,83 +23,58 @@ class GrammarSchema < SchemaGenerator
   klass Rule do
     field :name, :type => :str, :key => true
     # do NOT define an inverse here for rules
-    field :alts, :type => Sequence, :many => true
+    field :arg, :type => Expression
   end
 
-  klass Sequence do
-    field :name, :type => :str, :optional => true
-    field :rule, :type => Rule, :inverse => Rule.alts
-    field :elements, :type => Pattern, :many => true
+  klass Expression do
+  end
+    
+  klass Epsilon, :super => Expression do
   end
 
-  klass Pattern do
+  klass Alt, :super => Expression do
+    field :alts, :type => Expression, :many => true
   end
 
-  klass Epsilon, :super => Pattern do
+  klass Sequence, :super => Expression do
+    field :elements, :type => Expression, :optional => true, :many => true
   end
 
-  klass Field, :super => Pattern do
+  klass Create, :super => Expression do
     field :name, :type => :str
-    field :arg, :type => Pattern
+    field :arg, :type => Expression
+  end
+
+  klass Field, :super => Expression do
+    field :name, :type => :str
+    field :arg, :type => Expression
   end
   
-  klass Int, :super => Pattern do
+  klass Value, :super => Expression do
+    field :kind, :type => :str
   end
 
-  klass Str, :super => Pattern do
+  klass Key, :super => Expression do 
   end
 
-  klass Sqstr, :super => Pattern do
-  end
-
-  klass Real, :super => Pattern do
-  end
-
-  klass Bool, :super => Pattern do
-  end
-
-  klass Id, :super => Pattern do 
-  end
-
-  klass Key, :super => Pattern do 
-  end
-
-  klass Lit, :super => Pattern do
-    field :value, :type => :str
-  end
-
-  klass CiLit, :super => Pattern do
-    field :value, :type => :str
-  end
-
-  klass Ref, :super => Pattern do
+  klass Ref, :super => Expression do
     field :name, :type => :str
   end
 
-  klass Call, :super => Pattern do 
+  klass Lit, :super => Expression do
+    field :value, :type => :str
+    field :case_sensitive, :type => :bool
+  end
+
+  klass Call, :super => Expression do 
     field :rule, :type => Rule
   end
 
-  klass Opt, :super => Pattern do
-    field :arg, :type => Pattern
-  end
-
-  klass Iter, :super => Pattern do
-    field :arg, :type => Rule
-  end
-
-  klass IterStar, :super => Pattern do
-    field :arg, :type => Rule
-  end
-
-  klass IterSep, :super => Pattern do
-    field :arg, :type => Rule
-    field :sep, :type => :str
-  end
-
-  klass IterStarSep, :super => Pattern do
-    field :arg, :type => Rule
-    field :sep, :type => :str
+  klass Regular, :super => Expression do
+    field :arg, :type => Expression
+    field :many, :type => :bool
+    field :optional, :type => :bool
+    field :sep, :type => Lit, :optional => true
   end
 
   # this should be automatic

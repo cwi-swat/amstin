@@ -38,116 +38,45 @@ Schema
           key: true
           inverse: nil
         #1 Field
-          name: alts
-          type: Sequence
+          name: arg
+          type: Expression
           optional: false
-          many: true
+          many: false
           key: false
-          inverse: rule
+          inverse: nil
     #2 Klass
-      name: Sequence
+      name: Expression
       super: nil
       fields
-        #0 Field
-          name: name
-          type: str
-          optional: true
-          many: false
-          key: false
-          inverse: nil
-        #1 Field
-          name: rule
-          type: Rule
-          optional: false
-          many: false
-          key: false
-          inverse: alts
-        #2 Field
-          name: elements
-          type: Pattern
-          optional: false
-          many: true
-          key: false
-          inverse: nil
     #3 Klass
-      name: Pattern
-      super: nil
+      name: Epsilon
+      super: Expression
       fields
     #4 Klass
-      name: Epsilon
-      super: Pattern
-      fields
-    #5 Klass
-      name: Field
-      super: Pattern
+      name: Alt
+      super: Expression
       fields
         #0 Field
-          name: name
-          type: str
+          name: alts
+          type: Expression
           optional: false
-          many: false
+          many: true
           key: false
           inverse: nil
-        #1 Field
-          name: arg
-          type: Pattern
-          optional: false
-          many: false
+    #5 Klass
+      name: Sequence
+      super: Expression
+      fields
+        #0 Field
+          name: elements
+          type: Expression
+          optional: true
+          many: true
           key: false
           inverse: nil
     #6 Klass
-      name: Int
-      super: Pattern
-      fields
-    #7 Klass
-      name: Str
-      super: Pattern
-      fields
-    #8 Klass
-      name: Sqstr
-      super: Pattern
-      fields
-    #9 Klass
-      name: Real
-      super: Pattern
-      fields
-    #10 Klass
-      name: Bool
-      super: Pattern
-      fields
-    #11 Klass
-      name: Id
-      super: Pattern
-      fields
-    #12 Klass
-      name: Key
-      super: Pattern
-      fields
-    #13 Klass
-      name: Lit
-      super: Pattern
-      fields
-        #0 Field
-          name: value
-          type: str
-          optional: false
-          many: false
-          key: false
-          inverse: nil
-    #14 Klass
-      name: CiLit
-      super: Pattern
-      fields
-        #0 Field
-          name: value
-          type: str
-          optional: false
-          many: false
-          key: false
-          inverse: nil
-    #15 Klass
-      name: Ref
-      super: Pattern
+      name: Create
+      super: Expression
       fields
         #0 Field
           name: name
@@ -156,9 +85,78 @@ Schema
           many: false
           key: false
           inverse: nil
-    #16 Klass
+        #1 Field
+          name: arg
+          type: Expression
+          optional: false
+          many: false
+          key: false
+          inverse: nil
+    #7 Klass
+      name: Field
+      super: Expression
+      fields
+        #0 Field
+          name: name
+          type: str
+          optional: false
+          many: false
+          key: false
+          inverse: nil
+        #1 Field
+          name: arg
+          type: Expression
+          optional: false
+          many: false
+          key: false
+          inverse: nil
+    #8 Klass
+      name: Value
+      super: Expression
+      fields
+        #0 Field
+          name: kind
+          type: str
+          optional: false
+          many: false
+          key: false
+          inverse: nil
+    #9 Klass
+      name: Key
+      super: Expression
+      fields
+    #10 Klass
+      name: Ref
+      super: Expression
+      fields
+        #0 Field
+          name: name
+          type: str
+          optional: false
+          many: false
+          key: false
+          inverse: nil
+    #11 Klass
+      name: Lit
+      super: Expression
+      fields
+        #0 Field
+          name: value
+          type: str
+          optional: false
+          many: false
+          key: false
+          inverse: nil
+        #1 Field
+          name: case_sensitive
+          type: bool
+          optional: false
+          many: false
+          key: false
+          inverse: nil
+    #12 Klass
       name: Call
-      super: Pattern
+      super: Expression
       fields
         #0 Field
           name: rule
@@ -167,72 +165,35 @@ Schema
           many: false
           key: false
           inverse: nil
-    #17 Klass
-      name: Opt
-      super: Pattern
+    #13 Klass
+      name: Regular
+      super: Expression
       fields
         #0 Field
           name: arg
-          type: Pattern
-          optional: false
-          many: false
-          key: false
-          inverse: nil
-    #18 Klass
-      name: Iter
-      super: Pattern
-      fields
-        #0 Field
-          name: arg
-          type: Rule
-          optional: false
-          many: false
-          key: false
-          inverse: nil
-    #19 Klass
-      name: IterStar
-      super: Pattern
-      fields
-        #0 Field
-          name: arg
-          type: Rule
-          optional: false
-          many: false
-          key: false
-          inverse: nil
-    #20 Klass
-      name: IterSep
-      super: Pattern
-      fields
-        #0 Field
-          name: arg
-          type: Rule
+          type: Expression
           optional: false
           many: false
           key: false
           inverse: nil
         #1 Field
-          name: sep
-          type: str
+          name: many
+          type: bool
           optional: false
           many: false
           key: false
           inverse: nil
-    #21 Klass
-      name: IterStarSep
-      super: Pattern
-      fields
-        #0 Field
-          name: arg
-          type: Rule
+        #2 Field
+          name: optional
+          type: bool
           optional: false
           many: false
           key: false
           inverse: nil
-        #1 Field
+        #3 Field
           name: sep
-          type: str
-          optional: false
+          type: Lit
+          optional: true
           many: false
           key: false
           inverse: nil

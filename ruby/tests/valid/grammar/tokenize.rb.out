@@ -6,7 +6,7 @@ TOKEN: false, Bool, line = 4, start = 19, end = 24
 TOKEN: true, Bool, line = 5, start = 29, end = 33
 TOKEN: false, Bool, line = 5, start = 34, end = 39
 TOKEN: end, Lit, line = 5, start = 40, end = 43
-<Stream 43>
+<Stream 1>
 Stream
   path: bla
   tokens

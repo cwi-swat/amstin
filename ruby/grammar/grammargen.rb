@@ -6,7 +6,7 @@ require 'grammar/grammarschema'
 class GrammarGenerator
 
   THE_SCHEMA = GrammarSchema.schema
-  Factory = Factory.new(GrammarSchema.schema)
+  THE_FACTORY = Factory.new(GrammarSchema.schema)
   
   @@grammars = {}
 
@@ -16,17 +16,19 @@ class GrammarGenerator
     return klass
   end
 
-  TOKENS = {
-    :str => Factory.Str(),
-    :int => Factory.Int(),
-    :real => Factory.Real(),
-    :id => Factory.Id(),
-    :key => Factory.Key(),
-    :sqstr => Factory.Sqstr()
-  }
+  def self.make_value(kind)
+    v = THE_FACTORY.Value()
+    v.kind = kind
+    v
+  end
+
+  VALUES = {}
+  %w(str int real sym sqstr bool). each do |t|
+    VALUES[t.to_sym] = make_value(t.to_s)
+  end
 
   def self.inherited(subclass)
-    g = Factory.Grammar(subclass.to_s)
+    g = THE_FACTORY.Grammar(subclass.to_s)
     @@grammars[subclass.to_s] = g
   end
 
@@ -48,68 +50,99 @@ class GrammarGenerator
 
     def alt(*elts)
       if elts[0].is_a?(Array)
-        a = Factory.Sequence(elts.shift.first.to_s)
+        a = THE_FACTORY.Create(elts.shift.first.to_s)
+        a.arg = THE_FACTORY.Sequence()
+        s = a.arg
       else
-        a = Factory.Sequence()
+        a = THE_FACTORY.Sequence()
+        s = a
       end
       elts.each do |e|
         if e.is_a?(String) then
-          a.elements << Factory.Lit(e)
+          l = THE_FACTORY.Lit(e)
+          l.case_sensitive = true
+          s.elements << l
         elsif e.is_a?(Hash) then
           e.each do |k, v|
-            a.elements << Factory.Field(k.to_s, make_symbol(v))
+            s.elements << THE_FACTORY.Field(k.to_s, make_pattern(v))
           end
         else
-          a.elements << make_symbol(e)
+          s.elements << make_pattern(e)
         end
       end
-      @@current.alts << a
+      @@current.arg.alts << a
     end
     
-    def make_symbol(e)
+    def make_pattern(e)
+      if e == :key then
+        return THE_FACTORY.Key()
+      end
       if e.is_a?(Symbol)
-        r = TOKENS[e]
+        r = VALUES[e]
         raise "Unrecognized grammar symbol #{e}" unless r
         return r
+      end
+      if e.schema_class.name == "Rule" then
+        return THE_FACTORY.Call(e)
       end
       return e
     end
     
-    def call(r)
-      Factory.Call(r)
-    end
-    
     def ref(r)
-      Factory.Ref(r.name)
+      THE_FACTORY.Ref(r.name)
     end
 
     def iter(sym)
-      Factory.Iter(sym)
+      reg = THE_FACTORY.Regular()
+      reg.arg = make_pattern(sym)
+      reg.optional = false
+      reg.many = true
+      reg.sep = nil
+      return reg
     end
     
     def iter_star(sym)
-      Factory.IterStar(sym)
+      reg = THE_FACTORY.Regular()
+      reg.arg = make_pattern(sym)
+      reg.optional = true
+      reg.many = true
+      reg.sep = nil
+      return reg
     end
     
     def iter_sep(sym, sep)
-      Factory.IterSep(sym, sep)
+      reg = THE_FACTORY.Regular()
+      reg.arg = make_pattern(sym)
+      reg.optional = false
+      reg.many = true
+      reg.sep = THE_FACTORY.Lit(sep)
+      reg.sep.case_sensitive = true
+      return reg
     end
 
     def iter_star_sep(sym, sep)
-      Factory.IterStarSep(sym, sep)
+      reg = THE_FACTORY.Regular()
+      reg.arg = make_pattern(sym)
+      reg.optional = true
+      reg.many = true
+      reg.sep = THE_FACTORY.Lit(sep)
+      reg.sep.case_sensitive = true
+      return reg
     end
     
     def opt(sym)
-      Factory.Opt(sym)
-    end
-
-
-    def lit(sym)
-      Factory.Lit(sym)
+      reg = THE_FACTORY.Regular()
+      reg.arg = make_pattern(sym)
+      reg.optional = true
+      reg.many = false
+      reg.sep = nil
+      return reg
     end
 
     def cilit(s)
-      # todo
+      cl = THE_FACTORY.Lit(s)
+      cl.case_sensitive = false
+      return cl
     end
       
     def const_missing(name)
@@ -119,7 +152,8 @@ class GrammarGenerator
     def get_rule(name)
       m = grammar.rules[name]
       if !m
-        m = Factory.Rule(name)
+        m = THE_FACTORY.Rule(name)
+        m.arg = THE_FACTORY.Alt()
         grammar.rules << m
       end
       return m

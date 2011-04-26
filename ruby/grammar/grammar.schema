@@ -1,5 +1,3 @@
-#### This is not right!!! ###
-
 metamodel Grammar
 
 	class Grammar
@@ -10,61 +8,54 @@ metamodel Grammar
 	
 	class Rule
 	  grammar: Grammar / rules
-	  name: str
-	  alts: Sequence*
+	  name: key str
+	  arg: Expression
 	end
-	
-	class Sequence
-	  rule: Rule / alts
-    name: str
-    elements: Pattern*
-  end 
 
-	class Pattern
+	class Expression
 	end
 	
-	class Call < Pattern
+	class Alt < Expression
+	  alts: Expression+
+    	end
+
+	class Sequence < Expression
+	 elements: Expression*
+        end 
+
+	class Create < Expression
+	   name: str
+	   arg: Expression
+        end
+
+	class Field < Expression
+	  name: str
+	  arg: Expression
+	end
+
+	class Value < Expression
+	  kind: str
+        end
+		 
+	class Call < Expression
 	   rule: Rule
 	end
 	
-	class Field < Pattern
-	  name: name
-	  symbol: Pattern
-	end
-	
-	class Int < Pattern end
-	class Str < Pattern end
-	class Real < Pattern end
-	class Id < Pattern end
-	class Key < Pattern end
-	
-	class Ref < Pattern
+	class Ref < Expression
 	  name: str
 	end
 	
-	class Lit < Pattern
+	class Lit < Expression
 	  value: str
+	  case_sensitive: bool
 	end
 	
-	class IterStar < Pattern
-	  sub: Rule
+	class Regular < Expression
+	  arg: Expression
+	  many: bool
+	  optional: bool
+	  sep: Lit?
 	end
+
 	
-	class Iter < Pattern
-	  sub: Rule
-	end
-	
-	class Opt < Pattern
-	  sub: Rule
-	end
-	
-	class IterStarSep < Pattern
-	  sub: Rule
-	  sep: str
-	end
-	
-	class IterSep < Pattern
-	  sub: Rule
-	  sep: str
-	end
 end

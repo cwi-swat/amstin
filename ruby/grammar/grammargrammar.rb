@@ -6,39 +6,60 @@ class GrammarGrammar < GrammarGenerator
   start Grammar
 
   rule Grammar do
-    alt [:Grammar], "grammar", {:name => :id}, "start", {:start => ref(Rule)}, {rules: iter_star(Rule)}
+    alt [:Grammar], "grammar", {name: :sym}, "start", {start: ref(Rule)}, {rules: iter_star(Rule)}
   end
 
   rule Rule do
-    alt [:Rule], {:name => :key}, "::=", {:alts => iter_sep(Sequence, "|")}
+    alt [:Rule], {name: :key}, "::=", {alts: Alts}
+  end
+
+  rule Alts do
+    alt [:Alts], {alts: iter_sep(Create, "|")}
+  end
+
+  rule Create do
+    alt [:Create], "[", {name: :sym}, "]", {arg: Sequence}
+    alt Sequence
   end
 
   rule Sequence do
-    alt [:Sequence], opt(call(Create)), {:sequence => iter_star(Pattern)}
+    alt [:Sequence], {elements: iter_star(Field)}
   end
-  
-  rule Create do
-    alt "[", {:name => :id}, "]"
+
+  rule Field do
+    alt [:Field], {name: :sym}, ":", {arg: Pattern}
+    alt Pattern
   end
 
   rule Pattern do
-    alt [:Int], "int"
-    alt [:Str], "str"
-    alt [:Sqstr], "sqstr"
-    alt [:Real], "real"
-    alt [:Bool], "bool"
-    alt [:Id], "id"
+    alt [:Value], "int" # todo: add init code when it is parsed x.kind = "Int"
+    alt [:Value], "str" 
+    alt [:Value], "sqstr"
+    alt [:Value], "real" 
+    alt [:Value], "bool" 
+    alt [:Value], "sym" 
+
     alt [:Key], "key"
-    alt [:Field], {:name => :id}, {:arg => call(Pattern)}
-    alt [:Ref], {:ref => :id}, "^"
-    alt [:Lit], {:value => :str}
-    alt [:CiLit], {:value => :str}
-    alt [:Call], {:rule => ref(Rule)}
-    alt [:Opt], {:arg => ref(Rule)}, "?"
-    alt [:Iter], {:arg => ref(Rule)}, "+"
-    alt [:IterStar], {:arg => ref(Rule)}, "*"
-    alt [:IterSep], "{", {:arg => ref(Rule)}, {:sep => :str}, "}", "+"
-    alt [:IterStarSep], "{", {:arg => ref(Rule)}, {:sep => :str}, "}", "*"
+
+    alt [:Ref], {ref: :sym}, "^"
+
+    alt [:Lit], {value: :str} # todo: add init code x.case_sensitive = true
+
+    alt [:Lit], {value: :sqstr}
+
+    alt [:Call], {rule: ref(Rule)}
+
+    alt [:Regular], {arg: Pattern}, "?" # todo add init code optional, many etc.
+
+    alt [:Regular], {arg: Pattern}, "+" 
+
+    alt [:Regular], {arg: Pattern}, "*" 
+
+    alt [:Regular], "{", {arg: Pattern}, {sep: :str}, "}", "+" 
+
+    alt [:Regular], "{", {arg: Pattern}, {sep: :str}, "}", "*" 
+    
+    alt "(", Alts, ")"
   end
 end
 

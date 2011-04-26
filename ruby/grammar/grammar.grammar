@@ -1,31 +1,37 @@
-#### This is not right!!! ###
-
   grammar GrammarGrammar
   start Grammar
   
-  Grammar ::= [Grammar] "start" start:Rule^ rules:Rule* 
+  Grammar ::= [Grammar] "grammar" name:sym "start" \start:Rule^
 
-  Rule ::= [Rule] name:key "::=" alts:{Alt "|"}+
+  Rule ::= [Rule] name:key "::=" arg:Alt
 
-  Alt ::= [Sequence] Create? items:Pattern*
-  
-  Create ::= "[" name:id "]"
+  Alt ::= [Alt] alts:{Create "|"}+
+
+  Create ::= [Create] "[" name:sym "]" arg:Sequence
+  	   | Sequence
+
+  Sequence ::= [Sequence] elements:Field*
+
+
+  Field ::= [Field] name:sym ":" arg:Pattern
+   	  | Pattern
   
   Pattern ::= 
-            [Int] "int"
-          | [Str] "str"
-          | [SqStr] "sqstr"
-          | [Real] "real"
-          | [Bool] "bool"
-          | [Id]  "id"
-          | [Lit] value:str
-          | [CiLit] value:sqstr
-          | [Field] name:id ":" data:Pattern
-          | [Ref] ref:id "^"
-          | [Key] "key"
+            [Value] kind:"int"				
+          | [Value] kind:"str"
+          | [Value] kind:"sqstr"
+          | [Value] kind:"real"
+          | [Value] kind:"bool"
+          | [Value] kind:"sym"
+	  | [Key] "key"
+          | [Ref] name:sym "^"
+          | [Lit] value:str				@{case_sensitive = true}
+          | [Lit] value:sqstr				@{case_sensitive = false}
           | [Call] rule:Rule^
-          | [IterStar] arg:Rule^ "*"
-          | [Iter] arg:Rule^ "+"
-          | [Opt] arg:Rule^ "?"
-          | [IterSepStar] "{" arg:Rule^ sep:str "}" "*"
-          | [IterSep] "{" arg:Rule^ sep:str "}" "+"
+          | [Regular] arg:Pattern "?"			@{self.optional = true}
+          | [Regular] arg:Pattern "+"  			@{self.many = true}
+          | [Regular] arg:Pattern "*"  			@{self.optional = true; self.many = true}
+          | [Regular] "{" arg:Pattern sep:str "}" "+" 	@{self.many = true}
+          | [Regular] "{" arg:Pattern sep:str "}" "*" 	@{self.optional = true; self.many = true}
+	  | "(" Alts ")"
+
