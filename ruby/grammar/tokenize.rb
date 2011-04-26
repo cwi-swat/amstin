@@ -20,13 +20,13 @@ class Tokenize
     while !@src.empty? do
       skip_ws
       break if @src.empty?
-      next if match(/^(true|false)/, :Bool)
+      next if match(/^(true|false)/, :bool)
       next if match(@literals, :Lit)
-      next if match(@id, :Id)  
-      next if match(/^[0-9]+/, :Int)
-      next if match(/^"(\\\\.|[^"])*"/, :Str)
-      next if match(/^'(\\\\.|[^'])*'/, :SqStr)
-      next if match(/^[-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?/, :Real)
+      next if match(@id, :sym)  
+      next if match(/^[0-9]+/, :int)
+      next if match(/^"(\\\\.|[^"])*"/, :str)
+      next if match(/^'(\\\\.|[^'])*'/, :sqstr)
+      next if match(/^[-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?/, :real)
       raise "Could not match #{@src}"
     end
     return @stream
