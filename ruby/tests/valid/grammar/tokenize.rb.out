@@ -1,10 +1,10 @@
 TOKEN: begin, Lit, line = 4, start = 4, end = 9
-TOKEN: 4, Int, line = 4, start = 10, end = 11
-TOKEN: 4, Int, line = 4, start = 12, end = 13
-TOKEN: true, Bool, line = 4, start = 14, end = 18
-TOKEN: false, Bool, line = 4, start = 19, end = 24
-TOKEN: true, Bool, line = 5, start = 29, end = 33
-TOKEN: false, Bool, line = 5, start = 34, end = 39
+TOKEN: 4, int, line = 4, start = 10, end = 11
+TOKEN: 4, int, line = 4, start = 12, end = 13
+TOKEN: true, bool, line = 4, start = 14, end = 18
+TOKEN: false, bool, line = 4, start = 19, end = 24
+TOKEN: true, bool, line = 5, start = 29, end = 33
+TOKEN: false, bool, line = 5, start = 34, end = 39
 TOKEN: end, Lit, line = 5, start = 40, end = 43
 <Stream 1>
 Stream
@@ -23,7 +23,7 @@ Stream
       start: 10
       end: 11
       length: 1
-      kind: Int
+      kind: int
       value: 4
       layout:  
     #2 Token
@@ -31,7 +31,7 @@ Stream
       start: 12
       end: 13
       length: 1
-      kind: Int
+      kind: int
       value: 4
       layout:  
     #3 Token
@@ -39,7 +39,7 @@ Stream
       start: 14
       end: 18
       length: 4
-      kind: Bool
+      kind: bool
       value: true
       layout:  
     #4 Token
@@ -47,7 +47,7 @@ Stream
       start: 19
       end: 24
       length: 5
-      kind: Bool
+      kind: bool
       value: false
       layout:    
  
@@ -56,7 +56,7 @@ Stream
       start: 29
       end: 33
       length: 4
-      kind: Bool
+      kind: bool
       value: true
       layout:  
     #6 Token
@@ -64,7 +64,7 @@ Stream
       start: 34
       end: 39
       length: 5
-      kind: Bool
+      kind: bool
       value: false
       layout:  
     #7 Token
