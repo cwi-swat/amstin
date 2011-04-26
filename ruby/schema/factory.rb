@@ -116,6 +116,14 @@ class CheckedObject
       return self[m.to_s]
     end
   end
+
+  def to_s
+    "<#{schema_class.name} #{@_id}>"
+  end
+
+  def inspect
+    to_s
+  end
 end
 
 # eg. "classes" field on Schema
