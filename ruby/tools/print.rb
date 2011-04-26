@@ -12,13 +12,14 @@
 #   cleans up the printout a little
 
 class Print
-  def self.recurse(obj, paths={}, indent=0, inverse=nil)
-    klass = obj.schema_class   # TODO: pass as an argument for partial evaluation
+  def self.recurse(obj, paths={}, indent=0, visited=[])
     if obj.nil?
       puts "nil"
     else
+      visited.push obj
+      klass = obj.schema_class   # TODO: pass as an argument for partial evaluation
       puts klass.name
-      #puts "FOO #{obj} p=#{paths} i=#{inverse}"
+      #puts "FOO #{obj} p=#{paths} i=#{visited}"
       indent += 2
       klass.fields.each do |field|
         if field.type.schema_class.name == "Primitive"
@@ -28,26 +29,38 @@ class Print
           if sub_path
             if !field.many
               print " "*indent, field.name, " "
-              recurse(obj[field.name], sub_path || {}, indent, field.name)
+              sub = obj[field.name]
+              recurse(sub, sub_path || {}, indent, visited)
             else
               print " "*indent, field.name, "\n"
               subindent = indent + 2
               obj[field.name].each_with_index do |sub, i|
                 print " "*subindent, "#", i, " "
-                recurse(sub, sub_path || {}, subindent, field.name)
+                recurse(sub, sub_path || {}, subindent, visited)
               end
             end
-          elsif !field.many && key(field.type) && (!field.inverse || field.inverse.name != inverse)
-            x = obj[field.name]
-            print " "*indent, field.name, ": ", (x.nil?) ? "nil" : x[key(field.type).name], "\n"
+          elsif !field.many && !visited.include?(obj[field.name])
+            #puts "CHECK #{obj[field.name]} #{visited.to_s}"
+            sub = obj[field.name]
+            print " "*indent, field.name, ": "
+            if sub.nil?
+              print "nil\n"
+            elsif key(sub.schema_class)  
+              # TODO: annoying that we need to know actual type, not just declared type
+              # This is because we don't have field inheritance in the base schema
+              print sub[key(sub.schema_class).name], "\n"
+            else
+              recurse(sub, {}, indent, visited)
+            end
           end
         end
       end
+      visited.pop
     end
   end
   
-  def self.key(type)
-    type.fields.find { |f| f.key && f.type.schema_class.name == "Primitive" }
+  def self.key(klass)
+    klass.fields.find { |f| f.key && f.type.schema_class.name == "Primitive" }
   end  
 
 end

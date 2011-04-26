@@ -14,8 +14,11 @@ class GrammarGrammar < GrammarGenerator
   end
 
   rule Sequence do
-    alt [:Sequence], {:sequence => iter_star(Pattern)}
-    alt [:Create], "[", {:name => :str}, "]", {:sequence => iter_star(Pattern)}
+    alt [:Sequence], opt(call(Create)), {:sequence => iter_star(Pattern)}
+  end
+  
+  rule Create do
+    alt "[", {:name => :id}, "]"
   end
 
   rule Pattern do

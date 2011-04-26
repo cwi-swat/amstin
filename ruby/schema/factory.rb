@@ -24,15 +24,17 @@ class CheckedObject
 
   attr_reader :schema_class
   attr_reader :_factory
+  @@_id = 0
   
   def initialize(schema_class, factory)
+    @_id = @@_id += 1
     @hash = {}
     @schema_class = schema_class
     @_factory = factory
     schema_class.fields.each do |field|
       if field.many
         # TODO: check for primitive many-valued???
-        key = key(field.type)
+        key = _key(field.type)
         if key
           _primitive_set(field.name, ManyIndexedField.new(self, field, key))
         else
@@ -44,7 +46,16 @@ class CheckedObject
     end
   end
   
-  def key(type)
+  def hash
+    @_id
+  end
+  
+  def to_s
+    #  #{@fields.keys}
+    "<#{schema_class.name} #{@_id}>"
+  end
+
+  def _key(type)
     type.fields.find { |f| f.key && f.type.schema_class.name == "Primitive" }
   end  
 
@@ -68,7 +79,7 @@ class CheckedObject
         when "bool" then raise "Expected bool found #{v}" unless v.is_a?(TrueClass) || v.is_a?(FalseClass)
         else 
           raise "Inserting into the wrong model" unless _factory.equal?(v._factory)
-          unless subtypeOf(v.schema_class, field.type)
+          unless _subtypeOf(v.schema_class, field.type)
             raise "Expected #{field.type.name} found #{v.schema_class.name}" 
           end
       end
@@ -87,9 +98,9 @@ class CheckedObject
     return v
   end
   
-  def subtypeOf(a, b)
+  def _subtypeOf(a, b)
     return true if a.name == b.name
-    return subtypeOf(a.super, b) if a.super
+    return _subtypeOf(a.super, b) if a.super
   end
   
   def _primitive_set(k, v)
@@ -118,12 +129,20 @@ class ManyIndexedField
     @key = key
   end
   
+  def to_s
+    "[" + map(&:to_s).join(", ") + "]"
+  end
+  
   def [](x)
     @hash[x]
   end
   
   def length
     @hash.length
+  end
+  
+  def empty?
+    @hash.empty?
   end
   
   def keys
@@ -161,10 +180,6 @@ class ManyIndexedField
     return change
   end
     
-  def deleteByKey(v)
-
-  end
-  
   def each(&block) 
     @hash.each_value &block
   end
@@ -179,6 +194,10 @@ class ManyField
     @realself = realself
     @field = field
   end
+
+  def to_s
+    "[" + map(&:to_s).join(", ") + "]"
+  end
   
   def [](x)
     @list[x]
@@ -186,6 +205,14 @@ class ManyField
   
   def length
     @list.length
+  end
+  
+  def empty?
+    @list.empty?
+  end
+  
+  def last
+    @list.last
   end
   
   def <<(v)

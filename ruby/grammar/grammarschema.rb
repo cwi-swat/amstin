@@ -22,20 +22,20 @@ class GrammarSchema < SchemaGenerator
 
   klass Rule do
     field :name, :type => :str, :key => true
-    field :grammar, :type => Grammar, :inverse => Grammar.rules
+    # do NOT define an inverse here for rules
     field :alts, :type => Sequence, :many => true
   end
 
   klass Sequence do
-    field :elements, :type => Pattern, :many => true
-  end
-
-  klass Create, :super => Sequence do
-    field :name, :type => :str
+    field :name, :type => :str, :optional => true
+    field :rule, :type => Rule, :inverse => Rule.alts
     field :elements, :type => Pattern, :many => true
   end
 
   klass Pattern do
+  end
+
+  klass Epsilon, :super => Pattern do
   end
 
   klass Field, :super => Pattern do
@@ -75,7 +75,6 @@ class GrammarSchema < SchemaGenerator
   klass Ref, :super => Pattern do
     field :name, :type => :str
   end
-
 
   klass Call, :super => Pattern do 
     field :rule, :type => Rule

@@ -24,7 +24,7 @@ class SchemaSchema < SchemaGenerator
   end
 
   klass Primitive, :super => Type do
-    field :name, :type => :str
+    field :name, :type => :str, :key => true
   end
 
   klass Klass, :super => Type do

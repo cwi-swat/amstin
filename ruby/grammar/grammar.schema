@@ -15,14 +15,11 @@ metamodel Grammar
 	end
 	
 	class Sequence
-    elements: Pattern*
-  end 
-
-  class Create < Sequence
+	  rule: Rule / alts
     name: str
     elements: Pattern*
   end 
-	
+
 	class Pattern
 	end
 	

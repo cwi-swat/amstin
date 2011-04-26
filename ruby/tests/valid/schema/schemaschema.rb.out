@@ -7,18 +7,21 @@ Schema
       fields
         #0 Field
           name: name
+          type: str
           optional: false
           many: false
           key: false
           inverse: nil
         #1 Field
           name: classes
+          type: Klass
           optional: true
           many: true
           key: false
           inverse: schema
         #2 Field
           name: primitives
+          type: Primitive
           optional: true
           many: true
           key: false
@@ -29,12 +32,14 @@ Schema
       fields
         #0 Field
           name: schema
+          type: Schema
           optional: false
           many: false
           key: false
           inverse: classes
         #1 Field
           name: name
+          type: str
           optional: false
           many: false
           key: true
@@ -53,6 +58,7 @@ Schema
           inverse: super
         #4 Field
           name: fields
+          type: Field
           optional: true
           many: true
           key: false
@@ -63,9 +69,10 @@ Schema
       fields
         #0 Field
           name: name
+          type: str
           optional: false
           many: false
-          key: false
+          key: true
           inverse: nil
     #3 Klass
       name: Type
@@ -77,36 +84,42 @@ Schema
       fields
         #0 Field
           name: owner
+          type: Klass
           optional: false
           many: false
           key: true
           inverse: fields
         #1 Field
           name: name
+          type: str
           optional: false
           many: false
           key: true
           inverse: nil
         #2 Field
           name: type
+          type: Type
           optional: false
           many: false
           key: false
           inverse: nil
         #3 Field
           name: optional
+          type: bool
           optional: false
           many: false
           key: false
           inverse: nil
         #4 Field
           name: many
+          type: bool
           optional: false
           many: false
           key: false
           inverse: nil
         #5 Field
           name: key
+          type: bool
           optional: false
           many: false
           key: false
@@ -116,4 +129,3 @@ Schema
           optional: true
           many: false
           key: false
-          inverse: inverse

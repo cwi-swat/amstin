@@ -7,9 +7,10 @@
 
   Rule ::= [Rule] name:key "::=" alts:{Alt "|"}+
 
-  Alt ::= [Sequence] items:Pattern*
-          | [Create] "[" name:id "]" items:Pattern*
-          
+  Alt ::= [Sequence] Create? items:Pattern*
+  
+  Create ::= "[" name:id "]"
+  
   Pattern ::= 
             [Int] "int"
           | [Str] "str"

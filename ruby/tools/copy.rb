@@ -16,7 +16,7 @@ class Copy
     @memo[source] = target
     klass.fields.each do |field|
       #puts "Copying #{field.name} #{source[field.name].class} #{source[field.name]}"
-      if {"int"=>1,"str"=>1,"bool"=>1}[field.type.name]
+      if field.type.schema_class.name == "Primitive"
         target[field.name] = source[field.name]
       elsif !field.many
         target[field.name] = copy(source[field.name])

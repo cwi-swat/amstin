@@ -48,7 +48,7 @@ class GrammarGenerator
 
     def alt(*elts)
       if elts[0].is_a?(Array)
-        a = Factory.Create(elts.shift.first.to_s)
+        a = Factory.Sequence(elts.shift.first.to_s)
       else
         a = Factory.Sequence()
       end
@@ -101,7 +101,7 @@ class GrammarGenerator
     
     def opt(sym)
       Factory.Opt(sym)
-    end  
+    end
 
 
     def lit(sym)

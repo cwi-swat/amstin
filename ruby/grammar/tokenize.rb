@@ -1,5 +1,5 @@
 
-require 'schema/bootfactory'
+require 'schema/factory'
 require 'grammar/tokenschema'
 
 
@@ -13,7 +13,7 @@ class Tokenize
   end
 
   def tokenize(path, src)
-    @stream = @factory.Stream(path, [])
+    @stream = @factory.Stream(path)
     @src = src
     @pos = 0
     @line = 0
@@ -81,5 +81,5 @@ if __FILE__ == $0 then
   t = Tokenize.new("begin|end")
   m = t.tokenize("bla", "\n\n\n\nbegin 4 4 true false   \n true false end ")  
   p m
-  Print.recurse(m, { :tokens => { :kind => {} } })
+  Print.recurse(m, { :tokens => {} })
 end

@@ -74,7 +74,7 @@ FIELD: optional, false
 THIS.Type: bool
 FIELD: many, false
 THIS.Type: bool
-FIELD: key, false
+FIELD: key, true
 THIS.Type: bool
 FIELD: fields, {}
 THIS.Type: Field

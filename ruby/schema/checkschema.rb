@@ -1,45 +1,4 @@
-
-class CyclicThing
-  def initialize
-    @memo = {}
-  end
-
-  def prim?(obj)
-    obj.is_a?(String) || 
-      obj.is_a?(Integer) || 
-      obj.is_a?(TrueClass) || 
-      obj.is_a?(FalseClass) || 
-      obj.is_a?(Array) ||
-      obj.is_a?(Hash)
-  end
-end
-
-
-class CyclicCollectOnSecondArg < CyclicThing
-  def recurse(obj, arg)
-    if !prim?(arg) then
-      if @memo[arg] then
-        return 
-      else
-        @memo[arg] = true
-      end
-    end
-    send(obj.schema_class.name, obj, arg)
-  end
-end
-
-class CyclicCollectOnBoth < CyclicThing
-  def recurse(obj, arg)
-    if !prim?(arg) then
-      if @memo[[obj, arg]] then
-        return 
-      else
-        @memo[[obj, arg]] = true
-      end
-    end
-    send(obj.schema_class.name, obj, arg)
-  end
-end
+require 'cyclicmap'
 
 # problem
 # cyclic visiting on schema: stops to early, because it may find the the same class many times
