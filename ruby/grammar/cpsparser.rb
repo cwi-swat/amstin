@@ -332,6 +332,8 @@ if __FILE__ == $0 then
     Print.new(f).recurse(grammar2, GrammarSchema.print_paths)
   end
   
+  system "diff g1.txt g2.txt"
+  
   #Print.recurse(tree)
 end
 

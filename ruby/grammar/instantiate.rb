@@ -31,40 +31,7 @@ class Instantiate
     return pos
   end
       
-
-  def ParseTree(this, owner, field, pos)
-    recurse(this.top, owner, field, pos)
-  end
-
-  def Sequence(this, owner, field, pos)
-    this.elements.inject(pos) do |pos1, arg|
-      recurse(arg, owner, field, pos1)
-    end
-  end
-  
-  def Create(this, owner, field, pos)
-    puts "Creating #{this.name}"
-    current = @factory.send(this.name)
-    # ugly
-    @root = current unless owner
-    recurse(this.arg, current, nil, 0)
-    update(owner, field, pos, current)
-  end
-
-  def Field(this, owner, field, pos)
-    puts "Field #{this.name} in #{owner}"
-    f = owner.schema_class.fields[this.name]
-    recurse(this.arg, owner, f, 0)
-  end
-
-  def Code(this, owner, field, pos)
-    owner.instance_eval(this.code)
-  end
-
-  def Value(this, owner, field, pos)
-    return pos unless field # values without field????
-    puts "Value: #{this} for #{field}"
-    # todo: escaping for str, sqstr and sym
+  def convert(this)
     v = this.value
     case this.kind 
     when "str" then 
@@ -87,28 +54,62 @@ class Instantiate
     else
       raise "Don't know kind #{this.kind}"
     end
-    #puts "VVVVVVV = #{v}"
-    update(owner, field, pos, v)
+    return v
+  end
+
+  def ParseTree(this, owner, field, pos)
+    recurse(this.top, owner, field, pos)
+  end
+
+  def Sequence(this, owner, field, pos)
+    this.elements.inject(pos) do |pos1, arg|
+      recurse(arg, owner, field, pos1)
+    end
+  end
+  
+  def Create(this, owner, field, pos)
+    #puts "Creating #{this.name}"
+    current = @factory.send(this.name)
+    # ugly
+    @root = current unless owner
+    recurse(this.arg, current, nil, 0)
+    update(owner, field, pos, current)
+  end
+
+  def Field(this, owner, field, pos)
+    #puts "Field #{this.name} in #{owner}"
+    f = owner.schema_class.fields[this.name]
+    recurse(this.arg, owner, f, 0)
+  end
+
+  def Code(this, owner, field, pos)
+    owner.instance_eval(this.code)
+  end
+
+  def Value(this, owner, field, pos)
+    return pos unless field # values without field????
+    #puts "Value: #{this} for #{field}"
+    update(owner, field, pos, convert(this))
   end
 
   def Lit(this, owner, field, pos)
     if field && !field.many then
       # don't add literals to lists
-      puts "Parsing Lit #{this.value} for #{field.name}"
+      #puts "Parsing Lit #{this.value} for #{field.name}"
       owner[field.name] = this.value
     end
     pos
   end
 
   def Ref(this, owner, field, pos)
-    puts "Stubbing ref #{this.name} in #{owner}"
+    #puts "Stubbing ref #{this.name} in #{owner}"
     stub = Stub.new(@factory, field)
     @fixes << Fix.new(this.name, owner, field, pos)
     update(owner, field, pos, stub)
   end
 
   def Key(this, owner, field, pos)
-    puts "--------> Defining key #{this.name} to #{owner}"
+    #puts "--------> Defining key #{this.name} to #{owner}"
     owner[field.name] = this.name
     @defs[this.name] = owner
     # todo: assert field is never many
@@ -139,9 +140,9 @@ class Instantiate
     end
 
     def apply(defs)
-      puts "FIXING: #{@name} in #{@this} in field #{@field.name}"
+      #puts "FIXING: #{@name} in #{@this} in field #{@field.name}"
       if @field.many then
-        puts "\tResolving at pos #{@pos} to #{defs[@name]}" 
+        #puts "\tResolving at pos #{@pos} to #{defs[@name]}" 
         @this[@field.name][@pos] = defs[@name]
       else
         @this[@field.name] = defs[@name]
