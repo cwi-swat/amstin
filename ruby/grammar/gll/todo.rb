@@ -5,12 +5,16 @@ class Todo
   end
 
   def add(parser, u, pos, w)
-    done[pos] ||= Set.new
+    @done[pos] ||= Set.new
     conf = Conf.new(parser, u, w)
     unless @done[pos].include?(conf)
       @done[pos] << conf
       @todo << Desc.new(conf, pos)
     end
+  end
+
+  def empty?
+    @todo.empty?
   end
 
   def shift
@@ -26,8 +30,8 @@ class Todo
       @node = node
     end
 
-    def parse(tokens, pos, eval, gll)
-      eval.recurse(parser, tokens, pos, gss, node, gll)
+    def parse(pos, eval, gll)
+      eval.recurse(parser, pos, gss, node, gll)
     end
 
     def ==(o)
@@ -49,8 +53,8 @@ class Todo
       @pos = pos
     end
 
-    def parse(tokens, eval, gll)
-      conf.parse(tokens, pos, eval, gll)
+    def parse(eval, gll)
+      conf.parse(pos, eval, gll)
     end
 
     def ==(o)

@@ -8,7 +8,7 @@ class Node
   
   def self.new(*args)
     n = super(*args)
-    if !@@nodes.include?(n) nhen
+    if !@@nodes.include?(n) then
       @@nodes[n] = n
     end
     @@nodes[n]

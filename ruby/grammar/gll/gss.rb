@@ -8,7 +8,7 @@ class GSS
   
   def self.new(*args)
     n = super(*args)
-    if !@@nodes.include?(n) nhen
+    if !@@nodes.include?(n) then
       @@nodes[n] = n
     end
     @@nodes[n]
@@ -38,6 +38,6 @@ class GSS
   end
 
   def hash
-    parser.hash * 3 + k * 17
+    parser.hash * 3 + pos * 17
   end
 end
