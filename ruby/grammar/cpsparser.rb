@@ -184,6 +184,7 @@ class CPSParser
 
   def Value(this, pos, &block)
     #debug(this, pos)
+    # todo: escaping or at tokenize level?
     return if eof?(pos)
     tk = token(pos)
     if tk.kind == this.kind then
@@ -325,10 +326,10 @@ if __FILE__ == $0 then
   grammar2 = inst.run(tree)
 
   File.open('g1.txt', 'w') do |f|
-    Print.new(f).recurse(grammar2, GrammarSchema.print_paths)
+    Print.new(f).recurse(grammar, GrammarSchema.print_paths)
   end
   File.open('g2.txt', 'w') do |f|
-    Print.new(f).recurse(grammar, GrammarSchema.print_paths)
+    Print.new(f).recurse(grammar2, GrammarSchema.print_paths)
   end
   
   #Print.recurse(tree)

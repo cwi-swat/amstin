@@ -43,7 +43,7 @@ class GrammarGrammar < GrammarGenerator
 
     alt [:Key], "key"
 
-    alt [:Ref], {ref: :sym}, "^"
+    alt [:Ref], {name: :sym}, "^"
 
     alt [:Lit], {value: :str}, code("self.case_sensitive = true")
 
@@ -51,13 +51,13 @@ class GrammarGrammar < GrammarGenerator
 
     alt [:Call], {rule: ref(Rule)}
 
-    alt [:Regular], {arg: Pattern}, "?", code("self.optional = true")
+    alt [:Regular], {arg: Pattern}, "?", code("self.optional = true; self.many = false")
 
-    alt [:Regular], {arg: Pattern}, "+", code("self.many = true")
+    alt [:Regular], {arg: Pattern}, "+", code("self.optional = false; self.many = true")
 
     alt [:Regular], {arg: Pattern}, "*", code("self.optional = true; self.many = true")
 
-    alt [:Regular], "{", {arg: Pattern}, {sep: :str}, "}", "+", code("self.many = true") 
+    alt [:Regular], "{", {arg: Pattern}, {sep: :str}, "}", "+", code("self.optional = false; self.many = true") 
 
     alt [:Regular], "{", {arg: Pattern}, {sep: :str}, "}", "*", code("self.optional = true; self.many = true")
     

@@ -29,10 +29,10 @@
           | [Lit] value:str				@"self.case_sensitive = true"
           | [Lit] value:sqstr				@"self.case_sensitive = false"
           | [Call] rule:Rule^
-          | [Regular] arg:Pattern "?"			@"self.optional = true"
-          | [Regular] arg:Pattern "+"  			@"self.many = true"
+          | [Regular] arg:Pattern "?"			@"self.optional = true; self.many = false"
+          | [Regular] arg:Pattern "+"  			@"self.optional = false; self.many = true"
           | [Regular] arg:Pattern "*"  			@"self.optional = true; self.many = true"
-          | [Regular] "{" arg:Pattern sep:str "}" "+" 	@"self.many = true"
+          | [Regular] "{" arg:Pattern sep:str "}" "+" 	@"self.optional = false; self.many = true"
           | [Regular] "{" arg:Pattern sep:str "}" "*" 	@"self.optional = true; self.many = true"
 	  | "(" Alt ")"
 

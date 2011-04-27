@@ -21,15 +21,25 @@ class Instantiate
     send(this.schema_class.name, this, *args)
   end
 
+  def update(owner, field, pos, x)
+    if field && field.many then
+      owner[field.name] << x
+      return pos + 1
+    elsif field then
+      owner[field.name] = x
+    end
+    return pos
+  end
+      
+
   def ParseTree(this, owner, field, pos)
     recurse(this.top, owner, field, pos)
   end
 
   def Sequence(this, owner, field, pos)
-    this.elements.each do |arg|
-      pos = recurse(arg, owner, field, pos)
+    this.elements.inject(pos) do |pos1, arg|
+      recurse(arg, owner, field, pos1)
     end
-    pos
   end
   
   def Create(this, owner, field, pos)
@@ -37,15 +47,8 @@ class Instantiate
     current = @factory.send(this.name)
     # ugly
     @root = current unless owner
-    recurse(this.arg, current, nil, pos)
-    if field && field.many then
-      owner[field.name] << current
-      return pos + 1
-    end
-    if field && !field.many then
-      owner[field.name] = current
-    end
-    pos
+    recurse(this.arg, current, nil, 0)
+    update(owner, field, pos, current)
   end
 
   def Field(this, owner, field, pos)
@@ -61,13 +64,31 @@ class Instantiate
   def Value(this, owner, field, pos)
     return pos unless field # values without field????
     puts "Value: #{this} for #{field}"
-    if field.many then
-      # todo: escaping for str, sqstr and sym
-      owner[field.name] << this.value
-      return pos + 1
+    # todo: escaping for str, sqstr and sym
+    v = this.value
+    case this.kind 
+    when "str" then 
+      #puts "VVVV = #{v}"
+      v.gsub!(/\\"/, '"')
+      #puts "VVVVsub = #{v}"
+      v = v[1..-2]
+      #puts "VVVVslice = #{v}"
+    when "sqstr" then
+      v.gsub!(/\\'/, "'")
+      v = v[1..-2]
+    when "bool" then
+      v = (v == "true")
+    when "int" then
+      v = Integer(v)
+    when "real" then
+      v = Float(v)
+    when "sym" then
+      v.sub!(/\\/, '')
+    else
+      raise "Don't know kind #{this.kind}"
     end
-    owner[field.name] = this.value
-    pos
+    #puts "VVVVVVV = #{v}"
+    update(owner, field, pos, v)
   end
 
   def Lit(this, owner, field, pos)
@@ -83,20 +104,15 @@ class Instantiate
     puts "Stubbing ref #{this.name} in #{owner}"
     stub = Stub.new(@factory, field)
     @fixes << Fix.new(this.name, owner, field, pos)
-    if field.many then
-      puts "\tstubbing at #{pos}"
-      owner[field.name] << stub
-      return pos + 1
-    end
-    owner[field.name] = stub
-    pos
+    update(owner, field, pos, stub)
   end
 
   def Key(this, owner, field, pos)
     puts "--------> Defining key #{this.name} to #{owner}"
-    # todo: assert field is never many
     owner[field.name] = this.name
     @defs[this.name] = owner
+    # todo: assert field is never many
+    update(owner, field, pos, this.name)
   end
 
   class Stub
@@ -112,7 +128,6 @@ class Instantiate
     def schema_class
       @schema_class
     end
-      
   end
 
   class Fix
