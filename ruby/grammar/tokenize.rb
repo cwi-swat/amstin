@@ -40,7 +40,7 @@ class Tokenize
 
   def token(str, kind)
     l = str.length
-    #puts "TOKEN: #{str}, #{kind}, line = #{@line}, start = #{@pos}, end = #{@pos + l}"
+    puts "TOKEN: #{str}, #{kind}, line = #{@line}, start = #{@pos}, end = #{@pos + l}"
     t = @factory.Token(@stream, @line, @pos, @pos += l, l, kind.to_s, str)
     skip(l)
     @stream.tokens << t
