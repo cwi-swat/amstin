@@ -6,6 +6,8 @@ require 'grammar/tokenschema'
 class Tokenize
   IDPATTERN = "[\\\\]?[a-zA-Z_$][a-zA-Z_$0-9]*"
 
+  # TODO: make literals firstclass part of grammar?
+
   def initialize(literals, factory = Factory.new(TokenSchema.schema))
     @literals = Regexp.new("^(#{literals})")
     @factory = factory
@@ -48,9 +50,9 @@ class Tokenize
   end
 
   def skip(l)
-    # ugh, I don't like this
     if l > 0 then
       skipped = @src[0..l-1]
+      # ugh, I don't like this
       @src = @src[l..@src.length]
       return skipped
     end

@@ -144,7 +144,7 @@ class CPSParser
         #puts "#SEQUENCE: #{lst}"
         s = @factory.Sequence
         lst.each do |l|
-          s.args << l
+          s.elements << l
         end
         block.call(pos, s)
       else
@@ -237,10 +237,12 @@ class CPSParser
   def Regular(this, pos, &block)
     regular(this, pos) do |pos1, trees|
       t = @factory.Sequence
-      #puts "#REGULAR: #{trees} many=#{this.many} opt=#{this.optional} sep=#{this.sep}"
       trees.each do |k|
-        t.args << k
+        t.elements << k
       end
+#       t.optional = this.optional
+#       t.many = this.many
+#       t.sep = this.sep ? this.sep.value : nil
       block.call(pos1, t)
     end
   end

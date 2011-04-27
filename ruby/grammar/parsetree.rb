@@ -26,7 +26,7 @@ class ParseTreeSchema < SchemaGenerator
   end
 
   klass Sequence, :super => Tree do
-    field :args, :type => Tree, :optional => true, :many => true
+    field :elements, :type => Tree, :optional => true, :many => true
   end
 
   klass Create, :super => Tree do
@@ -65,12 +65,12 @@ class ParseTreeSchema < SchemaGenerator
     field :layout, :type => :str
   end
 
-  klass Regular, :super => Tree do
-    field :args, :type => Tree, :optional => true, :many => true
-    field :many, :type => :bool
-    field :optional, :type => :bool
-    field :sep, :type => :str, :optional => true
-  end
+#   klass Regular, :super => Tree do
+#     field :args, :type => Tree, :optional => true, :many => true
+#     field :many, :type => :bool
+#     field :optional, :type => :bool
+#     field :sep, :type => :str, :optional => true
+#   end
 
   # this should be automatic
   schema.schema_class = SchemaSchema::Schema.klass

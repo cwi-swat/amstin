@@ -14,8 +14,7 @@ class Unparse < CyclicCollect
   end
 
   def Sequence(this)
-    #separated(this.args, ' ')
-    this.args.each do |arg|
+    this.elements.each do |arg|
       recurse(arg)
     end
   end
@@ -56,16 +55,11 @@ class Unparse < CyclicCollect
     @output << this.layout
   end
 
-  private
-  
-  def separated(lst, sep)
-    return if lst.empty?
-    recurse(lst.first)
-    1.upto(lst.length - 1) do |i|
-      @output << sep 
-      recurse(lst[i])
+  def Regular(this)
+    this.args.each do |arg|
+      recurse(arg)
     end
-  end
+  end 
 
 end
 
