@@ -123,8 +123,8 @@ class GrammarGenerator
       reg.arg = make_pattern(sym)
       reg.optional = false
       reg.many = true
-      reg.sep = THE_FACTORY.Lit(sep)
-      reg.sep.case_sensitive = true
+      reg.sep = sep
+      #reg.sep.case_sensitive = true
       return reg
     end
 
@@ -133,8 +133,8 @@ class GrammarGenerator
       reg.arg = make_pattern(sym)
       reg.optional = true
       reg.many = true
-      reg.sep = THE_FACTORY.Lit(sep)
-      reg.sep.case_sensitive = true
+      reg.sep = sep
+      #reg.sep.case_sensitive = true
       return reg
     end
     

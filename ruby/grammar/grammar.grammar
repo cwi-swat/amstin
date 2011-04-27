@@ -34,6 +34,6 @@
           | [Regular] arg:Pattern "*"  			@"self.optional = true; self.many = true"
           | [Regular] "{" arg:Pattern sep:str "}" "+" 	@"self.many = true"
           | [Regular] "{" arg:Pattern sep:str "}" "*" 	@"self.optional = true; self.many = true"
-	  | "(" Alts ")"
+	  | "(" Alt ")"
 
 

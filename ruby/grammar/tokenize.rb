@@ -86,5 +86,5 @@ if __FILE__ == $0 then
   t = Tokenize.new("begin|end")
   m = t.tokenize("bla", "\n\n\n\nbegin 4 4 true false   \n true false end \n\n\n ")  
   p m
-  Print.recurse(m, { :tokens => {} })
+  Print.new.recurse(m, { :tokens => {} })
 end

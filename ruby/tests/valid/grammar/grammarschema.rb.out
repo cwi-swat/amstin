@@ -203,7 +203,7 @@ Schema
           inverse: nil
         #3 Field
           name: sep
-          type: Lit
+          type: str
           optional: true
           many: false
           key: false

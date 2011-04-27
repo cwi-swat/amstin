@@ -20,7 +20,6 @@ class CollectLiterals < CyclicExecOtherwise
     re + ")";
   end
 
-
   def Lit(this)
     if this.case_sensitive then
       @literals << Regexp.escape(this.value)
@@ -29,6 +28,11 @@ class CollectLiterals < CyclicExecOtherwise
     end
   end
 
+  def Regular(this)
+    if this.sep then
+      @literals << Regexp.escape(this.sep)
+    end
+  end
 
   def _(this)
     this.schema_class.fields.each do |f|
@@ -48,10 +52,11 @@ end
 
 class CPSParser
 
-  def initialize(input, factory)
+  def initialize(input, factory, gf = Factory.new(GrammarSchema.schema))
     @input = input
     @table = Table.new
     @factory = factory
+    @grammar_factory = gf 
   end
 
   def run(grammar)
@@ -271,7 +276,8 @@ class CPSParser
       block.call(pos, [])
     elsif !this.optional && this.many && this.sep then
       recurse(this.arg, pos) do |pos1, tree1|
-        recurse(this.sep, pos1) do |pos2, sep|
+        lit = @grammar_factory.Lit(this.sep, true)
+        recurse(lit, pos1) do |pos2, sep|
           regular(this, pos2) do |pos3, trees|
             block.call(pos3, [tree1, sep, *trees])
           end
@@ -301,6 +307,7 @@ if __FILE__ == $0 then
   require 'grammar/grammargrammar'
   require 'grammar/unparse'
   require 'tools/print'
+  require 'grammar/instantiate'
 
   grammar = GrammarGrammar.grammar
   coll_lits = CollectLiterals.new
@@ -313,6 +320,17 @@ if __FILE__ == $0 then
   tree = parse.run(grammar)
   unparse = Unparse.new($stdout)
   unparse.recurse(tree)
+
+  inst = Instantiate.new(Factory.new(GrammarSchema.schema))
+  grammar2 = inst.run(tree)
+
+  File.open('g1.txt', 'w') do |f|
+    Print.new(f).recurse(grammar2, GrammarSchema.print_paths)
+  end
+  File.open('g2.txt', 'w') do |f|
+    Print.new(f).recurse(grammar, GrammarSchema.print_paths)
+  end
+  
   #Print.recurse(tree)
 end
 

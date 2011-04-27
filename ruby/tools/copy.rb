@@ -39,7 +39,7 @@ if __FILE__ == $0 then
   
   newSchema = Copy.new(Factory.new(SchemaSchema.schema)).copy(SchemaSchema.schema)
   
-  Print.recurse(newSchema, SchemaSchema.print_paths)
+  Print.new.recurse(newSchema, SchemaSchema.print_paths)
   
   puts "WOA: #{newSchema.classes['Klass'].schema.name}"
 

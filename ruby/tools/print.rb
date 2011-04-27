@@ -12,18 +12,30 @@
 #   cleans up the printout a little
 
 class Print
-  def self.recurse(obj, paths={}, indent=0, visited=[])
+  def initialize(output = $stdout)
+    @output = output
+  end
+
+  def myputs(arg)
+    @output << "#{arg}\n"
+  end
+
+  def myprint(*args)
+    @output << args.join('')
+  end
+
+  def recurse(obj, paths={}, indent=0, visited=[])
     if obj.nil?
-      puts "nil"
+      myputs "nil"
     else
       visited.push obj
       klass = obj.schema_class   # TODO: pass as an argument for partial evaluation
-      puts klass.name
-      #puts "FOO #{obj} p=#{paths} i=#{visited}"
+      myputs klass.name
+      #myputs "FOO #{obj} p=#{paths} i=#{visited}"
       indent += 2
       klass.fields.each do |field|
         if field.type && field.type.schema_class.name == "Primitive"
-          print " "*indent, field.name, ": ", obj[field.name], "\n"
+          myprint " "*indent, field.name, ": ", obj[field.name], "\n"
         else
           sub_path = paths[field.name.to_sym]
           if sub_path || !field.inverse ||
@@ -31,14 +43,14 @@ class Print
             if !field.many
               sub = obj[field.name]
               if !visited.include?(sub)
-                print " "*indent, field.name, ": "
+                myprint " "*indent, field.name, ": "
                 print1(sub, sub_path, indent, visited)
               end
             else
-              print " "*indent, field.name, "\n"
+              myprint " "*indent, field.name, "\n"
               subindent = indent + 2
               obj[field.name].each_with_index do |sub, i|
-                print " "*subindent, "#", i, " "
+                myprint " "*subindent, "#", i, " "
                 print1(sub, sub_path, subindent, visited)
               end
             end
@@ -49,17 +61,17 @@ class Print
     end
   end
   
-  def self.print1(obj, path, indent, visited)
+  def print1(obj, path, indent, visited)
     if path.nil? && !obj.nil? && key(obj.schema_class)  
       # TODO: annoying that we need to know actual type, not just declared type
       # This is because we don't have field inheritance in the base schema
-      print obj[key(obj.schema_class).name], "\n"
+      myprint obj[key(obj.schema_class).name], "\n"
     else
       recurse(obj, path || {}, indent, visited)
     end
   end
   
-  def self.key(klass)
+  def key(klass)
     klass.fields.find { |f| f.key && f.type.schema_class.name == "Primitive" }
   end  
 
@@ -69,8 +81,8 @@ if __FILE__ == $0 then
   require 'schema/schemaschema'
   # Print.recurse(SchemaSchema.schema) # this also works
    
-  Print.recurse(SchemaSchema.schema, SchemaSchema.print_paths)
+  Print.new.recurse(SchemaSchema.schema, SchemaSchema.print_paths)
   
   require 'grammar/grammarschema'  
-  Print.recurse(GrammarSchema.schema, SchemaSchema.print_paths)
+  Print.new.recurse(GrammarSchema.schema, SchemaSchema.print_paths)
 end

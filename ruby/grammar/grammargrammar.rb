@@ -61,7 +61,7 @@ class GrammarGrammar < GrammarGenerator
 
     alt [:Regular], "{", {arg: Pattern}, {sep: :str}, "}", "*", code("self.optional = true; self.many = true")
     
-    alt "(", Alts, ")"
+    alt "(", Alt, ")"
   end
 end
 
@@ -72,11 +72,11 @@ if __FILE__ == $0 then
   require 'tools/copy'
   require 'schema/factory'
 
-  Print.recurse(GrammarGrammar.grammar, GrammarSchema.print_paths)
+  Print.new.recurse(GrammarGrammar.grammar, GrammarSchema.print_paths)
   
   G = Copy.new(Factory.new(GrammarSchema.schema)).copy(GrammarGrammar.grammar)
   
-  Print.recurse(G, GrammarSchema.print_paths)
+  Print.new.recurse(G, GrammarSchema.print_paths)
 
 end
 

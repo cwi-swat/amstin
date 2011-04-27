@@ -31,7 +31,7 @@ Grammar
                       rule: Rule
                     optional: true
                     many: true
-                    sep: nil
+                    sep: 
     #1 Rule
       name: Rule
       arg: Alt
@@ -65,9 +65,7 @@ Grammar
                       rule: Create
                     optional: false
                     many: true
-                    sep: Lit
-                      value: |
-                      case_sensitive: true
+                    sep: |
     #3 Rule
       name: Create
       arg: Alt
@@ -109,7 +107,7 @@ Grammar
                       rule: Field
                     optional: true
                     many: true
-                    sep: nil
+                    sep: 
     #5 Rule
       name: Field
       arg: Alt
@@ -334,14 +332,10 @@ Grammar
                 value: (
                 case_sensitive: true
               #1 Call
-                rule: Alts
+                rule: Alt
               #2 Lit
                 value: )
                 case_sensitive: true
-    #7 Rule
-      name: Alts
-      arg: Alt
-        alts
 Grammar
   name: GrammarGrammar
   start: Grammar
@@ -375,7 +369,7 @@ Grammar
                       rule: Rule
                     optional: true
                     many: true
-                    sep: nil
+                    sep: 
     #1 Rule
       name: Rule
       arg: Alt
@@ -409,9 +403,7 @@ Grammar
                       rule: Create
                     optional: false
                     many: true
-                    sep: Lit
-                      value: |
-                      case_sensitive: true
+                    sep: |
     #3 Rule
       name: Create
       arg: Alt
@@ -453,7 +445,7 @@ Grammar
                       rule: Field
                     optional: true
                     many: true
-                    sep: nil
+                    sep: 
     #5 Rule
       name: Field
       arg: Alt
@@ -678,11 +670,7 @@ Grammar
                 value: (
                 case_sensitive: true
               #1 Call
-                rule: Alts
+                rule: Alt
               #2 Lit
                 value: )
                 case_sensitive: true
-    #7 Rule
-      name: Alts
-      arg: Alt
-        alts

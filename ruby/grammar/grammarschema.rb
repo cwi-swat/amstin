@@ -78,7 +78,7 @@ class GrammarSchema < SchemaGenerator
     field :arg, :type => Expression
     field :optional, :type => :bool
     field :many, :type => :bool
-    field :sep, :type => Lit, :optional => true
+    field :sep, :type => :str, :optional => true
   end
 
   # this should be automatic
@@ -100,6 +100,6 @@ if __FILE__ == $0 then
   require 'schema/schemaschema'
   require 'tools/print'
   
-  Print.recurse(GrammarSchema.schema, SchemaSchema.print_paths)
+  Print.new.recurse(GrammarSchema.schema, SchemaSchema.print_paths)
   
 end

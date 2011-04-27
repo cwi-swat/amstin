@@ -62,7 +62,7 @@ def main
 
   require 'tools/print'
   
-  Print.recurse(SchemaSchema.schema, SchemaSchema.print_paths)
+  Print.new.recurse(SchemaSchema.schema, SchemaSchema.print_paths)
 end
 
 

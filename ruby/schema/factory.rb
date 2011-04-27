@@ -7,6 +7,9 @@ class Factory
     schema_class = @schema.classes[class_name.to_s]
     raise "Unknown class '#{class_name}'" unless schema_class
     obj = CheckedObject.new(schema_class, self)
+#                            ManyIndexedField,
+#                            ManyField,
+#                            Integer, String, TrueClass, FalseClass)
     return obj
   end
   
@@ -26,7 +29,7 @@ class CheckedObject
   attr_reader :_factory
   @@_id = 0
   
-  def initialize(schema_class, factory)
+  def initialize(schema_class, factory) #, many_index, many, int, str, b1, b2)
     @_id = @@_id += 1
     @hash = {}
     @schema_class = schema_class
