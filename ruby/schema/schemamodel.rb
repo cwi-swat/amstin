@@ -38,6 +38,10 @@ class SchemaModel < BasicObject
     return @id
   end
 
+  def respond_to?(sym)
+    return false
+  end
+
   def inspect
     to_s
   end

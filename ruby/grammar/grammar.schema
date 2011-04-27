@@ -15,6 +15,9 @@ metamodel Grammar
 	class Expression
 	end
 	
+	class Epsilon < Expression
+	end	
+
 	class Alt < Expression
 	  alts: Expression+
     	end

@@ -21,7 +21,7 @@ class SchemaGenerator
       @builder = builder
     end
 
-    def method_missing(name)
+    def method_missing(name, *args)
       @builder.get_field(@klass, name.to_s)
     end
   end

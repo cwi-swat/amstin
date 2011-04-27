@@ -58,10 +58,14 @@ class SchemaSchema < SchemaGenerator
   
 end
 
-if __FILE__ == $0 then
+def main
 
   require 'tools/print'
   
   Print.recurse(SchemaSchema.schema, SchemaSchema.print_paths)
-  
+end
+
+
+if __FILE__ == $0 then
+  main
 end

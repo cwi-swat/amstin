@@ -25,13 +25,13 @@
           | [Value] kind:"sym"
 	  | [Key] "key"
           | [Ref] name:sym "^"
-          | [Lit] value:str				@{case_sensitive = true}
-          | [Lit] value:sqstr				@{case_sensitive = false}
+          | [Lit] value:str				
+          | [Lit] value:sqstr				
           | [Call] rule:Rule^
-          | [Regular] arg:Pattern "?"			@{self.optional = true}
-          | [Regular] arg:Pattern "+"  			@{self.many = true}
-          | [Regular] arg:Pattern "*"  			@{self.optional = true; self.many = true}
-          | [Regular] "{" arg:Pattern sep:str "}" "+" 	@{self.many = true}
-          | [Regular] "{" arg:Pattern sep:str "}" "*" 	@{self.optional = true; self.many = true}
+          | [Regular] arg:Pattern "?"			
+          | [Regular] arg:Pattern "+"  			
+          | [Regular] arg:Pattern "*"  			
+          | [Regular] "{" arg:Pattern sep:str "}" "+" 	
+          | [Regular] "{" arg:Pattern sep:str "}" "*" 	
 	  | "(" Alts ")"
 
