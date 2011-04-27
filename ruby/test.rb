@@ -1,7 +1,7 @@
 # to find tests:
 #  fgrep -R __FILE__ . | fgrep -v svn
 
-JRUBY = ENV['JRUBY_HOME']
+RUBY = ENV['RUBY']
 
 def test(file, dest, diff)
   file =~ /(.*)\/[^\/]*/
@@ -9,7 +9,7 @@ def test(file, dest, diff)
   puts "Processing #{file}"
   
   %x[mkdir -p #{dest}/#{dir}]
-  %x[#{JRUBY}/bin/jruby --1.9 #{file} > #{dest}/#{file}.out]
+  %x[#{RUBY} #{file} > #{dest}/#{file}.out]
 
   if diff == "full"
     `diff tests/out/#{file}.out tests/valid/#{file}.out 1>&2`

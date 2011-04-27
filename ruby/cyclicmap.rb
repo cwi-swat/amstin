@@ -51,6 +51,7 @@ class CyclicMapNew < CyclicThing
     puts @memo
   end
   def recurse(from)
+    raise "shouldn't be nil" if from.nil?
     to = @memo[from]
     return to if to
     #puts "SENDING #{from.schema_class.name}"

@@ -129,6 +129,10 @@ Schema
           optional: true
           many: false
           key: false
+  primitives
+    #0 str
+    #1 int
+    #2 bool
 Schema
   name: GrammarSchema
   classes
@@ -308,14 +312,14 @@ Schema
           key: false
           inverse: nil
         #1 Field
-          name: many
+          name: optional
           type: bool
           optional: false
           many: false
           key: false
           inverse: nil
         #2 Field
-          name: optional
+          name: many
           type: bool
           optional: false
           many: false
@@ -328,3 +332,7 @@ Schema
           many: false
           key: false
           inverse: nil
+  primitives
+    #0 str
+    #1 int
+    #2 bool

@@ -211,4 +211,8 @@ Schema
           optional: true
           many: false
           key: false
+  primitives
+    #0 str
+    #1 int
+    #2 bool
 WOA: SchemaSchema

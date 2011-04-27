@@ -11,7 +11,7 @@ class GrammarSchema < SchemaGenerator
   primitive :bool
 
   def self.print_paths
-    { :rules => { :alts => { :elements => {} } } }
+    { :rules => {} }
   end
   
   klass Grammar do
@@ -72,8 +72,8 @@ class GrammarSchema < SchemaGenerator
 
   klass Regular, :super => Expression do
     field :arg, :type => Expression
-    field :many, :type => :bool
     field :optional, :type => :bool
+    field :many, :type => :bool
     field :sep, :type => Lit, :optional => true
   end
 

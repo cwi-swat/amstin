@@ -22,40 +22,40 @@ class Print
       #puts "FOO #{obj} p=#{paths} i=#{visited}"
       indent += 2
       klass.fields.each do |field|
-        if field.type.schema_class.name == "Primitive"
+        if field.type && field.type.schema_class.name == "Primitive"
           print " "*indent, field.name, ": ", obj[field.name], "\n"
         else
           sub_path = paths[field.name.to_sym]
-          if sub_path
+          if sub_path || !field.inverse ||
+                (!field.many && (obj[field.name].nil? || key(obj[field.name].schema_class)))
             if !field.many
-              print " "*indent, field.name, " "
               sub = obj[field.name]
-              recurse(sub, sub_path || {}, indent, visited)
+              if !visited.include?(sub)
+                print " "*indent, field.name, ": "
+                print1(sub, sub_path, indent, visited)
+              end
             else
               print " "*indent, field.name, "\n"
               subindent = indent + 2
               obj[field.name].each_with_index do |sub, i|
                 print " "*subindent, "#", i, " "
-                recurse(sub, sub_path || {}, subindent, visited)
+                print1(sub, sub_path, subindent, visited)
               end
-            end
-          elsif !field.many && !visited.include?(obj[field.name])
-            #puts "CHECK #{obj[field.name]} #{visited.to_s}"
-            sub = obj[field.name]
-            print " "*indent, field.name, ": "
-            if sub.nil?
-              print "nil\n"
-            elsif key(sub.schema_class)  
-              # TODO: annoying that we need to know actual type, not just declared type
-              # This is because we don't have field inheritance in the base schema
-              print sub[key(sub.schema_class).name], "\n"
-            else
-              recurse(sub, {}, indent, visited)
             end
           end
         end
       end
       visited.pop
+    end
+  end
+  
+  def self.print1(obj, path, indent, visited)
+    if path.nil? && !obj.nil? && key(obj.schema_class)  
+      # TODO: annoying that we need to know actual type, not just declared type
+      # This is because we don't have field inheritance in the base schema
+      print obj[key(obj.schema_class).name], "\n"
+    else
+      recurse(obj, path || {}, indent, visited)
     end
   end
   

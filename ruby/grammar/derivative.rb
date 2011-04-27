@@ -4,6 +4,15 @@ require 'schema/factory'
 require 'tools/copy'
 require 'cyclicmap'
 
+class BadObject < NilClass
+  def initialize(name)
+    @name = name
+  end
+  def to_s
+    "<" + @name + ">"
+  end
+end  
+
 class OptimizingGrammarFactory
   def initialize
     @factory = Factory.new(GrammarSchema.schema)
@@ -18,14 +27,6 @@ class OptimizingGrammarFactory
     @factory.Rule(sub) if sub 
   end
 
-  def IterStar(sub)
-    @factory.IterStar(sub) if sub
-  end
-  
-  def Opt(sub)
-    @factory.Opt(sub) if sub
-  end
-  
   def method_missing(*args)
     @factory.send(*args)
   end
@@ -60,25 +61,17 @@ class NullTest < CyclicMapNew
   def Field(from)
     recurse(from.arg)
   end
-  
+
+  def Create(from)
+    recurse(from.arg)
+  end
+    
   def Epsilon(from)
     true
   end
 
-  def IterStar(from)
-    true
-  end
-  
-  def Opt(from)
-    true
-  end
-  
-  def Int(from)
-    false
-  end
-
-  def Real(from)
-    false
+  def Regular(from)
+    from.optional
   end
 
   # symbol representing a 
@@ -86,10 +79,10 @@ class NullTest < CyclicMapNew
     false
   end
 
-  def Id(from)
+  def Value(from)
     false
-  end
-
+  end 
+  
   def Key(from)
     false
   end
@@ -103,12 +96,16 @@ class RuleCopy < Copy
   def initialize(factory, grammar)
     super(factory)
     @grammar = grammar
+    @indent = 0
   end
   def copy(source)
+    @indent += 1
+    puts "#{' '*@indent}COPY #{source.to_s}"
     rule = super(source)
     if source.schema_class.name == "Rule"
       @grammar.rules << rule
     end
+    @indent -= 1
     return rule
   end
 end
@@ -123,30 +120,39 @@ class Derivative < CyclicMapNew
   end
 
   def Grammar(from)
-    register(from, @factory.Grammar(from.name)) do |to|
-      @grammar = to
-      @copier = RuleCopy.new(@factory, @grammar)
-      to.start = recurse(from.start)
-      raise "parse fail" unless to.rules.length > 0
-    end
+    @grammar = @factory.Grammar(from.name)
+    @copier = RuleCopy.new(@factory, @grammar)
+    @grammar.start = recurse(from.start)
+    raise "parse fail" unless to.rules.length > 0
   end
 
   def Rule(from)
     @rule_num += 1
-    register(from, @factory.Rule(from.name + @rule_num.to_s)) do |to|
-      from.alts.each do |r|
-        recurse(r)
-      end
-      if to.alts.length > 0
+    registerUpdate(from, @factory.Rule(from.name + @rule_num.to_s)) do |to|
+      arg = recurse(from.arg)
+      if arg
+        to.arg = arg
         @grammar.rules << to
+        to
+      else
+        BadObject.new("A")
       end
     end
+  end
+
+  def Alt(from)
+    to = @factory.Alt()
+    from.alts.each do |r|
+      d = recurse(r)
+      to.alts << d if d
+    end
+    alt.alts.empty? ? BadObject.new("B") : alt
   end
 
   # Dc(p;q)  ==>  if p.nullable then  Dc(p);q | Dc(q)  else  Dc(p);q
   def Sequence(from)
     n = from.elements.length
-    toRule = recurse(from.rule) # need the inverse here!
+    alt = @factory.Alt()
     for i in 0...n
       first = recurse(from.elements[i])
       if first
@@ -155,34 +161,44 @@ class Derivative < CyclicMapNew
         for j in i+1...n
           p.elements << @copier.copy(from.elements[j])
         end
-        toRule.alts << p
+        alt.alts << p
+      else
+        break
       end
       break unless @nullable.recurse(from.elements[i])
     end
-    
+    alt.alts.empty? ? BadObject.new("C") : alt
   end
   
   # nonterminal
   def Call(from)
-    @factory.Call(recurse(from.rule))
+    d = recurse(from.rule)
+    d ? @factory.Call(d) : BadObject.new("D")
   end
 
   def Epsilon(from)
-    nil
+    BadObject.new("E")
   end
 
   # Dc(p*) ==>  if p.nullable then Dc(p)* else Dc(p);p*
-  def IterStar(from)
-    s = @factory.Sequence()
-    s.elements << recurse(from.arg)
-    s.elements << @copier.copy(from.arg)
-    r = @factory.Rule("S" + @rule_num.to_s)
-    r.alts << s
-    @grammar.rules << r
-    @factory.Opt(@factory.Call(r))
+  def Regular(from)
+    d = recurse(from.arg)
+    BadObject.new("F") if d.nil?
+    if !from.many
+      return d
+    else
+      s = @factory.Sequence()
+      s.elements << d
+      s.elements << @factory.Regular(@copier.copy(from.arg), true, true)
+      return s
+    end
   end
   
   def Field(from)
+    return recurse(from.arg)
+  end
+
+  def Create(from)
     return recurse(from.arg)
   end
   
@@ -197,35 +213,27 @@ class Derivative < CyclicMapNew
     return checkToken(Symbol)
   end
 
-  def Int(from)
-    return checkToken(Integer)
-  end
-
-  def Real(from)
-    return checkToken(Float)
-  end
-
-  def Id(from)
-    return checkToken(Symbol)
+  def Value(from)
+    if (@token.class.name == from.kind)
+      return @factory.Epsilon()
+    else
+      return BadObject.new("G")
+    end
   end
 
   def Key(from)
-    return checkToken(Symbol)
+    if (@token.class.name == "id")
+      return @factory.Epsilon()
+    else
+      return BadObject.new("H")
+    end
   end
 
   def Lit(from)
     if (@token == from.value)
       return @factory.Epsilon()
     else
-      return nil
-    end
-  end
-
-  def checkToken(kind)
-    if (@token.class == kind)
-      return @factory.Epsilon()
-    else
-      return nil
+      return BadObject.new("I")
     end
   end
 end
@@ -236,7 +244,6 @@ if __FILE__ == $0 then
   require 'tools/print'
  
   x = GrammarGrammar.grammar
-  Print.recurse(x, GrammarSchema.print_paths)
 
   #y = Derivative.new("foo").recurse(x)
   #Print.recurse(y, GrammarSchema.print_paths)

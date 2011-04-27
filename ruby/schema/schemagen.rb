@@ -60,7 +60,7 @@ class SchemaGenerator
     def field(name, opts = {})
       f = get_field(@@current, name.to_s)
       t = opts[:type]
-      f.type = schema.primitives[t] || t.klass
+      f.type = schema.primitives.keys.include?(t) ? schema.primitives[t] : t.klass
       f.optional = opts[:optional] || false
       f.many = opts[:many] || false
       f.key = opts[:key] || false

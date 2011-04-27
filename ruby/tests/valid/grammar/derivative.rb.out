@@ -1,414 +1,139 @@
-Grammar
-  name: GrammarGrammar
-  start: Grammar
-  rules
-    #0 Rule
-      name: Grammar
-      alts
-        #0 Sequence
-          name: Grammar
-          elements
-            #0 Lit
-              value: grammar
-            #1 Field
-              name: name
-              arg: Id
-            #2 Lit
-              value: start
-            #3 Field
-              name: start
-              arg: Ref
-                name: Rule
-            #4 Field
-              name: rules
-              arg: IterStar
-                arg: Rule
-    #1 Rule
-      name: Rule
-      alts
-        #0 Sequence
-          name: Rule
-          elements
-            #0 Field
-              name: name
-              arg: Key
-            #1 Lit
-              value: ::=
-            #2 Field
-              name: alts
-              arg: IterSep
-                arg: Sequence
-                sep: |
-    #2 Rule
-      name: Sequence
-      alts
-        #0 Sequence
-          name: Sequence
-          elements
-            #0 Opt
-              arg: Call
-                rule: Create
-            #1 Field
-              name: sequence
-              arg: IterStar
-                arg: Pattern
-    #3 Rule
-      name: Create
-      alts
-        #0 Sequence
-          name: nil
-          elements
-            #0 Lit
-              value: [
-            #1 Field
-              name: name
-              arg: Id
-            #2 Lit
-              value: ]
-    #4 Rule
-      name: Pattern
-      alts
-        #0 Sequence
-          name: Int
-          elements
-            #0 Lit
-              value: int
-        #1 Sequence
-          name: Str
-          elements
-            #0 Lit
-              value: str
-        #2 Sequence
-          name: Sqstr
-          elements
-            #0 Lit
-              value: sqstr
-        #3 Sequence
-          name: Real
-          elements
-            #0 Lit
-              value: real
-        #4 Sequence
-          name: Bool
-          elements
-            #0 Lit
-              value: bool
-        #5 Sequence
-          name: Id
-          elements
-            #0 Lit
-              value: id
-        #6 Sequence
-          name: Key
-          elements
-            #0 Lit
-              value: key
-        #7 Sequence
-          name: Field
-          elements
-            #0 Field
-              name: name
-              arg: Id
-            #1 Field
-              name: arg
-              arg: Call
-        #8 Sequence
-          name: Ref
-          elements
-            #0 Field
-              name: ref
-              arg: Id
-            #1 Lit
-              value: ^
-        #9 Sequence
-          name: Lit
-          elements
-            #0 Field
-              name: value
-              arg: Str
-        #10 Sequence
-          name: CiLit
-          elements
-            #0 Field
-              name: value
-              arg: Str
-        #11 Sequence
-          name: Call
-          elements
-            #0 Field
-              name: rule
-              arg: Ref
-                name: Rule
-        #12 Sequence
-          name: Opt
-          elements
-            #0 Field
-              name: arg
-              arg: Ref
-                name: Rule
-            #1 Lit
-              value: ?
-        #13 Sequence
-          name: Iter
-          elements
-            #0 Field
-              name: arg
-              arg: Ref
-                name: Rule
-            #1 Lit
-              value: +
-        #14 Sequence
-          name: IterStar
-          elements
-            #0 Field
-              name: arg
-              arg: Ref
-                name: Rule
-            #1 Lit
-              value: *
-        #15 Sequence
-          name: IterSep
-          elements
-            #0 Lit
-              value: {
-            #1 Field
-              name: arg
-              arg: Ref
-                name: Rule
-            #2 Field
-              name: sep
-              arg: Str
-            #3 Lit
-              value: }
-            #4 Lit
-              value: +
-        #16 Sequence
-          name: IterStarSep
-          elements
-            #0 Lit
-              value: {
-            #1 Field
-              name: arg
-              arg: Ref
-                name: Rule
-            #2 Field
-              name: sep
-              arg: Str
-            #3 Lit
-              value: }
-            #4 Lit
-              value: *
 {}
 {}
-{}
-{}
-{}
-{}
-{}
-{}
-{}
-{}
-{}
-{}
-{}
-{}
-{}
-{}
-Grammar
-  name: GrammarGrammar
-  start: Grammar22222222
-  rules
-    #0 Rule
-      name: Rule
-      alts
-        #0 Sequence
-          name: Rule
-          elements
-            #0 Field
-              name: name
-              arg: Key
-            #1 Lit
-              value: ::=
-            #2 Field
-              name: alts
-              arg: IterSep
-                arg: Sequence
-                sep: |
-    #1 Rule
-      name: Sequence
-      alts
-        #0 Sequence
-          name: Sequence
-          elements
-            #0 Opt
-              arg: Call
-                rule: Create
-            #1 Field
-              name: sequence
-              arg: IterStar
-                arg: Pattern
-    #2 Rule
-      name: Create
-      alts
-        #0 Sequence
-          name: nil
-          elements
-            #0 Lit
-              value: [
-            #1 Field
-              name: name
-              arg: Id
-            #2 Lit
-              value: ]
-    #3 Rule
-      name: Pattern
-      alts
-        #0 Sequence
-          name: Int
-          elements
-            #0 Lit
-              value: int
-        #1 Sequence
-          name: Str
-          elements
-            #0 Lit
-              value: str
-        #2 Sequence
-          name: Sqstr
-          elements
-            #0 Lit
-              value: sqstr
-        #3 Sequence
-          name: Real
-          elements
-            #0 Lit
-              value: real
-        #4 Sequence
-          name: Bool
-          elements
-            #0 Lit
-              value: bool
-        #5 Sequence
-          name: Id
-          elements
-            #0 Lit
-              value: id
-        #6 Sequence
-          name: Key
-          elements
-            #0 Lit
-              value: key
-        #7 Sequence
-          name: Field
-          elements
-            #0 Field
-              name: name
-              arg: Id
-            #1 Field
-              name: arg
-              arg: Call
-        #8 Sequence
-          name: Ref
-          elements
-            #0 Field
-              name: ref
-              arg: Id
-            #1 Lit
-              value: ^
-        #9 Sequence
-          name: Lit
-          elements
-            #0 Field
-              name: value
-              arg: Str
-        #10 Sequence
-          name: CiLit
-          elements
-            #0 Field
-              name: value
-              arg: Str
-        #11 Sequence
-          name: Call
-          elements
-            #0 Field
-              name: rule
-              arg: Ref
-                name: Rule
-        #12 Sequence
-          name: Opt
-          elements
-            #0 Field
-              name: arg
-              arg: Ref
-                name: Rule
-            #1 Lit
-              value: ?
-        #13 Sequence
-          name: Iter
-          elements
-            #0 Field
-              name: arg
-              arg: Ref
-                name: Rule
-            #1 Lit
-              value: +
-        #14 Sequence
-          name: IterStar
-          elements
-            #0 Field
-              name: arg
-              arg: Ref
-                name: Rule
-            #1 Lit
-              value: *
-        #15 Sequence
-          name: IterSep
-          elements
-            #0 Lit
-              value: {
-            #1 Field
-              name: arg
-              arg: Ref
-                name: Rule
-            #2 Field
-              name: sep
-              arg: Str
-            #3 Lit
-              value: }
-            #4 Lit
-              value: +
-        #16 Sequence
-          name: IterStarSep
-          elements
-            #0 Lit
-              value: {
-            #1 Field
-              name: arg
-              arg: Ref
-                name: Rule
-            #2 Field
-              name: sep
-              arg: Str
-            #3 Lit
-              value: }
-            #4 Lit
-              value: *
-    #4 Rule
-      name: S3333
-      alts
-        #0 Sequence
-          name: nil
-          elements
-            #0 Rule
-              name: Rule3444
-            #1 Rule
-              name: Rule
-    #5 Rule
-      name: Grammar22222222
-      alts
-        #0 Sequence
-          name: nil
-          elements
-            #0 Opt
-              arg: Call
-                rule: S3333
+ COPY <Field 18>
+  COPY <Value 4>
+ COPY <Lit 19>
+ COPY <Field 20>
+  COPY <Ref 12>
+ COPY <Field 21>
+  COPY <Regular 13>
+   COPY <Call 14>
+    COPY <Rule 10>
+     COPY <Alt 11>
+      COPY <Create 24>
+       COPY <Sequence 25>
+        COPY <Field 27>
+         COPY <Key 26>
+        COPY <Lit 28>
+        COPY <Field 30>
+         COPY <Call 29>
+          COPY <Rule 22>
+           COPY <Alt 23>
+            COPY <Create 36>
+             COPY <Sequence 37>
+              COPY <Field 38>
+               COPY <Regular 33>
+                COPY <Call 34>
+                 COPY <Rule 31>
+                  COPY <Alt 32>
+                   COPY <Create 41>
+                    COPY <Sequence 42>
+                     COPY <Lit 43>
+                     COPY <Field 44>
+                      COPY <Value 4>
+                     COPY <Lit 45>
+                     COPY <Field 47>
+                      COPY <Call 46>
+                       COPY <Rule 39>
+                        COPY <Alt 40>
+                         COPY <Create 54>
+                          COPY <Sequence 55>
+                           COPY <Field 56>
+                            COPY <Regular 52>
+                             COPY <Call 53>
+                              COPY <Rule 50>
+                               COPY <Alt 51>
+                                COPY <Create 59>
+                                 COPY <Sequence 60>
+                                  COPY <Field 61>
+                                   COPY <Value 4>
+                                  COPY <Lit 62>
+                                  COPY <Field 64>
+                                   COPY <Call 63>
+                                    COPY <Rule 57>
+                                     COPY <Alt 58>
+                                      COPY <Create 67>
+                                       COPY <Sequence 68>
+                                        COPY <Lit 69>
+                                      COPY <Create 70>
+                                       COPY <Sequence 71>
+                                        COPY <Lit 72>
+                                      COPY <Create 73>
+                                       COPY <Sequence 74>
+                                        COPY <Lit 75>
+                                      COPY <Create 76>
+                                       COPY <Sequence 77>
+                                        COPY <Lit 78>
+                                      COPY <Create 79>
+                                       COPY <Sequence 80>
+                                        COPY <Lit 81>
+                                      COPY <Create 82>
+                                       COPY <Sequence 83>
+                                        COPY <Lit 84>
+                                      COPY <Create 85>
+                                       COPY <Sequence 86>
+                                        COPY <Lit 87>
+                                      COPY <Create 88>
+                                       COPY <Sequence 89>
+                                        COPY <Field 90>
+                                         COPY <Value 4>
+                                        COPY <Lit 91>
+                                      COPY <Create 92>
+                                       COPY <Sequence 93>
+                                        COPY <Field 94>
+                                         COPY <Value 1>
+                                      COPY <Create 95>
+                                       COPY <Sequence 96>
+                                        COPY <Field 97>
+                                         COPY <Value 5>
+                                      COPY <Create 99>
+                                       COPY <Sequence 100>
+                                        COPY <Field 101>
+                                         COPY <Ref 98>
+                                      COPY <Create 102>
+                                       COPY <Sequence 103>
+                                        COPY <Field 105>
+                                         COPY <Call 104>
+                                          COPY <Rule 57>
+                                        COPY <Lit 106>
+                                      COPY <Create 107>
+                                       COPY <Sequence 108>
+                                        COPY <Field 110>
+                                         COPY <Call 109>
+                                          COPY <Rule 57>
+                                        COPY <Lit 111>
+                                      COPY <Create 112>
+                                       COPY <Sequence 113>
+                                        COPY <Field 115>
+                                         COPY <Call 114>
+                                          COPY <Rule 57>
+                                        COPY <Lit 116>
+                                      COPY <Create 117>
+                                       COPY <Sequence 118>
+                                        COPY <Lit 119>
+                                        COPY <Field 121>
+                                         COPY <Call 120>
+                                          COPY <Rule 57>
+                                        COPY <Field 122>
+                                         COPY <Value 1>
+                                        COPY <Lit 123>
+                                        COPY <Lit 124>
+                                      COPY <Create 125>
+                                       COPY <Sequence 126>
+                                        COPY <Lit 127>
+                                        COPY <Field 129>
+                                         COPY <Call 128>
+                                          COPY <Rule 57>
+                                        COPY <Field 130>
+                                         COPY <Value 1>
+                                        COPY <Lit 131>
+                                        COPY <Lit 132>
+                                      COPY <Sequence 133>
+                                       COPY <Lit 134>
+                                       COPY <Call 135>
+                                        COPY <Rule 22>
+                                       COPY <Lit 136>
+                                COPY <Sequence 65>
+                                 COPY <Call 66>
+                                  COPY <Rule 57>
+                             COPY 
