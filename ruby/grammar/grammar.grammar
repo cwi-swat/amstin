@@ -17,21 +17,23 @@
    	  | Pattern
   
   Pattern ::= 
-            [Value] kind:"int"				
+            [Value] kind:"int"
           | [Value] kind:"str"
           | [Value] kind:"sqstr"
           | [Value] kind:"real"
           | [Value] kind:"bool"
           | [Value] kind:"sym"
+	  | [Code] "@" code:str
 	  | [Key] "key"
           | [Ref] name:sym "^"
-          | [Lit] value:str				
-          | [Lit] value:sqstr				
+          | [Lit] value:str				@"self.case_sensitive = true"
+          | [Lit] value:sqstr				@"self.case_sensitive = false"
           | [Call] rule:Rule^
-          | [Regular] arg:Pattern "?"			
-          | [Regular] arg:Pattern "+"  			
-          | [Regular] arg:Pattern "*"  			
-          | [Regular] "{" arg:Pattern sep:str "}" "+" 	
-          | [Regular] "{" arg:Pattern sep:str "}" "*" 	
+          | [Regular] arg:Pattern "?"			@"self.optional = true"
+          | [Regular] arg:Pattern "+"  			@"self.many = true"
+          | [Regular] arg:Pattern "*"  			@"self.optional = true; self.many = true"
+          | [Regular] "{" arg:Pattern sep:str "}" "+" 	@"self.many = true"
+          | [Regular] "{" arg:Pattern sep:str "}" "*" 	@"self.optional = true; self.many = true"
 	  | "(" Alts ")"
+
 

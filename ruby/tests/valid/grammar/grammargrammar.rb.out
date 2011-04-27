@@ -47,15 +47,15 @@ Grammar
                   value: ::=
                   case_sensitive: true
                 #2 Field
-                  name: alts
+                  name: arg
                   arg: Call
-                    rule: Alts
+                    rule: Alt
     #2 Rule
-      name: Alts
+      name: Alt
       arg: Alt
         alts
           #0 Create
-            name: Alts
+            name: Alt
             arg: Sequence
               elements
                 #0 Field
@@ -141,52 +141,75 @@ Grammar
             name: Value
             arg: Sequence
               elements
-                #0 Lit
-                  value: int
-                  case_sensitive: true
+                #0 Field
+                  name: kind
+                  arg: Lit
+                    value: int
+                    case_sensitive: true
           #1 Create
             name: Value
             arg: Sequence
               elements
-                #0 Lit
-                  value: str
-                  case_sensitive: true
+                #0 Field
+                  name: kind
+                  arg: Lit
+                    value: str
+                    case_sensitive: true
           #2 Create
             name: Value
             arg: Sequence
               elements
-                #0 Lit
-                  value: sqstr
-                  case_sensitive: true
+                #0 Field
+                  name: kind
+                  arg: Lit
+                    value: sqstr
+                    case_sensitive: true
           #3 Create
             name: Value
             arg: Sequence
               elements
-                #0 Lit
-                  value: real
-                  case_sensitive: true
+                #0 Field
+                  name: kind
+                  arg: Lit
+                    value: real
+                    case_sensitive: true
           #4 Create
             name: Value
             arg: Sequence
               elements
-                #0 Lit
-                  value: bool
-                  case_sensitive: true
+                #0 Field
+                  name: kind
+                  arg: Lit
+                    value: bool
+                    case_sensitive: true
           #5 Create
             name: Value
             arg: Sequence
               elements
-                #0 Lit
-                  value: sym
-                  case_sensitive: true
+                #0 Field
+                  name: kind
+                  arg: Lit
+                    value: sym
+                    case_sensitive: true
           #6 Create
+            name: Code
+            arg: Sequence
+              elements
+                #0 Lit
+                  value: @
+                  case_sensitive: true
+                #1 Field
+                  name: code
+                  arg: Value
+                    kind: str
+          #7 Create
             name: Key
             arg: Sequence
               elements
                 #0 Lit
                   value: key
                   case_sensitive: true
-          #7 Create
+          #8 Create
             name: Ref
             arg: Sequence
               elements
@@ -197,14 +220,6 @@ Grammar
                 #1 Lit
                   value: ^
                   case_sensitive: true
-          #8 Create
-            name: Lit
-            arg: Sequence
-              elements
-                #0 Field
-                  name: value
-                  arg: Value
-                    kind: str
           #9 Create
             name: Lit
             arg: Sequence
@@ -212,8 +227,20 @@ Grammar
                 #0 Field
                   name: value
                   arg: Value
-                    kind: sqstr
+                    kind: str
+                #1 Code
+                  code: self.case_sensitive = true
           #10 Create
+            name: Lit
+            arg: Sequence
+              elements
+                #0 Field
+                  name: value
+                  arg: Value
+                    kind: sqstr
+                #1 Code
+                  code: self.case_sensitive = false
+          #11 Create
             name: Call
             arg: Sequence
               elements
@@ -221,7 +248,7 @@ Grammar
                   name: rule
                   arg: Ref
                     name: Rule
-          #11 Create
+          #12 Create
             name: Regular
             arg: Sequence
               elements
@@ -231,7 +258,9 @@ Grammar
                 #1 Lit
                   value: ?
                   case_sensitive: true
-          #12 Create
+                #2 Code
+                  code: self.optional = true
+          #13 Create
             name: Regular
             arg: Sequence
               elements
@@ -241,7 +270,9 @@ Grammar
                 #1 Lit
                   value: +
                   case_sensitive: true
-          #13 Create
+                #2 Code
+                  code: self.many = true
+          #14 Create
             name: Regular
             arg: Sequence
               elements
@@ -251,26 +282,8 @@ Grammar
                 #1 Lit
                   value: *
                   case_sensitive: true
-          #14 Create
-            name: Regular
-            arg: Sequence
-              elements
-                #0 Lit
-                  value: {
-                  case_sensitive: true
-                #1 Field
-                  name: arg
-                  arg: Call
-                #2 Field
-                  name: sep
-                  arg: Value
-                    kind: str
-                #3 Lit
-                  value: }
-                  case_sensitive: true
-                #4 Lit
-                  value: +
-                  case_sensitive: true
+                #2 Code
+                  code: self.optional = true; self.many = true
           #15 Create
             name: Regular
             arg: Sequence
@@ -289,9 +302,33 @@ Grammar
                   value: }
                   case_sensitive: true
                 #4 Lit
+                  value: +
+                  case_sensitive: true
+                #5 Code
+                  code: self.many = true
+          #16 Create
+            name: Regular
+            arg: Sequence
+              elements
+                #0 Lit
+                  value: {
+                  case_sensitive: true
+                #1 Field
+                  name: arg
+                  arg: Call
+                #2 Field
+                  name: sep
+                  arg: Value
+                    kind: str
+                #3 Lit
+                  value: }
+                  case_sensitive: true
+                #4 Lit
                   value: *
                   case_sensitive: true
-          #16 Sequence
+                #5 Code
+                  code: self.optional = true; self.many = true
+          #17 Sequence
             elements
               #0 Lit
                 value: (
@@ -301,6 +338,10 @@ Grammar
               #2 Lit
                 value: )
                 case_sensitive: true
+    #7 Rule
+      name: Alts
+      arg: Alt
+        alts
 Grammar
   name: GrammarGrammar
   start: Grammar
@@ -350,15 +391,15 @@ Grammar
                   value: ::=
                   case_sensitive: true
                 #2 Field
-                  name: alts
+                  name: arg
                   arg: Call
-                    rule: Alts
+                    rule: Alt
     #2 Rule
-      name: Alts
+      name: Alt
       arg: Alt
         alts
           #0 Create
-            name: Alts
+            name: Alt
             arg: Sequence
               elements
                 #0 Field
@@ -444,52 +485,75 @@ Grammar
             name: Value
             arg: Sequence
               elements
-                #0 Lit
-                  value: int
-                  case_sensitive: true
+                #0 Field
+                  name: kind
+                  arg: Lit
+                    value: int
+                    case_sensitive: true
           #1 Create
             name: Value
             arg: Sequence
               elements
-                #0 Lit
-                  value: str
-                  case_sensitive: true
+                #0 Field
+                  name: kind
+                  arg: Lit
+                    value: str
+                    case_sensitive: true
           #2 Create
             name: Value
             arg: Sequence
               elements
-                #0 Lit
-                  value: sqstr
-                  case_sensitive: true
+                #0 Field
+                  name: kind
+                  arg: Lit
+                    value: sqstr
+                    case_sensitive: true
           #3 Create
             name: Value
             arg: Sequence
               elements
-                #0 Lit
-                  value: real
-                  case_sensitive: true
+                #0 Field
+                  name: kind
+                  arg: Lit
+                    value: real
+                    case_sensitive: true
           #4 Create
             name: Value
             arg: Sequence
               elements
-                #0 Lit
-                  value: bool
-                  case_sensitive: true
+                #0 Field
+                  name: kind
+                  arg: Lit
+                    value: bool
+                    case_sensitive: true
           #5 Create
             name: Value
             arg: Sequence
               elements
-                #0 Lit
-                  value: sym
-                  case_sensitive: true
+                #0 Field
+                  name: kind
+                  arg: Lit
+                    value: sym
+                    case_sensitive: true
           #6 Create
+            name: Code
+            arg: Sequence
+              elements
+                #0 Lit
+                  value: @
+                  case_sensitive: true
+                #1 Field
+                  name: code
+                  arg: Value
+                    kind: str
+          #7 Create
             name: Key
             arg: Sequence
               elements
                 #0 Lit
                   value: key
                   case_sensitive: true
-          #7 Create
+          #8 Create
             name: Ref
             arg: Sequence
               elements
@@ -500,14 +564,6 @@ Grammar
                 #1 Lit
                   value: ^
                   case_sensitive: true
-          #8 Create
-            name: Lit
-            arg: Sequence
-              elements
-                #0 Field
-                  name: value
-                  arg: Value
-                    kind: str
           #9 Create
             name: Lit
             arg: Sequence
@@ -515,8 +571,20 @@ Grammar
                 #0 Field
                   name: value
                   arg: Value
-                    kind: sqstr
+                    kind: str
+                #1 Code
+                  code: self.case_sensitive = true
           #10 Create
+            name: Lit
+            arg: Sequence
+              elements
+                #0 Field
+                  name: value
+                  arg: Value
+                    kind: sqstr
+                #1 Code
+                  code: self.case_sensitive = false
+          #11 Create
             name: Call
             arg: Sequence
               elements
@@ -524,7 +592,7 @@ Grammar
                   name: rule
                   arg: Ref
                     name: Rule
-          #11 Create
+          #12 Create
             name: Regular
             arg: Sequence
               elements
@@ -534,7 +602,9 @@ Grammar
                 #1 Lit
                   value: ?
                   case_sensitive: true
-          #12 Create
+                #2 Code
+                  code: self.optional = true
+          #13 Create
             name: Regular
             arg: Sequence
               elements
@@ -544,7 +614,9 @@ Grammar
                 #1 Lit
                   value: +
                   case_sensitive: true
-          #13 Create
+                #2 Code
+                  code: self.many = true
+          #14 Create
             name: Regular
             arg: Sequence
               elements
@@ -554,26 +626,8 @@ Grammar
                 #1 Lit
                   value: *
                   case_sensitive: true
-          #14 Create
-            name: Regular
-            arg: Sequence
-              elements
-                #0 Lit
-                  value: {
-                  case_sensitive: true
-                #1 Field
-                  name: arg
-                  arg: Call
-                #2 Field
-                  name: sep
-                  arg: Value
-                    kind: str
-                #3 Lit
-                  value: }
-                  case_sensitive: true
-                #4 Lit
-                  value: +
-                  case_sensitive: true
+                #2 Code
+                  code: self.optional = true; self.many = true
           #15 Create
             name: Regular
             arg: Sequence
@@ -592,9 +646,33 @@ Grammar
                   value: }
                   case_sensitive: true
                 #4 Lit
+                  value: +
+                  case_sensitive: true
+                #5 Code
+                  code: self.many = true
+          #16 Create
+            name: Regular
+            arg: Sequence
+              elements
+                #0 Lit
+                  value: {
+                  case_sensitive: true
+                #1 Field
+                  name: arg
+                  arg: Call
+                #2 Field
+                  name: sep
+                  arg: Value
+                    kind: str
+                #3 Lit
+                  value: }
+                  case_sensitive: true
+                #4 Lit
                   value: *
                   case_sensitive: true
-          #16 Sequence
+                #5 Code
+                  code: self.optional = true; self.many = true
+          #17 Sequence
             elements
               #0 Lit
                 value: (
@@ -604,3 +682,7 @@ Grammar
               #2 Lit
                 value: )
                 case_sensitive: true
+    #7 Rule
+      name: Alts
+      arg: Alt
+        alts

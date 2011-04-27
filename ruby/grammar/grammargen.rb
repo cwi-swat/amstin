@@ -77,7 +77,11 @@ class GrammarGenerator
       if e == :key then
         return THE_FACTORY.Key()
       end
-      if e.is_a?(Symbol)
+      if e.is_a?(String) then
+        l = THE_FACTORY.Lit(e)
+        l.case_sensitive = true
+        return l
+      elsif e.is_a?(Symbol)
         r = VALUES[e]
         raise "Unrecognized grammar symbol #{e}" unless r
         return r
@@ -90,6 +94,10 @@ class GrammarGenerator
     
     def ref(r)
       THE_FACTORY.Ref(r.name)
+    end
+
+    def code(s)
+      THE_FACTORY.Code(s)
     end
 
     def iter(sym)

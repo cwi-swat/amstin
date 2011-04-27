@@ -9,6 +9,10 @@ class TokenSchema < SchemaGenerator
   primitive :int
   primitive :bool
 
+  def self.print_paths 
+    {:tokens => {}}
+  end
+
   klass Stream do
     field :path, :type => :str
     field :tokens, :type => Token, :optional => true, :many => true, :inverse => Token.stream

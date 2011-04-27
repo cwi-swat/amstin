@@ -9,7 +9,7 @@ def test(file, dest, diff)
   puts "Processing #{file}"
   
   %x[mkdir -p #{dest}/#{dir}]
-  %x[#{RUBY} #{file} > #{dest}/#{file}.out]
+  %x[#{RUBY} -I. #{file} > #{dest}/#{file}.out]
 
   if diff == "full"
     `diff tests/out/#{file}.out tests/valid/#{file}.out 1>&2`

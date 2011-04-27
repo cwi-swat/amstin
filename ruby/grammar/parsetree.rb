@@ -12,10 +12,9 @@ class ParseTreeSchema < SchemaGenerator
   end
   
   klass ParseTree do
-    field :filename, :type => :str
-    field :layout_before, :type => :str
-    field :layout_after, :type => :str
+    field :path, :type => :str
     field :top, :type => Tree
+    field :layout, :type => :str
   end
 
   klass Tree do
@@ -35,6 +34,10 @@ class ParseTreeSchema < SchemaGenerator
     field :arg, :type => Tree
   end
 
+  klass Code, :super => Tree do
+    field :code, :type => :str
+  end
+
   klass Field, :super => Tree do
     field :name, :type => :str
     field :arg, :type => Tree
@@ -43,19 +46,23 @@ class ParseTreeSchema < SchemaGenerator
   klass Value, :super => Tree do
     field :kind, :type => :str
     field :value, :type => :str
+    field :layout, :type => :str
   end
 
   klass Lit, :super => Tree do
     field :value, :type => :str
     field :case_sensitive, :type => :bool
+    field :layout, :type => :str
   end
 
   klass Ref, :super => Tree do
     field :name, :type => :str
+    field :layout, :type => :str
   end
 
   klass Key, :super => Tree do
     field :name, :type => :str
+    field :layout, :type => :str
   end
 
   klass Regular, :super => Tree do

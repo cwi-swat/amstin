@@ -3363,3 +3363,803 @@ FIELD: classes, {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>
 THIS.Type: Klass
 KLASS: Checking {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>} against Klass
 KLASS: Checking <Klass 5> against Klass
+FIELD: schema, <Schema 1>
+THIS.Type: Schema
+KLASS: Checking <Schema 1> against Schema
+FIELD: name, SchemaSchema
+THIS.Type: str
+FIELD: classes, {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>}
+THIS.Type: Klass
+KLASS: Checking {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>} against Klass
+KLASS: Checking <Klass 5> against Klass
+FIELD: schema, <Schema 1>
+THIS.Type: Schema
+KLASS: Checking <Schema 1> against Schema
+FIELD: name, SchemaSchema
+THIS.Type: str
+FIELD: classes, {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>}
+THIS.Type: Klass
+KLASS: Checking {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>} against Klass
+KLASS: Checking <Klass 5> against Klass
+FIELD: schema, <Schema 1>
+THIS.Type: Schema
+KLASS: Checking <Schema 1> against Schema
+FIELD: name, SchemaSchema
+THIS.Type: str
+FIELD: classes, {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>}
+THIS.Type: Klass
+KLASS: Checking {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>} against Klass
+KLASS: Checking <Klass 5> against Klass
+FIELD: schema, <Schema 1>
+THIS.Type: Schema
+KLASS: Checking <Schema 1> against Schema
+FIELD: name, SchemaSchema
+THIS.Type: str
+FIELD: classes, {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>}
+THIS.Type: Klass
+KLASS: Checking {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>} against Klass
+KLASS: Checking <Klass 5> against Klass
+FIELD: schema, <Schema 1>
+THIS.Type: Schema
+KLASS: Checking <Schema 1> against Schema
+FIELD: name, SchemaSchema
+THIS.Type: str
+FIELD: classes, {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>}
+THIS.Type: Klass
+KLASS: Checking {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>} against Klass
+KLASS: Checking <Klass 5> against Klass
+FIELD: schema, <Schema 1>
+THIS.Type: Schema
+KLASS: Checking <Schema 1> against Schema
+FIELD: name, SchemaSchema
+THIS.Type: str
+FIELD: classes, {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>}
+THIS.Type: Klass
+KLASS: Checking {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>} against Klass
+KLASS: Checking <Klass 5> against Klass
+FIELD: schema, <Schema 1>
+THIS.Type: Schema
+KLASS: Checking <Schema 1> against Schema
+FIELD: name, SchemaSchema
+THIS.Type: str
+FIELD: classes, {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>}
+THIS.Type: Klass
+KLASS: Checking {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>} against Klass
+KLASS: Checking <Klass 5> against Klass
+FIELD: schema, <Schema 1>
+THIS.Type: Schema
+KLASS: Checking <Schema 1> against Schema
+FIELD: name, SchemaSchema
+THIS.Type: str
+FIELD: classes, {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>}
+THIS.Type: Klass
+KLASS: Checking {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>} against Klass
+KLASS: Checking <Klass 5> against Klass
+FIELD: schema, <Schema 1>
+THIS.Type: Schema
+KLASS: Checking <Schema 1> against Schema
+FIELD: name, SchemaSchema
+THIS.Type: str
+FIELD: classes, {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>}
+THIS.Type: Klass
+KLASS: Checking {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>} against Klass
+KLASS: Checking <Klass 5> against Klass
+FIELD: schema, <Schema 1>
+THIS.Type: Schema
+KLASS: Checking <Schema 1> against Schema
+FIELD: name, SchemaSchema
+THIS.Type: str
+FIELD: classes, {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>}
+THIS.Type: Klass
+KLASS: Checking {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>} against Klass
+KLASS: Checking <Klass 5> against Klass
+FIELD: schema, <Schema 1>
+THIS.Type: Schema
+KLASS: Checking <Schema 1> against Schema
+FIELD: name, SchemaSchema
+THIS.Type: str
+FIELD: classes, {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>}
+THIS.Type: Klass
+KLASS: Checking {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>} against Klass
+KLASS: Checking <Klass 5> against Klass
+FIELD: schema, <Schema 1>
+THIS.Type: Schema
+KLASS: Checking <Schema 1> against Schema
+FIELD: name, SchemaSchema
+THIS.Type: str
+FIELD: classes, {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>}
+THIS.Type: Klass
+KLASS: Checking {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>} against Klass
+KLASS: Checking <Klass 5> against Klass
+FIELD: schema, <Schema 1>
+THIS.Type: Schema
+KLASS: Checking <Schema 1> against Schema
+FIELD: name, SchemaSchema
+THIS.Type: str
+FIELD: classes, {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>}
+THIS.Type: Klass
+KLASS: Checking {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>} against Klass
+KLASS: Checking <Klass 5> against Klass
+FIELD: schema, <Schema 1>
+THIS.Type: Schema
+KLASS: Checking <Schema 1> against Schema
+FIELD: name, SchemaSchema
+THIS.Type: str
+FIELD: classes, {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>}
+THIS.Type: Klass
+KLASS: Checking {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>} against Klass
+KLASS: Checking <Klass 5> against Klass
+FIELD: schema, <Schema 1>
+THIS.Type: Schema
+KLASS: Checking <Schema 1> against Schema
+FIELD: name, SchemaSchema
+THIS.Type: str
+FIELD: classes, {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>}
+THIS.Type: Klass
+KLASS: Checking {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>} against Klass
+KLASS: Checking <Klass 5> against Klass
+FIELD: schema, <Schema 1>
+THIS.Type: Schema
+KLASS: Checking <Schema 1> against Schema
+FIELD: name, SchemaSchema
+THIS.Type: str
+FIELD: classes, {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>}
+THIS.Type: Klass
+KLASS: Checking {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>} against Klass
+KLASS: Checking <Klass 5> against Klass
+FIELD: schema, <Schema 1>
+THIS.Type: Schema
+KLASS: Checking <Schema 1> against Schema
+FIELD: name, SchemaSchema
+THIS.Type: str
+FIELD: classes, {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>}
+THIS.Type: Klass
+KLASS: Checking {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>} against Klass
+KLASS: Checking <Klass 5> against Klass
+FIELD: schema, <Schema 1>
+THIS.Type: Schema
+KLASS: Checking <Schema 1> against Schema
+FIELD: name, SchemaSchema
+THIS.Type: str
+FIELD: classes, {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>}
+THIS.Type: Klass
+KLASS: Checking {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>} against Klass
+KLASS: Checking <Klass 5> against Klass
+FIELD: schema, <Schema 1>
+THIS.Type: Schema
+KLASS: Checking <Schema 1> against Schema
+FIELD: name, SchemaSchema
+THIS.Type: str
+FIELD: classes, {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>}
+THIS.Type: Klass
+KLASS: Checking {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>} against Klass
+KLASS: Checking <Klass 5> against Klass
+FIELD: schema, <Schema 1>
+THIS.Type: Schema
+KLASS: Checking <Schema 1> against Schema
+FIELD: name, SchemaSchema
+THIS.Type: str
+FIELD: classes, {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>}
+THIS.Type: Klass
+KLASS: Checking {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>} against Klass
+KLASS: Checking <Klass 5> against Klass
+FIELD: schema, <Schema 1>
+THIS.Type: Schema
+KLASS: Checking <Schema 1> against Schema
+FIELD: name, SchemaSchema
+THIS.Type: str
+FIELD: classes, {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>}
+THIS.Type: Klass
+KLASS: Checking {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>} against Klass
+KLASS: Checking <Klass 5> against Klass
+FIELD: schema, <Schema 1>
+THIS.Type: Schema
+KLASS: Checking <Schema 1> against Schema
+FIELD: name, SchemaSchema
+THIS.Type: str
+FIELD: classes, {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>}
+THIS.Type: Klass
+KLASS: Checking {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>} against Klass
+KLASS: Checking <Klass 5> against Klass
+FIELD: schema, <Schema 1>
+THIS.Type: Schema
+KLASS: Checking <Schema 1> against Schema
+FIELD: name, SchemaSchema
+THIS.Type: str
+FIELD: classes, {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>}
+THIS.Type: Klass
+KLASS: Checking {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>} against Klass
+KLASS: Checking <Klass 5> against Klass
+FIELD: schema, <Schema 1>
+THIS.Type: Schema
+KLASS: Checking <Schema 1> against Schema
+FIELD: name, SchemaSchema
+THIS.Type: str
+FIELD: classes, {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>}
+THIS.Type: Klass
+KLASS: Checking {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>} against Klass
+KLASS: Checking <Klass 5> against Klass
+FIELD: schema, <Schema 1>
+THIS.Type: Schema
+KLASS: Checking <Schema 1> against Schema
+FIELD: name, SchemaSchema
+THIS.Type: str
+FIELD: classes, {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>}
+THIS.Type: Klass
+KLASS: Checking {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>} against Klass
+KLASS: Checking <Klass 5> against Klass
+FIELD: schema, <Schema 1>
+THIS.Type: Schema
+KLASS: Checking <Schema 1> against Schema
+FIELD: name, SchemaSchema
+THIS.Type: str
+FIELD: classes, {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>}
+THIS.Type: Klass
+KLASS: Checking {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>} against Klass
+KLASS: Checking <Klass 5> against Klass
+FIELD: schema, <Schema 1>
+THIS.Type: Schema
+KLASS: Checking <Schema 1> against Schema
+FIELD: name, SchemaSchema
+THIS.Type: str
+FIELD: classes, {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>}
+THIS.Type: Klass
+KLASS: Checking {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>} against Klass
+KLASS: Checking <Klass 5> against Klass
+FIELD: schema, <Schema 1>
+THIS.Type: Schema
+KLASS: Checking <Schema 1> against Schema
+FIELD: name, SchemaSchema
+THIS.Type: str
+FIELD: classes, {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>}
+THIS.Type: Klass
+KLASS: Checking {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>} against Klass
+KLASS: Checking <Klass 5> against Klass
+FIELD: schema, <Schema 1>
+THIS.Type: Schema
+KLASS: Checking <Schema 1> against Schema
+FIELD: name, SchemaSchema
+THIS.Type: str
+FIELD: classes, {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>}
+THIS.Type: Klass
+KLASS: Checking {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>} against Klass
+KLASS: Checking <Klass 5> against Klass
+FIELD: schema, <Schema 1>
+THIS.Type: Schema
+KLASS: Checking <Schema 1> against Schema
+FIELD: name, SchemaSchema
+THIS.Type: str
+FIELD: classes, {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>}
+THIS.Type: Klass
+KLASS: Checking {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>} against Klass
+KLASS: Checking <Klass 5> against Klass
+FIELD: schema, <Schema 1>
+THIS.Type: Schema
+KLASS: Checking <Schema 1> against Schema
+FIELD: name, SchemaSchema
+THIS.Type: str
+FIELD: classes, {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>}
+THIS.Type: Klass
+KLASS: Checking {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>} against Klass
+KLASS: Checking <Klass 5> against Klass
+FIELD: schema, <Schema 1>
+THIS.Type: Schema
+KLASS: Checking <Schema 1> against Schema
+FIELD: name, SchemaSchema
+THIS.Type: str
+FIELD: classes, {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>}
+THIS.Type: Klass
+KLASS: Checking {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>} against Klass
+KLASS: Checking <Klass 5> against Klass
+FIELD: schema, <Schema 1>
+THIS.Type: Schema
+KLASS: Checking <Schema 1> against Schema
+FIELD: name, SchemaSchema
+THIS.Type: str
+FIELD: classes, {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>}
+THIS.Type: Klass
+KLASS: Checking {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>} against Klass
+KLASS: Checking <Klass 5> against Klass
+FIELD: schema, <Schema 1>
+THIS.Type: Schema
+KLASS: Checking <Schema 1> against Schema
+FIELD: name, SchemaSchema
+THIS.Type: str
+FIELD: classes, {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>}
+THIS.Type: Klass
+KLASS: Checking {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>} against Klass
+KLASS: Checking <Klass 5> against Klass
+FIELD: schema, <Schema 1>
+THIS.Type: Schema
+KLASS: Checking <Schema 1> against Schema
+FIELD: name, SchemaSchema
+THIS.Type: str
+FIELD: classes, {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>}
+THIS.Type: Klass
+KLASS: Checking {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>} against Klass
+KLASS: Checking <Klass 5> against Klass
+FIELD: schema, <Schema 1>
+THIS.Type: Schema
+KLASS: Checking <Schema 1> against Schema
+FIELD: name, SchemaSchema
+THIS.Type: str
+FIELD: classes, {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>}
+THIS.Type: Klass
+KLASS: Checking {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>} against Klass
+KLASS: Checking <Klass 5> against Klass
+FIELD: schema, <Schema 1>
+THIS.Type: Schema
+KLASS: Checking <Schema 1> against Schema
+FIELD: name, SchemaSchema
+THIS.Type: str
+FIELD: classes, {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>}
+THIS.Type: Klass
+KLASS: Checking {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>} against Klass
+KLASS: Checking <Klass 5> against Klass
+FIELD: schema, <Schema 1>
+THIS.Type: Schema
+KLASS: Checking <Schema 1> against Schema
+FIELD: name, SchemaSchema
+THIS.Type: str
+FIELD: classes, {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>}
+THIS.Type: Klass
+KLASS: Checking {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>} against Klass
+KLASS: Checking <Klass 5> against Klass
+FIELD: schema, <Schema 1>
+THIS.Type: Schema
+KLASS: Checking <Schema 1> against Schema
+FIELD: name, SchemaSchema
+THIS.Type: str
+FIELD: classes, {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>}
+THIS.Type: Klass
+KLASS: Checking {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>} against Klass
+KLASS: Checking <Klass 5> against Klass
+FIELD: schema, <Schema 1>
+THIS.Type: Schema
+KLASS: Checking <Schema 1> against Schema
+FIELD: name, SchemaSchema
+THIS.Type: str
+FIELD: classes, {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>}
+THIS.Type: Klass
+KLASS: Checking {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>} against Klass
+KLASS: Checking <Klass 5> against Klass
+FIELD: schema, <Schema 1>
+THIS.Type: Schema
+KLASS: Checking <Schema 1> against Schema
+FIELD: name, SchemaSchema
+THIS.Type: str
+FIELD: classes, {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>}
+THIS.Type: Klass
+KLASS: Checking {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>} against Klass
+KLASS: Checking <Klass 5> against Klass
+FIELD: schema, <Schema 1>
+THIS.Type: Schema
+KLASS: Checking <Schema 1> against Schema
+FIELD: name, SchemaSchema
+THIS.Type: str
+FIELD: classes, {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>}
+THIS.Type: Klass
+KLASS: Checking {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>} against Klass
+KLASS: Checking <Klass 5> against Klass
+FIELD: schema, <Schema 1>
+THIS.Type: Schema
+KLASS: Checking <Schema 1> against Schema
+FIELD: name, SchemaSchema
+THIS.Type: str
+FIELD: classes, {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>}
+THIS.Type: Klass
+KLASS: Checking {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>} against Klass
+KLASS: Checking <Klass 5> against Klass
+FIELD: schema, <Schema 1>
+THIS.Type: Schema
+KLASS: Checking <Schema 1> against Schema
+FIELD: name, SchemaSchema
+THIS.Type: str
+FIELD: classes, {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>}
+THIS.Type: Klass
+KLASS: Checking {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>} against Klass
+KLASS: Checking <Klass 5> against Klass
+FIELD: schema, <Schema 1>
+THIS.Type: Schema
+KLASS: Checking <Schema 1> against Schema
+FIELD: name, SchemaSchema
+THIS.Type: str
+FIELD: classes, {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>}
+THIS.Type: Klass
+KLASS: Checking {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>} against Klass
+KLASS: Checking <Klass 5> against Klass
+FIELD: schema, <Schema 1>
+THIS.Type: Schema
+KLASS: Checking <Schema 1> against Schema
+FIELD: name, SchemaSchema
+THIS.Type: str
+FIELD: classes, {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>}
+THIS.Type: Klass
+KLASS: Checking {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>} against Klass
+KLASS: Checking <Klass 5> against Klass
+FIELD: schema, <Schema 1>
+THIS.Type: Schema
+KLASS: Checking <Schema 1> against Schema
+FIELD: name, SchemaSchema
+THIS.Type: str
+FIELD: classes, {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>}
+THIS.Type: Klass
+KLASS: Checking {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>} against Klass
+KLASS: Checking <Klass 5> against Klass
+FIELD: schema, <Schema 1>
+THIS.Type: Schema
+KLASS: Checking <Schema 1> against Schema
+FIELD: name, SchemaSchema
+THIS.Type: str
+FIELD: classes, {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>}
+THIS.Type: Klass
+KLASS: Checking {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>} against Klass
+KLASS: Checking <Klass 5> against Klass
+FIELD: schema, <Schema 1>
+THIS.Type: Schema
+KLASS: Checking <Schema 1> against Schema
+FIELD: name, SchemaSchema
+THIS.Type: str
+FIELD: classes, {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>}
+THIS.Type: Klass
+KLASS: Checking {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>} against Klass
+KLASS: Checking <Klass 5> against Klass
+FIELD: schema, <Schema 1>
+THIS.Type: Schema
+KLASS: Checking <Schema 1> against Schema
+FIELD: name, SchemaSchema
+THIS.Type: str
+FIELD: classes, {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>}
+THIS.Type: Klass
+KLASS: Checking {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>} against Klass
+KLASS: Checking <Klass 5> against Klass
+FIELD: schema, <Schema 1>
+THIS.Type: Schema
+KLASS: Checking <Schema 1> against Schema
+FIELD: name, SchemaSchema
+THIS.Type: str
+FIELD: classes, {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>}
+THIS.Type: Klass
+KLASS: Checking {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>} against Klass
+KLASS: Checking <Klass 5> against Klass
+FIELD: schema, <Schema 1>
+THIS.Type: Schema
+KLASS: Checking <Schema 1> against Schema
+FIELD: name, SchemaSchema
+THIS.Type: str
+FIELD: classes, {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>}
+THIS.Type: Klass
+KLASS: Checking {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>} against Klass
+KLASS: Checking <Klass 5> against Klass
+FIELD: schema, <Schema 1>
+THIS.Type: Schema
+KLASS: Checking <Schema 1> against Schema
+FIELD: name, SchemaSchema
+THIS.Type: str
+FIELD: classes, {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>}
+THIS.Type: Klass
+KLASS: Checking {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>} against Klass
+KLASS: Checking <Klass 5> against Klass
+FIELD: schema, <Schema 1>
+THIS.Type: Schema
+KLASS: Checking <Schema 1> against Schema
+FIELD: name, SchemaSchema
+THIS.Type: str
+FIELD: classes, {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>}
+THIS.Type: Klass
+KLASS: Checking {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>} against Klass
+KLASS: Checking <Klass 5> against Klass
+FIELD: schema, <Schema 1>
+THIS.Type: Schema
+KLASS: Checking <Schema 1> against Schema
+FIELD: name, SchemaSchema
+THIS.Type: str
+FIELD: classes, {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>}
+THIS.Type: Klass
+KLASS: Checking {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>} against Klass
+KLASS: Checking <Klass 5> against Klass
+FIELD: schema, <Schema 1>
+THIS.Type: Schema
+KLASS: Checking <Schema 1> against Schema
+FIELD: name, SchemaSchema
+THIS.Type: str
+FIELD: classes, {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>}
+THIS.Type: Klass
+KLASS: Checking {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>} against Klass
+KLASS: Checking <Klass 5> against Klass
+FIELD: schema, <Schema 1>
+THIS.Type: Schema
+KLASS: Checking <Schema 1> against Schema
+FIELD: name, SchemaSchema
+THIS.Type: str
+FIELD: classes, {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>}
+THIS.Type: Klass
+KLASS: Checking {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>} against Klass
+KLASS: Checking <Klass 5> against Klass
+FIELD: schema, <Schema 1>
+THIS.Type: Schema
+KLASS: Checking <Schema 1> against Schema
+FIELD: name, SchemaSchema
+THIS.Type: str
+FIELD: classes, {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>}
+THIS.Type: Klass
+KLASS: Checking {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>} against Klass
+KLASS: Checking <Klass 5> against Klass
+FIELD: schema, <Schema 1>
+THIS.Type: Schema
+KLASS: Checking <Schema 1> against Schema
+FIELD: name, SchemaSchema
+THIS.Type: str
+FIELD: classes, {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>}
+THIS.Type: Klass
+KLASS: Checking {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>} against Klass
+KLASS: Checking <Klass 5> against Klass
+FIELD: schema, <Schema 1>
+THIS.Type: Schema
+KLASS: Checking <Schema 1> against Schema
+FIELD: name, SchemaSchema
+THIS.Type: str
+FIELD: classes, {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>}
+THIS.Type: Klass
+KLASS: Checking {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>} against Klass
+KLASS: Checking <Klass 5> against Klass
+FIELD: schema, <Schema 1>
+THIS.Type: Schema
+KLASS: Checking <Schema 1> against Schema
+FIELD: name, SchemaSchema
+THIS.Type: str
+FIELD: classes, {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>}
+THIS.Type: Klass
+KLASS: Checking {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>} against Klass
+KLASS: Checking <Klass 5> against Klass
+FIELD: schema, <Schema 1>
+THIS.Type: Schema
+KLASS: Checking <Schema 1> against Schema
+FIELD: name, SchemaSchema
+THIS.Type: str
+FIELD: classes, {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>}
+THIS.Type: Klass
+KLASS: Checking {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>} against Klass
+KLASS: Checking <Klass 5> against Klass
+FIELD: schema, <Schema 1>
+THIS.Type: Schema
+KLASS: Checking <Schema 1> against Schema
+FIELD: name, SchemaSchema
+THIS.Type: str
+FIELD: classes, {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>}
+THIS.Type: Klass
+KLASS: Checking {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>} against Klass
+KLASS: Checking <Klass 5> against Klass
+FIELD: schema, <Schema 1>
+THIS.Type: Schema
+KLASS: Checking <Schema 1> against Schema
+FIELD: name, SchemaSchema
+THIS.Type: str
+FIELD: classes, {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>}
+THIS.Type: Klass
+KLASS: Checking {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>} against Klass
+KLASS: Checking <Klass 5> against Klass
+FIELD: schema, <Schema 1>
+THIS.Type: Schema
+KLASS: Checking <Schema 1> against Schema
+FIELD: name, SchemaSchema
+THIS.Type: str
+FIELD: classes, {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>}
+THIS.Type: Klass
+KLASS: Checking {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>} against Klass
+KLASS: Checking <Klass 5> against Klass
+FIELD: schema, <Schema 1>
+THIS.Type: Schema
+KLASS: Checking <Schema 1> against Schema
+FIELD: name, SchemaSchema
+THIS.Type: str
+FIELD: classes, {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>}
+THIS.Type: Klass
+KLASS: Checking {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>} against Klass
+KLASS: Checking <Klass 5> against Klass
+FIELD: schema, <Schema 1>
+THIS.Type: Schema
+KLASS: Checking <Schema 1> against Schema
+FIELD: name, SchemaSchema
+THIS.Type: str
+FIELD: classes, {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>}
+THIS.Type: Klass
+KLASS: Checking {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>} against Klass
+KLASS: Checking <Klass 5> against Klass
+FIELD: schema, <Schema 1>
+THIS.Type: Schema
+KLASS: Checking <Schema 1> against Schema
+FIELD: name, SchemaSchema
+THIS.Type: str
+FIELD: classes, {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>}
+THIS.Type: Klass
+KLASS: Checking {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>} against Klass
+KLASS: Checking <Klass 5> against Klass
+FIELD: schema, <Schema 1>
+THIS.Type: Schema
+KLASS: Checking <Schema 1> against Schema
+FIELD: name, SchemaSchema
+THIS.Type: str
+FIELD: classes, {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>}
+THIS.Type: Klass
+KLASS: Checking {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>} against Klass
+KLASS: Checking <Klass 5> against Klass
+FIELD: schema, <Schema 1>
+THIS.Type: Schema
+KLASS: Checking <Schema 1> against Schema
+FIELD: name, SchemaSchema
+THIS.Type: str
+FIELD: classes, {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>}
+THIS.Type: Klass
+KLASS: Checking {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>} against Klass
+KLASS: Checking <Klass 5> against Klass
+FIELD: schema, <Schema 1>
+THIS.Type: Schema
+KLASS: Checking <Schema 1> against Schema
+FIELD: name, SchemaSchema
+THIS.Type: str
+FIELD: classes, {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>}
+THIS.Type: Klass
+KLASS: Checking {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>} against Klass
+KLASS: Checking <Klass 5> against Klass
+FIELD: schema, <Schema 1>
+THIS.Type: Schema
+KLASS: Checking <Schema 1> against Schema
+FIELD: name, SchemaSchema
+THIS.Type: str
+FIELD: classes, {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>}
+THIS.Type: Klass
+KLASS: Checking {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>} against Klass
+KLASS: Checking <Klass 5> against Klass
+FIELD: schema, <Schema 1>
+THIS.Type: Schema
+KLASS: Checking <Schema 1> against Schema
+FIELD: name, SchemaSchema
+THIS.Type: str
+FIELD: classes, {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>}
+THIS.Type: Klass
+KLASS: Checking {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>} against Klass
+KLASS: Checking <Klass 5> against Klass
+FIELD: schema, <Schema 1>
+THIS.Type: Schema
+KLASS: Checking <Schema 1> against Schema
+FIELD: name, SchemaSchema
+THIS.Type: str
+FIELD: classes, {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>}
+THIS.Type: Klass
+KLASS: Checking {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>} against Klass
+KLASS: Checking <Klass 5> against Klass
+FIELD: schema, <Schema 1>
+THIS.Type: Schema
+KLASS: Checking <Schema 1> against Schema
+FIELD: name, SchemaSchema
+THIS.Type: str
+FIELD: classes, {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>}
+THIS.Type: Klass
+KLASS: Checking {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>} against Klass
+KLASS: Checking <Klass 5> against Klass
+FIELD: schema, <Schema 1>
+THIS.Type: Schema
+KLASS: Checking <Schema 1> against Schema
+FIELD: name, SchemaSchema
+THIS.Type: str
+FIELD: classes, {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>}
+THIS.Type: Klass
+KLASS: Checking {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>} against Klass
+KLASS: Checking <Klass 5> against Klass
+FIELD: schema, <Schema 1>
+THIS.Type: Schema
+KLASS: Checking <Schema 1> against Schema
+FIELD: name, SchemaSchema
+THIS.Type: str
+FIELD: classes, {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>}
+THIS.Type: Klass
+KLASS: Checking {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>} against Klass
+KLASS: Checking <Klass 5> against Klass
+FIELD: schema, <Schema 1>
+THIS.Type: Schema
+KLASS: Checking <Schema 1> against Schema
+FIELD: name, SchemaSchema
+THIS.Type: str
+FIELD: classes, {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>}
+THIS.Type: Klass
+KLASS: Checking {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>} against Klass
+KLASS: Checking <Klass 5> against Klass
+FIELD: schema, <Schema 1>
+THIS.Type: Schema
+KLASS: Checking <Schema 1> against Schema
+FIELD: name, SchemaSchema
+THIS.Type: str
+FIELD: classes, {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>}
+THIS.Type: Klass
+KLASS: Checking {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>} against Klass
+KLASS: Checking <Klass 5> against Klass
+FIELD: schema, <Schema 1>
+THIS.Type: Schema
+KLASS: Checking <Schema 1> against Schema
+FIELD: name, SchemaSchema
+THIS.Type: str
+FIELD: classes, {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>}
+THIS.Type: Klass
+KLASS: Checking {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>} against Klass
+KLASS: Checking <Klass 5> against Klass
+FIELD: schema, <Schema 1>
+THIS.Type: Schema
+KLASS: Checking <Schema 1> against Schema
+FIELD: name, SchemaSchema
+THIS.Type: str
+FIELD: classes, {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>}
+THIS.Type: Klass
+KLASS: Checking {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>} against Klass
+KLASS: Checking <Klass 5> against Klass
+FIELD: schema, <Schema 1>
+THIS.Type: Schema
+KLASS: Checking <Schema 1> against Schema
+FIELD: name, SchemaSchema
+THIS.Type: str
+FIELD: classes, {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>}
+THIS.Type: Klass
+KLASS: Checking {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>} against Klass
+KLASS: Checking <Klass 5> against Klass
+FIELD: schema, <Schema 1>
+THIS.Type: Schema
+KLASS: Checking <Schema 1> against Schema
+FIELD: name, SchemaSchema
+THIS.Type: str
+FIELD: classes, {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>}
+THIS.Type: Klass
+KLASS: Checking {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>} against Klass
+KLASS: Checking <Klass 5> against Klass
+FIELD: schema, <Schema 1>
+THIS.Type: Schema
+KLASS: Checking <Schema 1> against Schema
+FIELD: name, SchemaSchema
+THIS.Type: str
+FIELD: classes, {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>}
+THIS.Type: Klass
+KLASS: Checking {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>} against Klass
+KLASS: Checking <Klass 5> against Klass
+FIELD: schema, <Schema 1>
+THIS.Type: Schema
+KLASS: Checking <Schema 1> against Schema
+FIELD: name, SchemaSchema
+THIS.Type: str
+FIELD: classes, {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>}
+THIS.Type: Klass
+KLASS: Checking {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>} against Klass
+KLASS: Checking <Klass 5> against Klass
+FIELD: schema, <Schema 1>
+THIS.Type: Schema
+KLASS: Checking <Schema 1> against Schema
+FIELD: name, SchemaSchema
+THIS.Type: str
+FIELD: classes, {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>}
+THIS.Type: Klass
+KLASS: Checking {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>} against Klass
+KLASS: Checking <Klass 5> against Klass
+FIELD: schema, <Schema 1>
+THIS.Type: Schema
+KLASS: Checking <Schema 1> against Schema
+FIELD: name, SchemaSchema
+THIS.Type: str
+FIELD: classes, {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>}
+THIS.Type: Klass
+KLASS: Checking {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>} against Klass
+KLASS: Checking <Klass 5> against Klass
+FIELD: schema, <Schema 1>
+THIS.Type: Schema
+KLASS: Checking <Schema 1> against Schema
+FIELD: name, SchemaSchema
+THIS.Type: str
+FIELD: classes, {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>}
+THIS.Type: Klass
+KLASS: Checking {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>} against Klass
+KLASS: Checking <Klass 5> against Klass
+FIELD: schema, <Schema 1>
+THIS.Type: Schema
+KLASS: Checking <Schema 1> against Schema
+FIELD: name, SchemaSchema
+THIS.Type: str
+FIELD: classes, {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>}
+THIS.Type: Klass
+KLASS: Checking {"Schema"=><Klass 5>, "Klass"=><Klass 7>, "Primitive"=><Klass 9>, "Type"=><Klass 11>, "Field"=><Klass 17>} against Klass

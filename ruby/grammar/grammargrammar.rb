@@ -10,11 +10,11 @@ class GrammarGrammar < GrammarGenerator
   end
 
   rule Rule do
-    alt [:Rule], {name: :key}, "::=", {alts: Alts}
+    alt [:Rule], {name: :key}, "::=", {arg: Alt}
   end
 
-  rule Alts do
-    alt [:Alts], {alts: iter_sep(Create, "|")}
+  rule Alt do
+    alt [:Alt], {alts: iter_sep(Create, "|")}
   end
 
   rule Create do
@@ -32,32 +32,34 @@ class GrammarGrammar < GrammarGenerator
   end
 
   rule Pattern do
-    alt [:Value], "int" # todo: add init code when it is parsed x.kind = "Int"
-    alt [:Value], "str" 
-    alt [:Value], "sqstr"
-    alt [:Value], "real" 
-    alt [:Value], "bool" 
-    alt [:Value], "sym" 
+    alt [:Value], {kind: "int"}
+    alt [:Value], {kind: "str"}
+    alt [:Value], {kind: "sqstr"}
+    alt [:Value], {kind: "real"}
+    alt [:Value], {kind: "bool"}
+    alt [:Value], {kind: "sym"}
+
+    alt [:Code], "@", {code: :str}
 
     alt [:Key], "key"
 
     alt [:Ref], {ref: :sym}, "^"
 
-    alt [:Lit], {value: :str} # todo: add init code x.case_sensitive = true
+    alt [:Lit], {value: :str}, code("self.case_sensitive = true")
 
-    alt [:Lit], {value: :sqstr}
+    alt [:Lit], {value: :sqstr}, code("self.case_sensitive = false")
 
     alt [:Call], {rule: ref(Rule)}
 
-    alt [:Regular], {arg: Pattern}, "?" # todo add init code optional, many etc.
+    alt [:Regular], {arg: Pattern}, "?", code("self.optional = true")
 
-    alt [:Regular], {arg: Pattern}, "+" 
+    alt [:Regular], {arg: Pattern}, "+", code("self.many = true")
 
-    alt [:Regular], {arg: Pattern}, "*" 
+    alt [:Regular], {arg: Pattern}, "*", code("self.optional = true; self.many = true")
 
-    alt [:Regular], "{", {arg: Pattern}, {sep: :str}, "}", "+" 
+    alt [:Regular], "{", {arg: Pattern}, {sep: :str}, "}", "+", code("self.many = true") 
 
-    alt [:Regular], "{", {arg: Pattern}, {sep: :str}, "}", "*" 
+    alt [:Regular], "{", {arg: Pattern}, {sep: :str}, "}", "*", code("self.optional = true; self.many = true")
     
     alt "(", Alts, ")"
   end

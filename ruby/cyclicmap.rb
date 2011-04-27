@@ -3,9 +3,11 @@ class CyclicThing
   def initialize
     @memo = {}
   end
+
   def self.run(*args)
     self.new().recurse(*args)
   end
+
   def prim?(obj)
     obj.is_a?(String) || 
       obj.is_a?(Integer) || 

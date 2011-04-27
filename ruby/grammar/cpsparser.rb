@@ -1,6 +1,5 @@
 
 require 'cyclicmap'
-require 'grammar/grammargrammar'
 
 class CollectLiterals < CyclicExecOtherwise
   def initialize
@@ -59,8 +58,8 @@ class CPSParser
     begin
       recurse(grammar, 0) do |pos, tree|
         if pos == @input.tokens.length then
-          #puts "************ TREE = #{tree}"
-          raise Success.new(tree)
+          pt = @factory.ParseTree(@input.path, tree, @input.layout)
+          raise Success.new(pt)
         end
       end
     rescue Success => e
@@ -126,7 +125,7 @@ class CPSParser
         return if entry.subsumed?(pos1) 
         entry.results[pos1] = tree
         entry.conts.each do |c|
-          c.call(pos1, @factory.Appl(this.name, tree))
+          c.call(pos1, tree)
         end
       end
     else
@@ -183,16 +182,21 @@ class CPSParser
     return if eof?(pos)
     tk = token(pos)
     if tk.kind == this.kind then
-      block.call(pos + 1, @factory.Value(this.kind, tk.value))
+      block.call(pos + 1, @factory.Value(this.kind, tk.value, tk.layout))
     end
   end
+
+  def Code(this, pos, &block)
+    block.call(pos, @factory.Code(this.code))
+  end
+
 
   def Key(this, pos, &block)
     #debug(this, pos)
     return if eof?(pos)
     tk = token(pos)
     if tk.kind == "sym" then
-      block.call(pos + 1, @factory.Key(tk.value))
+      block.call(pos + 1, @factory.Key(tk.value, tk.layout))
     end
   end
 
@@ -201,7 +205,7 @@ class CPSParser
     return if eof?(pos)
     tk = token(pos)
     if tk.kind == "sym" then
-      block.call(pos + 1, @factory.Ref(tk.value))
+      block.call(pos + 1, @factory.Ref(tk.value, tk.layout))
     end
   end
 
@@ -217,11 +221,11 @@ class CPSParser
     if tk.kind == "Lit" then
       if this.case_sensitive then
         if tk.value == this.value then
-          block.call(pos + 1, @factory.Lit(tk.value, true)) 
+          block.call(pos + 1, @factory.Lit(tk.value, true, tk.layout)) 
         end
       else
         if tk.value.downcase == this.value.downcase then
-          block.call(pos + 1, @factory.Lit(tk.value, false)) 
+          block.call(pos + 1, @factory.Lit(tk.value, false, tk.layout)) 
         end
       end
     end
@@ -232,28 +236,22 @@ class CPSParser
 
   def Regular(this, pos, &block)
     regular(this, pos) do |pos1, trees|
-      t = @factory.Regular
+      t = @factory.Sequence
       #puts "#REGULAR: #{trees} many=#{this.many} opt=#{this.optional} sep=#{this.sep}"
       trees.each do |k|
         t.args << k
       end
-      t.many = this.many
-      t.optional = this.optional
-      t.sep = this.sep ? this.sep.value : nil
       block.call(pos1, t)
     end
   end
 
   def regular(this, pos, &block)
-    #puts "REgular"
     if this.optional && !this.many && !this.sep then
-      #puts "optional"
       recurse(this.arg, pos) do |pos1, tree|
         block.call(pos, [tree])
       end
       block.call(pos, [])
     elsif !this.optional && this.many && !this.sep then
-      #puts "iter"
       recurse(this.arg, pos) do |pos1, tree1|
         regular(this, pos) do |pos2, trees|
           block.call(pos2, [tree1, *trees])
@@ -263,7 +261,6 @@ class CPSParser
         block.call(pos1, [tree])
       end
     elsif this.optional && this.many && !this.sep then
-      #puts "iter-star"
       recurse(this.arg, pos) do |pos1, tree1|
         regular(this, pos1) do |pos2, trees|
           block.call(pos2, [tree1, *trees])
@@ -271,11 +268,10 @@ class CPSParser
       end
       block.call(pos, [])
     elsif !this.optional && this.many && this.sep then
-      #puts "iter-sep"
       recurse(this.arg, pos) do |pos1, tree1|
-        recurse(this.sep, pos1) do |pos2, _|
+        recurse(this.sep, pos1) do |pos2, sep|
           regular(this, pos2) do |pos3, trees|
-            block.call(pos3, [tree1, *trees])
+            block.call(pos3, [tree1, sep, *trees])
           end
         end
       end
@@ -283,59 +279,39 @@ class CPSParser
         block.call(pos1, [tree])
       end
     elsif this.optional && this.many && this.sep then
-      #puts "iter-star-sep"
-      #### problem!!!
       # pretend it's an IterSep
       iter = this.clone
       iter.optional = false
       recurse(iter, pos, &block)
       # and add empty alternative
       block.call(pos, [])
+    else
+      raise "Inconsistent Regular: #{this}"
     end
   end
 
 end
 
 
-require 'grammar/tokenize'
-require 'tools/print'
-require 'grammar/parsetree'
+if __FILE__ == $0 then
+  require 'grammar/tokenize'
+  require 'grammar/parsetree'
+  require 'grammar/grammargrammar'
+  require 'grammar/unparse'
+  require 'tools/print'
 
-
-G = GrammarGrammar.grammar
-
-c = CollectLiterals.new
-c.recurse(G)
-#puts c.pattern
-
-Print.recurse(G, GrammarSchema.print_paths)
-
-t = Tokenize.new(c.pattern)
-f = 'grammar/grammar.grammar'
-src = File.read(f)
-#src = "grammar G start Rule "#G ::= A B"#B C D E F G |  A B C D E F G |  A B C D E F G"
-input = t.tokenize(f, src) 
-#puts src
-parse = CPSParser.new(input, Factory.new(ParseTreeSchema.schema))
-tree = parse.run(G)
-p tree
-
-Print.recurse(tree, ParseTreeSchema.print_paths)
-
-
-# require 'grammar/foogrammar'
-
-# G = FooGrammar.grammar
-# src = "1 2 3 4 5 6"
-# c = CollectLiterals.new
-# c.recurse(G)
-# t = Tokenize.new(c.pattern)
-# input = t.tokenize(f, src) # "grammar Bla start Bla")
-# #puts src
-# parse = CPSParser.new(input)
-# tree = parse.run(G)
-
-# #Print.recurse(tree[0], {:elements => {}})
-
+  grammar = GrammarGrammar.grammar
+  coll_lits = CollectLiterals.new
+  coll_lits.recurse(grammar)
+  tokenizer = Tokenize.new(coll_lits.pattern)
+  path = 'grammar/grammar.grammar'
+  src = File.read(path)
+  input = tokenizer.tokenize(path, src) 
+  parse = CPSParser.new(input, Factory.new(ParseTreeSchema.schema))
+  tree = parse.run(grammar)
+  unparse = Unparse.new($stdout)
+  unparse.recurse(tree)
+  #Print.recurse(tree)
+end
 
 

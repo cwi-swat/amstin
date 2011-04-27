@@ -246,6 +246,17 @@ Schema
           key: false
           inverse: nil
     #8 Klass
+      name: Code
+      super: Expression
+      fields
+        #0 Field
+          name: code
+          type: str
+          optional: false
+          many: false
+          key: false
+          inverse: nil
+    #9 Klass
       name: Value
       super: Expression
       fields
@@ -256,11 +267,11 @@ Schema
           many: false
           key: false
           inverse: nil
-    #9 Klass
+    #10 Klass
       name: Key
       super: Expression
       fields
-    #10 Klass
+    #11 Klass
       name: Ref
       super: Expression
       fields
@@ -271,7 +282,7 @@ Schema
           many: false
           key: false
           inverse: nil
-    #11 Klass
+    #12 Klass
       name: Lit
       super: Expression
       fields
@@ -289,7 +300,7 @@ Schema
           many: false
           key: false
           inverse: nil
-    #12 Klass
+    #13 Klass
       name: Call
       super: Expression
       fields
@@ -300,7 +311,7 @@ Schema
           many: false
           key: false
           inverse: nil
-    #13 Klass
+    #14 Klass
       name: Regular
       super: Expression
       fields

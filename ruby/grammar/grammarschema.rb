@@ -50,6 +50,10 @@ class GrammarSchema < SchemaGenerator
     field :arg, :type => Expression
   end
   
+  klass Code, :super => Expression do
+    field :code, :type => :str
+  end
+
   klass Value, :super => Expression do
     field :kind, :type => :str
   end

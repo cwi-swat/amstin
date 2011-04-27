@@ -40,7 +40,7 @@ class Tokenize
 
   def token(str, kind)
     l = str.length
-    puts "TOKEN: #{str}, #{kind}, line = #{@line}, start = #{@pos}, end = #{@pos + l}"
+    #puts "TOKEN: #{str}, #{kind}, line = #{@line}, start = #{@pos}, end = #{@pos + l}"
     t = @factory.Token(@stream, @line, @pos, @pos += l, l, kind.to_s, str)
     skip(l)
     @stream.tokens << t
@@ -49,9 +49,12 @@ class Tokenize
 
   def skip(l)
     # ugh, I don't like this
-    skipped = @src[0..l-1]
-    @src = @src[l..@src.length]
-    return skipped
+    if l > 0 then
+      skipped = @src[0..l-1]
+      @src = @src[l..@src.length]
+      return skipped
+    end
+    return ''
   end
   
   def skip_ws
@@ -79,7 +82,7 @@ require 'tools/print'
 
 if __FILE__ == $0 then
   t = Tokenize.new("begin|end")
-  m = t.tokenize("bla", "\n\n\n\nbegin 4 4 true false   \n true false end ")  
+  m = t.tokenize("bla", "\n\n\n\nbegin 4 4 true false   \n true false end \n\n\n ")  
   p m
   Print.recurse(m, { :tokens => {} })
 end
