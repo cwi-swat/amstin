@@ -143,6 +143,8 @@ class CyclicExecOtherwise < CyclicThing
   end
 end
 
+
+
 class CyclicCollectShy < CyclicThing
   def self.run(obj)
     coll = self.new

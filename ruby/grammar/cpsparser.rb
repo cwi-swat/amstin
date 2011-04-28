@@ -24,8 +24,8 @@ class CPSParser
     nil
   end
 
+  # todo: move to generic visit/dispatch class
   def recurse(obj, *args, &block)
-    ##puts "Sending #{obj.schema_class.name}"
     send(obj.schema_class.name, obj, *args, &block)
   end
 
@@ -36,6 +36,13 @@ class CPSParser
   def eof?(pos)
     pos == @input.tokens.length
   end
+
+  def with_token(pos, kind)
+    return if eof?(pos)
+    tk = token(pos)
+    yield tk if tk.kind == kind
+  end
+
 
   class Table
     def initialize
@@ -73,7 +80,6 @@ class CPSParser
   end
 
   def Rule(this, pos, &block)
-    #puts "Parsing rule #{this.name}"
     entry = @table[this, pos]
     if entry.conts.empty? then
       entry.conts << block
@@ -94,10 +100,8 @@ class CPSParser
   end
 
   def Sequence(this, pos, &block)
-    #puts "Sequence"
     f = lambda do |i, pos, lst| 
       if i == this.elements.length then
-        #puts "#SEQUENCE: #{lst}"
         s = @factory.Sequence
         lst.each do |l|
           s.elements << l
@@ -119,25 +123,19 @@ class CPSParser
   end
 
   def Create(this, pos, &block)
-    #debug(this, pos)
     recurse(this.arg, pos) do |pos1, tree|
-      #puts "CREATE: #{tree}"
       block.call(pos1, @factory.Create(this.name, tree))
     end
   end
 
   def Field(this, pos, &block)
-    #debug(this, pos)
     recurse(this.arg, pos) do |pos1, tree|
       block.call(pos1, @factory.Field(this.name, tree))
     end
   end
 
   def Value(this, pos, &block)
-    #debug(this, pos)
-    return if eof?(pos)
-    tk = token(pos)
-    if tk.kind == this.kind then
+    with_token(pos, this.kind) do |tk|
       block.call(pos + 1, @factory.Value(this.kind, tk.value, tk.layout))
     end
   end
@@ -148,42 +146,29 @@ class CPSParser
 
 
   def Key(this, pos, &block)
-    #debug(this, pos)
-    return if eof?(pos)
-    tk = token(pos)
-    if tk.kind == "sym" then
+    with_token(pos, 'sym') do |tk|
       block.call(pos + 1, @factory.Key(tk.value, tk.layout))
     end
   end
 
   def Ref(this, pos, &block)
-    #debug(this, pos)
-    return if eof?(pos)
-    tk = token(pos)
-    if tk.kind == "sym" then
+    with_token(pos, 'sym') do |tk|
       block.call(pos + 1, @factory.Ref(tk.value, tk.layout))
     end
   end
 
   def Call(this, pos, &block)
-    #debug(this, pos)
     recurse(this.rule, pos, &block)
   end
 
   def Lit(this, pos, &block)
-    #debug(this, pos)
-    return if eof?(pos)
-    tk = token(pos)
-    if tk.kind == "lit" then
+    with_token(pos, 'lit') do |tk|
       if this.case_sensitive then
-        if tk.value == this.value then
-          block.call(pos + 1, @factory.Lit(tk.value, true, tk.layout)) 
-        end
-      else
-        if tk.value.downcase == this.value.downcase then
-          block.call(pos + 1, @factory.Lit(tk.value, false, tk.layout)) 
-        end
+        return unless tk.value == this.value
+      else 
+        return unless tk.value.downcase == this.value.downcase 
       end
+      block.call(pos + 1, @factory.Lit(tk.value, this.case_sensitive, tk.layout)) 
     end
   end
 
@@ -196,20 +181,20 @@ class CPSParser
       trees.each do |k|
         t.elements << k
       end
-#       t.optional = this.optional
-#       t.many = this.many
-#       t.sep = this.sep ? this.sep.value : nil
       block.call(pos1, t)
     end
   end
 
   def regular(this, pos, &block)
     if this.optional && !this.many && !this.sep then
+      # X?
       recurse(this.arg, pos) do |pos1, tree|
         block.call(pos1, [tree])
       end
       block.call(pos, [])
+
     elsif !this.optional && this.many && !this.sep then
+      # X+
       recurse(this.arg, pos) do |pos1, tree1|
         regular(this, pos) do |pos2, trees|
           block.call(pos2, [tree1, *trees])
@@ -218,14 +203,18 @@ class CPSParser
       recurse(this.arg, pos) do |pos1, tree|
         block.call(pos1, [tree])
       end
+
     elsif this.optional && this.many && !this.sep then
+      # X*
       recurse(this.arg, pos) do |pos1, tree1|
         regular(this, pos1) do |pos2, trees|
           block.call(pos2, [tree1, *trees])
         end
       end
       block.call(pos, [])
+
     elsif !this.optional && this.many && this.sep then
+      # {X ","}+
       recurse(this.arg, pos) do |pos1, tree1|
         lit = @grammar_factory.Lit(this.sep, true)
         recurse(lit, pos1) do |pos2, sep|
@@ -233,10 +222,22 @@ class CPSParser
             block.call(pos3, [tree1, sep, *trees])
           end
         end
+# Why o why does this not work...
+#         return if eof?(pos1)
+#         tk = token(pos1)
+#         if tk.kind == "lit" && tk.value == this.sep then
+#           puts "Matched separator!: #{tk.value}"
+#           sep = @factory.Lit(tk.value, true, tk.layout)
+#           regular(this, pos1 + 1) do |pos3, trees|
+#             puts "TREES = #{trees}"
+#             block.call(pos3, [tree1, sep, *trees])
+#           end
+#         end
       end
       recurse(this.arg, pos) do |pos1, tree|
         block.call(pos1, [tree])
       end
+
     elsif this.optional && this.many && this.sep then
       # pretend it's an IterSep
       iter = this.clone
