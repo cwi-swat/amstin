@@ -1,61 +1,8 @@
 
 require 'cyclicmap'
 
-class CollectLiterals < CyclicExecOtherwise
-  def initialize
-    super
-    @literals = []
-  end
-
-  def pattern
-    # TODO: sort the on length
-    @literals.join("|")
-  end
-
-  def ci_pattern(cl)
-    re = "("
-    cl.each_char do |c|
-      re += "[#{c.upcase}#{c.downcase}]"
-    end
-    re + ")";
-  end
-
-  def Lit(this)
-    if this.case_sensitive then
-      if this.value =~ /[\\a-zA-Z_][a-zA-Z0-9_$]/ then
-        @literals << "(" + Regexp.escape(this.value) + "(?![a-zA-Z0-9_$])" + ")"
-      else
-        @literals << Regexp.escape(this.value)
-      end
-    else
-      @literals << "(" + ci_pattern(this.value) + "(?![a-zA-Z0-9_$])" + ")"
-    end
-  end
-
-  def Regular(this)
-    if this.sep then
-      @literals << Regexp.escape(this.sep)
-    end
-  end
-
-  def _(this)
-    this.schema_class.fields.each do |f|
-      v = this[f.name]
-      # todo: check on f.type
-      recurse(this[f.name]) if v && v.is_a?(CheckedObject)
-      if f.many then
-        v.each do |elt|
-          recurse(elt) if elt && elt.is_a?(CheckedObject)
-        end
-      end
-    end
-  end
-
-end
-
 
 class CPSParser
-
   def initialize(input, factory, gf = Factory.new(GrammarSchema.schema))
     @input = input
     @table = Table.new
@@ -316,14 +263,10 @@ require 'tools/equals'
 
 
 def parse_it(path, grammar)
-  coll_lits = CollectLiterals.new
-  puts "Collecting literals"
-  coll_lits.recurse(grammar)
-  puts coll_lits.pattern
-  tokenizer = Tokenize.new(coll_lits.pattern)
+  tokenizer = Tokenize.new
   src = File.read(path)
   puts "Tokenizing #{path}"
-  input = tokenizer.tokenize(path, src) 
+  input = tokenizer.tokenize(grammar, path, src) 
   parse = CPSParser.new(input, Factory.new(ParseTreeSchema.schema))
   parse.run(grammar)
 end

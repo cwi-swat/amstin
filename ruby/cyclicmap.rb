@@ -143,3 +143,38 @@ class CyclicExecOtherwise < CyclicThing
   end
 end
 
+class CyclicCollectShy < CyclicThing
+  def self.run(obj)
+    coll = self.new
+    accu = []
+    coll.recurse(obj, accu)
+    return accu
+  end
+
+  def recurse(obj, accu)
+    if @memo[obj] then
+      return
+    end
+    msg = obj.schema_class.name
+    @memo[obj] = true
+    if respond_to?(msg) then
+      send(msg, obj, accu)
+    else
+      send(:_, obj, accu)
+    end
+  end
+  
+  def _(this, accu)
+    this.schema_class.fields.each do |f|
+      v = this[f.name]
+      if v && v.is_a?(CheckedObject) then
+        recurse(this[f.name], accu)
+      elsif v && f.many then
+        v.each do |elt|
+          recurse(elt, accu) if elt && elt.is_a?(CheckedObject)
+        end
+      end
+    end
+  end
+end
+

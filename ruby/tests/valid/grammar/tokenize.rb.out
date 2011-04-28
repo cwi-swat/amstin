@@ -1,4 +1,4 @@
-<Stream 1>
+<Stream 153>
 Stream
   path: bla
   tokens
@@ -7,7 +7,7 @@ Stream
       start: 4
       end: 9
       length: 5
-      kind: lit
+      kind: sym
       value: begin
       layout:  
     #1 Token
@@ -64,7 +64,7 @@ Stream
       start: 40
       end: 43
       length: 3
-      kind: lit
+      kind: sym
       value: end
       layout:  
 

@@ -1,21 +1,54 @@
 
 require 'schema/factory'
 require 'grammar/tokenschema'
+require 'cyclicmap'
 
 require 'strscan'
+
+class CollectLiterals < CyclicCollectShy
+  def Lit(this, accu)
+    if this.case_sensitive then
+      if this.value =~ /[\\a-zA-Z_][a-zA-Z0-9_$]/ then
+        accu << "(" + Regexp.escape(this.value) + "(?![a-zA-Z0-9_$])" + ")"
+      else
+        accu << Regexp.escape(this.value)
+      end
+    else
+      accu << "(#{ci_pattern(this.value)}(?![a-zA-Z0-9_$]))"
+    end
+  end
+
+  def Regular(this, accu)
+    if this.sep then
+      accu << Regexp.escape(this.sep)
+    end
+  end
+
+  private 
+  def ci_pattern(cl)
+    re = "("
+    cl.each_char do |c|
+      re += "[#{c.upcase}#{c.downcase}]"
+    end
+    re + ")";
+  end
+end
+
 
 class Tokenize
   IDPATTERN = "[\\\\]?[a-zA-Z_$][a-zA-Z_$0-9]*"
 
   # TODO: make literals firstclass part of grammar?
 
-  def initialize(literals, factory = Factory.new(TokenSchema.schema))
-    @literals = Regexp.new("^(#{literals})", Regexp::MULTILINE)
+  def initialize(factory = Factory.new(TokenSchema.schema))
     @factory = factory
-    @id =  Regexp.new("^(#{IDPATTERN})(\\.#{IDPATTERN})*", Regexp::MULTILINE)
+    @id = Regexp.new("^(#{IDPATTERN})(\\.#{IDPATTERN})*")
   end
 
-  def tokenize(path, src)
+  def tokenize(grammar, path, src)
+    # todo: sort on length
+    lits = CollectLiterals.run(grammar).join("|")
+    @literals = Regexp.new("^(#{lits})")
     @stream = @factory.Stream(path)
     @scan = StringScanner.new(src)
     @src = src
@@ -72,10 +105,11 @@ class Tokenize
 end
 
 require 'tools/print'
+require 'grammar/grammargrammar'
 
 if __FILE__ == $0 then
-  t = Tokenize.new("begin|end")
-  m = t.tokenize("bla", "\n\n\n\nbegin 4 4 true false   \n true false end \n\n\n ")  
+  t = Tokenize.new
+  m = t.tokenize(GrammarGrammar.grammar, "bla", "\n\n\n\nbegin 4 4 true false   \n true false end \n\n\n ")  
   p m
   Print.new.recurse(m, { :tokens => {} })
 end
