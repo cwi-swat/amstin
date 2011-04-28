@@ -212,7 +212,7 @@ Grammar
             arg: Sequence
               elements
                 #0 Field
-                  name: ref
+                  name: name
                   arg: Value
                     kind: sym
                 #1 Lit
@@ -257,7 +257,7 @@ Grammar
                   value: ?
                   case_sensitive: true
                 #2 Code
-                  code: self.optional = true
+                  code: self.optional = true; self.many = false
           #13 Create
             name: Regular
             arg: Sequence
@@ -269,7 +269,7 @@ Grammar
                   value: +
                   case_sensitive: true
                 #2 Code
-                  code: self.many = true
+                  code: self.optional = false; self.many = true
           #14 Create
             name: Regular
             arg: Sequence
@@ -303,7 +303,7 @@ Grammar
                   value: +
                   case_sensitive: true
                 #5 Code
-                  code: self.many = true
+                  code: self.optional = false; self.many = true
           #16 Create
             name: Regular
             arg: Sequence
@@ -550,7 +550,7 @@ Grammar
             arg: Sequence
               elements
                 #0 Field
-                  name: ref
+                  name: name
                   arg: Value
                     kind: sym
                 #1 Lit
@@ -595,7 +595,7 @@ Grammar
                   value: ?
                   case_sensitive: true
                 #2 Code
-                  code: self.optional = true
+                  code: self.optional = true; self.many = false
           #13 Create
             name: Regular
             arg: Sequence
@@ -607,7 +607,7 @@ Grammar
                   value: +
                   case_sensitive: true
                 #2 Code
-                  code: self.many = true
+                  code: self.optional = false; self.many = true
           #14 Create
             name: Regular
             arg: Sequence
@@ -641,7 +641,7 @@ Grammar
                   value: +
                   case_sensitive: true
                 #5 Code
-                  code: self.many = true
+                  code: self.optional = false; self.many = true
           #16 Create
             name: Regular
             arg: Sequence

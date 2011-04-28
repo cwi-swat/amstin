@@ -3,15 +3,15 @@ Stream
   path: bla
   tokens
     #0 Token
-      line: 4
+      line: 0
       start: 4
       end: 9
       length: 5
-      kind: Lit
+      kind: lit
       value: begin
       layout:  
     #1 Token
-      line: 4
+      line: 0
       start: 10
       end: 11
       length: 1
@@ -19,7 +19,7 @@ Stream
       value: 4
       layout:  
     #2 Token
-      line: 4
+      line: 0
       start: 12
       end: 13
       length: 1
@@ -27,7 +27,7 @@ Stream
       value: 4
       layout:  
     #3 Token
-      line: 4
+      line: 0
       start: 14
       end: 18
       length: 4
@@ -35,7 +35,7 @@ Stream
       value: true
       layout:  
     #4 Token
-      line: 4
+      line: 0
       start: 19
       end: 24
       length: 5
@@ -44,7 +44,7 @@ Stream
       layout:    
  
     #5 Token
-      line: 5
+      line: 0
       start: 29
       end: 33
       length: 4
@@ -52,7 +52,7 @@ Stream
       value: true
       layout:  
     #6 Token
-      line: 5
+      line: 0
       start: 34
       end: 39
       length: 5
@@ -60,11 +60,11 @@ Stream
       value: false
       layout:  
     #7 Token
-      line: 5
+      line: 0
       start: 40
       end: 43
       length: 3
-      kind: Lit
+      kind: lit
       value: end
       layout:  
 

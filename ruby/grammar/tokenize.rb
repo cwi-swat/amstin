@@ -2,6 +2,7 @@
 require 'schema/factory'
 require 'grammar/tokenschema'
 
+require 'strscan'
 
 class Tokenize
   IDPATTERN = "[\\\\]?[a-zA-Z_$][a-zA-Z_$0-9]*"
@@ -9,72 +10,62 @@ class Tokenize
   # TODO: make literals firstclass part of grammar?
 
   def initialize(literals, factory = Factory.new(TokenSchema.schema))
-    @literals = Regexp.new("^(#{literals})")
+    @literals = Regexp.new("^(#{literals})", Regexp::MULTILINE)
     @factory = factory
-    @id =  Regexp.new("^(#{IDPATTERN})(\\.#{IDPATTERN})*")
+    @id =  Regexp.new("^(#{IDPATTERN})(\\.#{IDPATTERN})*", Regexp::MULTILINE)
   end
 
   def tokenize(path, src)
     @stream = @factory.Stream(path)
+    @scan = StringScanner.new(src)
     @src = src
-    @pos = 0
     @line = 0
-    while !@src.empty? do
+    while !@scan.eos? do
       skip_ws
-      break if @src.empty?
-      next if match(/^(true|false)/, :bool)
-      next if match(@literals, :Lit)
+      break if @scan.eos?
+      next if match(/true|false/, :bool)
+      next if match(@literals, :lit)
       next if match(@id, :sym)  
-      next if match(/^[0-9]+/, :int)
-      next if match(/^"(\\\\.|[^"])*"/, :str)
-      next if match(/^'(\\\\.|[^'])*'/, :sqstr)
-      next if match(/^[-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?/, :real)
-      raise "Could not match #{@src}"
+      next if match(/[0-9]+/, :int)
+      next if match(/"(\\\\.|[^"])*"/, :str)
+      next if match(/'(\\\\.|[^'])*'/, :sqstr)
+      next if match(/[-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?/, :real)
+      raise "Could not match '#{@src[@scan.pos..@src.length]}'"
     end
     return @stream
   end  
 
+  private
+
   def match(re, kind)
-    if @src =~ re then
-      token($&, kind)
+    pos = @scan.pos
+    x = @scan.scan(re)
+    if x then
+      #puts "MATCHED: #{x} at  #{pos}"
+      token(x, kind, pos)
     end
   end
 
-  def token(str, kind)
+  def token(str, kind, pos)
     l = str.length
-    #puts "TOKEN: #{str}, #{kind}, line = #{@line}, start = #{@pos}, end = #{@pos + l}"
-    t = @factory.Token(@stream, @line, @pos, @pos += l, l, kind.to_s, str)
-    skip(l)
+    #puts "TOKEN: #{str}, #{kind}, line = #{@line}, start = #{pos}, end = #{@scan.pos}"
+    # do this here?
+    if kind == :sym then
+      #puts "UNESCAPING: #{str}"
+      str.gsub!(/\\/, '')
+    end
+    t = @factory.Token(@stream, @line, pos, @scan.pos, l, kind.to_s, str)
     @stream.tokens << t
     return t
   end
-
-  def skip(l)
-    if l > 0 then
-      skipped = @src[0..l-1]
-      # ugh, I don't like this
-      @src = @src[l..@src.length]
-      return skipped
-    end
-    return ''
-  end
   
   def skip_ws
-    # todo: comments
-    #puts "SOURCE----------> '#{@src}'"
-    i = 0
-    while @src[i] =~ /\s/ do
-      if @src[i].chr == "\n" then
-        @line += 1
-      end
-      @pos += 1
-      i += 1
-    end
-    s = skip(i)
+    # todo: comments, linenumbers
+    x = @scan.scan(/\s+/)
     if @stream.tokens.empty? then
-      @stream.layout = s # wrong, somehow???
+      @stream.layout = x || ''
     else
-      @stream.tokens.last.layout = s
+      @stream.tokens.last.layout = x || ''
     end
   end
 

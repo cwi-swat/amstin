@@ -7,6 +7,7 @@ class SchemaSchema < SchemaGenerator
   primitive :str
   primitive :int
   primitive :bool
+  primitive :real
 
   # this is a little model that describes how to print out schema schemas
   # perhaps it should be in the model itself
@@ -15,7 +16,7 @@ class SchemaSchema < SchemaGenerator
   end
 
   klass Schema do
-    field :name, :type => :str
+    field :name, :type => :str, :key => true
     field :classes, :type => Klass, :optional => true, :many => true
     field :primitives, :type => Primitive, :optional => true, :many => true
   end
@@ -36,7 +37,7 @@ class SchemaSchema < SchemaGenerator
   end
 
   klass Field do
-    field :owner, :type => Klass, :inverse => Klass.fields, :key => true, :inverse => Klass.fields
+    field :owner, :type => Klass, :inverse => Klass.fields, :inverse => Klass.fields
     field :name, :type => :str, :key => true
     field :type, :type => Type
     field :optional, :type => :bool

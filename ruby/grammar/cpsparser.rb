@@ -22,9 +22,13 @@ class CollectLiterals < CyclicExecOtherwise
 
   def Lit(this)
     if this.case_sensitive then
-      @literals << Regexp.escape(this.value)
+      if this.value =~ /[\\a-zA-Z_][a-zA-Z0-9_$]/ then
+        @literals << "(" + Regexp.escape(this.value) + "(?![a-zA-Z0-9_$])" + ")"
+      else
+        @literals << Regexp.escape(this.value)
+      end
     else
-      @literals << ci_pattern(this.value)
+      @literals << "(" + ci_pattern(this.value) + "(?![a-zA-Z0-9_$])" + ")"
     end
   end
 
@@ -184,7 +188,6 @@ class CPSParser
 
   def Value(this, pos, &block)
     #debug(this, pos)
-    # todo: escaping or at tokenize level?
     return if eof?(pos)
     tk = token(pos)
     if tk.kind == this.kind then
@@ -224,7 +227,7 @@ class CPSParser
     #debug(this, pos)
     return if eof?(pos)
     tk = token(pos)
-    if tk.kind == "Lit" then
+    if tk.kind == "lit" then
       if this.case_sensitive then
         if tk.value == this.value then
           block.call(pos + 1, @factory.Lit(tk.value, true, tk.layout)) 
@@ -256,7 +259,7 @@ class CPSParser
   def regular(this, pos, &block)
     if this.optional && !this.many && !this.sep then
       recurse(this.arg, pos) do |pos1, tree|
-        block.call(pos, [tree])
+        block.call(pos1, [tree])
       end
       block.call(pos, [])
     elsif !this.optional && this.many && !this.sep then
@@ -302,23 +305,29 @@ class CPSParser
 end
 
 
-if __FILE__ == $0 then
-  require 'grammar/tokenize'
-  require 'grammar/parsetree'
-  require 'grammar/grammargrammar'
-  require 'grammar/unparse'
-  require 'tools/print'
-  require 'grammar/instantiate'
+require 'grammar/tokenize'
+require 'grammar/parsetree'
+require 'grammar/grammargrammar'
+require 'grammar/unparse'
+require 'grammar/instantiate'
+
+require 'tools/print'
+
+def grammar_grammar
+
+#   grammar = GrammarGrammar.grammar
+#   coll_lits = CollectLiterals.new
+#   coll_lits.recurse(grammar)
+#   tokenizer = Tokenize.new(coll_lits.pattern)
+#   path = 'grammar/grammar.grammar'
+#   src = File.read(path)
+#   input = tokenizer.tokenize(path, src) 
+#   parse = CPSParser.new(input, Factory.new(ParseTreeSchema.schema))
+#   tree = parse.run(grammar)
 
   grammar = GrammarGrammar.grammar
-  coll_lits = CollectLiterals.new
-  coll_lits.recurse(grammar)
-  tokenizer = Tokenize.new(coll_lits.pattern)
-  path = 'grammar/grammar.grammar'
-  src = File.read(path)
-  input = tokenizer.tokenize(path, src) 
-  parse = CPSParser.new(input, Factory.new(ParseTreeSchema.schema))
-  tree = parse.run(grammar)
+  tree = parse_it('grammar/grammar.grammar', grammar)
+
   unparse = Unparse.new($stdout)
   unparse.recurse(tree)
 
@@ -335,6 +344,60 @@ if __FILE__ == $0 then
   system "diff g1.txt g2.txt"
   
   #Print.recurse(tree)
+end
+
+
+def schema_grammar
+  puts "Parsing schema.grammar"
+  grammar = GrammarGrammar.grammar
+  tree = parse_it('schema/schema.grammar', grammar)
+  unparse = Unparse.new($stdout)
+  unparse.recurse(tree)
+
+  inst = Instantiate.new(Factory.new(GrammarSchema.schema))
+  grammar2 = inst.run(tree)
+
+  #Print.new.recurse(grammar2, GrammarSchema.print_paths)
+  
+  # now we have a grammar for schemas, let's parse with it
+  puts "Parsing schema.schema"
+
+  tree = parse_it('schema/schema.schema', grammar2)
+  p tree
+  unparse = Unparse.new($stdout)
+  unparse.recurse(tree)
+
+  inst2 = Instantiate.new(Factory.new(SchemaSchema.schema))
+  schema_schema = inst2.run(tree)
+
+  #Print.new.recurse(schema_schema, SchemaSchema.print_paths)
+  File.open('s1.txt', 'w') do |f|
+    Print.new(f).recurse(SchemaSchema.schema, SchemaSchema.print_paths)
+  end
+  File.open('s2.txt', 'w') do |f|
+    Print.new(f).recurse(schema_schema, SchemaSchema.print_paths)
+  end
+
+  system "diff s1.txt s2.txt"
+  
+end
+
+def parse_it(path, grammar)
+  coll_lits = CollectLiterals.new
+  puts "Collecting literals"
+  coll_lits.recurse(grammar)
+  puts coll_lits.pattern
+  tokenizer = Tokenize.new(coll_lits.pattern)
+  src = File.read(path)
+  puts "Tokenizing #{path}"
+  input = tokenizer.tokenize(path, src) 
+  parse = CPSParser.new(input, Factory.new(ParseTreeSchema.schema))
+  parse.run(grammar)
+end
+
+if __FILE__ == $0 then
+  #grammar_grammar
+  schema_grammar
 end
 
 

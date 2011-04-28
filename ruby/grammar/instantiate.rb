@@ -6,12 +6,19 @@ class Instantiate
     @factory = factory
     @defs = {}
     @fixes = []
+    @nested_fixes = []
   end
 
   def run(pt)
     # ugh: @root is set in recurse...
     recurse(pt, nil, nil, 0)
+    # currently only nested refs one level deep are supported (e.g. x.y) 
+    # in order to support more levels fixes could be a list of lists
+    # for each level
     @fixes.each do |fix|
+      fix.apply(@defs)
+    end
+    @nested_fixes.each do |fix|
       fix.apply(@defs)
     end
     return @root
@@ -26,6 +33,7 @@ class Instantiate
       owner[field.name] << x
       return pos + 1
     elsif field then
+      puts "FIELD: #{field.name}"
       owner[field.name] = x
     end
     return pos
@@ -35,26 +43,20 @@ class Instantiate
     v = this.value
     case this.kind 
     when "str" then 
-      #puts "VVVV = #{v}"
-      v.gsub!(/\\"/, '"')
-      #puts "VVVVsub = #{v}"
-      v = v[1..-2]
-      #puts "VVVVslice = #{v}"
+      v.gsub(/\\"/, '"')[1..-2]
     when "sqstr" then
-      v.gsub!(/\\'/, "'")
-      v = v[1..-2]
+      v.gsub(/\\'/, "'")[1..-2]
     when "bool" then
-      v = (v == "true")
+      v == "true"
     when "int" then
-      v = Integer(v)
+      Integer(v)
     when "real" then
-      v = Float(v)
+      Float(v)
     when "sym" then
-      v.sub!(/\\/, '')
+      v.sub(/^\\/, '')
     else
       raise "Don't know kind #{this.kind}"
     end
-    return v
   end
 
   def ParseTree(this, owner, field, pos)
@@ -83,6 +85,7 @@ class Instantiate
   end
 
   def Code(this, owner, field, pos)
+    puts "EXECUTINGC CODE #{this.code} on #{owner}"
     owner.instance_eval(this.code)
   end
 
@@ -102,9 +105,13 @@ class Instantiate
   end
 
   def Ref(this, owner, field, pos)
-    #puts "Stubbing ref #{this.name} in #{owner}"
-    stub = Stub.new(@factory, field)
-    @fixes << Fix.new(this.name, owner, field, pos)
+    puts "Stubbing ref #{this.name} in #{owner}"
+    stub = @factory.send(field.type.name)
+    if this.name =~ /\./ then
+      @nested_fixes << Fix.new(this.name, owner, field, pos)
+    else
+      @fixes << Fix.new(this.name, owner, field, pos)
+    end
     update(owner, field, pos, stub)
   end
 
@@ -116,21 +123,6 @@ class Instantiate
     update(owner, field, pos, this.name)
   end
 
-  class Stub
-    def initialize(factory, field)
-      @factory = factory
-      # field should not be primitive
-      @schema_class = field.type
-    end
-    def _factory
-      @factory
-    end
-
-    def schema_class
-      @schema_class
-    end
-  end
-
   class Fix
     def initialize(name, this, field, pos)
       @name = name
@@ -140,12 +132,38 @@ class Instantiate
     end
 
     def apply(defs)
-      #puts "FIXING: #{@name} in #{@this} in field #{@field.name}"
+      puts "FIXING: #{@name} in #{@this}.#{@field.name}"
+      old = @this[@field.name]
+      #copy_old_to_actual(old, defs[@name])
+
+      puts "DEFS[@name] = #{defs[@name]}"
+      names = @name.split(/\./)
+      while !names.empty? do
+        n = names.shift
+        actual = defs[n]
+      end
+
       if @field.many then
-        #puts "\tResolving at pos #{@pos} to #{defs[@name]}" 
-        @this[@field.name][@pos] = defs[@name]
+        @this[@field.name][@pos] = defs[actual]
       else
-        @this[@field.name] = defs[@name]
+        # code could have been executed on the stub
+        # or field have been set, so copy stuff from
+        # the stub to the actual thing the ref is resolved to
+        copy(@this[@field.name], actual)
+        @this[@field.name] = actual
+      end
+    end
+    
+    def copy(from, to)
+      from.schema_class.fields.each do |f|
+        next unless from[f.name]
+        if f.many then
+          from[f.name].each do |x|
+            to[f.name] << x
+          end
+        else
+          to[f.name] = from[f.name]
+        end
       end
     end
   end

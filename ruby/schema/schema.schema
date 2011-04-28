@@ -1,31 +1,38 @@
-schema Schema
+schema SchemaSchema
+
+  primitive \str
+  primitive \int
+  primitive \bool
+  primitive \real
 
   class Schema
-    name: str
-    classes: Class* / schema
+    #name: str
+    classes: Klass*
+    primitives: Primitive*
   end
 
-  abstract class Type end
-  
-  class Primitive < Type
-    name: str
+  class Type
   end
   
-  class Class < Type
-    schema: Schema
-    name: str
-    superclass: Class? / subclasses
-    subclasses: Class*
-    fields: Field* / owner
+  class Primitive < Type
+    #name: str
+  end
+  
+  class Klass < Type
+    \schema: Schema / Schema.classes
+    #name: str
+    super: Klass? 
+    subtypes: Klass* / Klass.super
+    fields: Field* 
   end
   
   class Field
-    owner: Class
-    name: str
+    owner: Klass / Klass.fields
+    #name: str
     type: Type
     optional: bool
     many: bool
-    inverse: Field? / inverse
     key: bool
+    inverse: Field? / Field.inverse 
   end
 end

@@ -15,7 +15,7 @@ Schema
           type: Klass
           optional: false
           many: false
-          key: true
+          key: false
           inverse: fields
         #2 Field
           name: name
@@ -73,7 +73,7 @@ Schema
           type: str
           optional: false
           many: false
-          key: false
+          key: true
           inverse: nil
         #2 Field
           name: classes
@@ -169,7 +169,7 @@ Schema
           type: Klass
           optional: false
           many: false
-          key: true
+          key: false
           inverse: fields
         #2 Field
           name: name
@@ -215,4 +215,5 @@ Schema
     #0 str
     #1 int
     #2 bool
+    #3 real
 WOA: SchemaSchema

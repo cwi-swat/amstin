@@ -1,22 +1,30 @@
+grammar SchemaGrammar 
+
 start Schema
 
-Schema ::= "schema" name:id classes:Class*
+Schema ::= [Schema] "schema" name:sym primitives:Primitive* classes:Klass* "end"
 
-Class ::= [Class] "class" name:key Parent? fields:Field* "end"
+Primitive ::= [Primitive] "primitive" name:sym
 
-Parent ::= "<" super:Class^
+Klass ::= [Klass] "class" name:key Parent? fields:Field* "end"
 
-Field ::= [Field] name:key ":" type:Type Multiplicity? Inverse?
+Parent ::= "<" super:Klass^
 
-Type ::= [Primitive] name:"int"
+Field ::= [Field] Key name:key ":" type:Type Multiplicity Inverse?
+
+Key ::= "#" @"self.key = true"
+      | @"self.key = false"
+
+Type ::=  [Primitive] name:"int"
 	| [Primitive] name:"bool"
 	| [Primitive] name:"real"
 	| [Primitive] name:"str"
-	| Class^
+	| Klass^
 
-// todo? detect enums here
-Multiplicity ::= "*" {many=true, optional=true} 
-	| "?" {optional=true} 
-	| "+" {many=true}
+Multiplicity ::= "*" @"self.many = true; self.optional = true"
+	       | "?" @"self.many = false; self.optional = true" 
+	       | "+" @"self.many = true; self.optional = false"
+	       | @"self.many = false; self.optional = false"
 
 Inverse ::= "/" inverse:Field^
+
