@@ -312,19 +312,23 @@ require 'grammar/unparse'
 require 'grammar/instantiate'
 
 require 'tools/print'
+require 'tools/equals'
+
+
+def parse_it(path, grammar)
+  coll_lits = CollectLiterals.new
+  puts "Collecting literals"
+  coll_lits.recurse(grammar)
+  puts coll_lits.pattern
+  tokenizer = Tokenize.new(coll_lits.pattern)
+  src = File.read(path)
+  puts "Tokenizing #{path}"
+  input = tokenizer.tokenize(path, src) 
+  parse = CPSParser.new(input, Factory.new(ParseTreeSchema.schema))
+  parse.run(grammar)
+end
 
 def grammar_grammar
-
-#   grammar = GrammarGrammar.grammar
-#   coll_lits = CollectLiterals.new
-#   coll_lits.recurse(grammar)
-#   tokenizer = Tokenize.new(coll_lits.pattern)
-#   path = 'grammar/grammar.grammar'
-#   src = File.read(path)
-#   input = tokenizer.tokenize(path, src) 
-#   parse = CPSParser.new(input, Factory.new(ParseTreeSchema.schema))
-#   tree = parse.run(grammar)
-
   grammar = GrammarGrammar.grammar
   tree = parse_it('grammar/grammar.grammar', grammar)
 
@@ -342,9 +346,12 @@ def grammar_grammar
   end
   
   system "diff g1.txt g2.txt"
+
+  puts Equals.run(GrammarSchema.schema, grammar, grammar2)
   
   #Print.recurse(tree)
 end
+
 
 
 def schema_grammar
@@ -382,22 +389,9 @@ def schema_grammar
   
 end
 
-def parse_it(path, grammar)
-  coll_lits = CollectLiterals.new
-  puts "Collecting literals"
-  coll_lits.recurse(grammar)
-  puts coll_lits.pattern
-  tokenizer = Tokenize.new(coll_lits.pattern)
-  src = File.read(path)
-  puts "Tokenizing #{path}"
-  input = tokenizer.tokenize(path, src) 
-  parse = CPSParser.new(input, Factory.new(ParseTreeSchema.schema))
-  parse.run(grammar)
-end
-
 if __FILE__ == $0 then
-  #grammar_grammar
   schema_grammar
+  grammar_grammar
 end
 
 
