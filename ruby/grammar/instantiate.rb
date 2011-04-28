@@ -33,7 +33,7 @@ class Instantiate
       owner[field.name] << x
       return pos + 1
     elsif field then
-      puts "FIELD: #{field.name}"
+      #puts "FIELD: #{field.name}"
       owner[field.name] = x
     end
     return pos
@@ -85,7 +85,7 @@ class Instantiate
   end
 
   def Code(this, owner, field, pos)
-    puts "EXECUTINGC CODE #{this.code} on #{owner}"
+    #puts "EXECUTINGC CODE #{this.code} on #{owner}"
     owner.instance_eval(this.code)
   end
 
@@ -105,7 +105,7 @@ class Instantiate
   end
 
   def Ref(this, owner, field, pos)
-    puts "Stubbing ref #{this.name} in #{owner}"
+    #puts "Stubbing ref #{this.name} in #{owner}"
     stub = @factory.send(field.type.name)
     if this.name =~ /\./ then
       @nested_fixes << Fix.new(this.name, owner, field, pos)
@@ -132,11 +132,11 @@ class Instantiate
     end
 
     def apply(defs)
-      puts "FIXING: #{@name} in #{@this}.#{@field.name}"
+      #puts "FIXING: #{@name} in #{@this}.#{@field.name}"
       old = @this[@field.name]
       #copy_old_to_actual(old, defs[@name])
 
-      puts "DEFS[@name] = #{defs[@name]}"
+      #puts "DEFS[@name] = #{defs[@name]}"
       names = @name.split(/\./)
       while !names.empty? do
         n = names.shift
