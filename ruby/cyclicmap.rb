@@ -1,5 +1,11 @@
+class Dispatch
+  def recurse(obj, *args)
+    #puts "RENDER #{obj} #{arg}"
+    return send(obj.schema_class.name, obj, *args)
+  end
+end
 
-class CyclicThing
+class MemoBase
   def initialize
     @memo = {}
   end
@@ -8,6 +14,12 @@ class CyclicThing
     self.new().recurse(*args)
   end
 
+  def recurse(obj, *args)
+    r = @memo[obj]
+    return r if r
+    @memo[obj] = send(obj.schema_class.name, obj, *args)
+  end
+  
   def prim?(obj)
     obj.is_a?(String) || 
       obj.is_a?(Integer) || 
@@ -18,7 +30,7 @@ class CyclicThing
   end
 end
 
-class CyclicCollectOnSecondArg < CyclicThing
+class CyclicCollectOnSecondArg < MemoBase
   def recurse(obj, arg)
     if !prim?(arg) then
       if @memo[arg] then
@@ -32,7 +44,7 @@ class CyclicCollectOnSecondArg < CyclicThing
 end
 
 # used in checkschema
-class CyclicCollectOnBoth < CyclicThing
+class CyclicCollectOnBoth < MemoBase
   def recurse(obj, arg)
     if !prim?(arg) then
       if @memo[[obj, arg]] then
@@ -47,7 +59,7 @@ class CyclicCollectOnBoth < CyclicThing
 end
 
 # in use
-class CyclicMapNew < CyclicThing
+class CyclicMapNew < MemoBase
   def initialize()
     super()
     puts @memo
@@ -74,7 +86,7 @@ class CyclicMapNew < CyclicThing
 end
 
 # used in grammar.rb
-class CyclicClosure < CyclicThing
+class CyclicClosure < MemoBase
   def recurse(obj)
     if @memo[obj] then
       return
@@ -86,7 +98,7 @@ class CyclicClosure < CyclicThing
 end
 
 # should this be called CyclicVisit?
-class CyclicCollect < CyclicThing
+class CyclicCollect < MemoBase
   def recurse(obj)
     if @memo[obj] then
       return 
@@ -128,7 +140,7 @@ compute()
   data.value = val
 =end
 
-class CyclicExecOtherwise < CyclicThing
+class CyclicExecOtherwise < MemoBase
   def recurse(obj)
     if @memo[obj] then
       return 
@@ -145,7 +157,7 @@ end
 
 
 
-class CyclicCollectShy < CyclicThing
+class CyclicCollectShy < MemoBase
   def self.run(obj)
     coll = self.new
     accu = []

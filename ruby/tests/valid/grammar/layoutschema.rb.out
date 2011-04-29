@@ -1,0 +1,80 @@
+Schema
+  name: LayoutSchema
+  classes
+    #0 Klass
+      name: Format
+      super: nil
+      fields
+    #1 Klass
+      name: Sequence
+      super: Format
+      fields
+        #0 Field
+          name: elements
+          type: Format
+          optional: true
+          many: true
+          key: false
+          inverse: nil
+    #2 Klass
+      name: Group
+      super: Format
+      fields
+        #0 Field
+          name: arg
+          type: Format
+          optional: false
+          many: false
+          key: false
+          inverse: nil
+    #3 Klass
+      name: Nest
+      super: Format
+      fields
+        #0 Field
+          name: arg
+          type: Format
+          optional: false
+          many: false
+          key: false
+          inverse: nil
+        #1 Field
+          name: indent
+          type: int
+          optional: false
+          many: false
+          key: false
+          inverse: nil
+    #4 Klass
+      name: Break
+      super: Format
+      fields
+        #0 Field
+          name: indent
+          type: int
+          optional: false
+          many: false
+          key: false
+          inverse: nil
+        #1 Field
+          name: sep
+          type: str
+          optional: false
+          many: false
+          key: false
+          inverse: nil
+    #5 Klass
+      name: Text
+      super: Format
+      fields
+        #0 Field
+          name: value
+          type: str
+          optional: false
+          many: false
+          key: false
+          inverse: nil
+  primitives
+    #0 str
+    #1 int
+    #2 bool

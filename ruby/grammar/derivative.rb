@@ -4,15 +4,6 @@ require 'schema/factory'
 require 'tools/copy'
 require 'cyclicmap'
 
-class BadObject < NilClass
-  def initialize(name)
-    @name = name
-  end
-  def to_s
-    "<" + @name + ">"
-  end
-end  
-
 class OptimizingGrammarFactory
   def initialize
     @factory = Factory.new(GrammarSchema.schema)
@@ -100,7 +91,7 @@ class RuleCopy < Copy
   end
   def copy(source)
     @indent += 1
-    puts "#{' '*@indent}COPY #{source.to_s}"
+    #puts "#{' '*@indent}COPY #{source.to_s}"
     rule = super(source)
     if source.schema_class.name == "Rule"
       @grammar.rules << rule
@@ -122,8 +113,11 @@ class Derivative < CyclicMapNew
   def Grammar(from)
     @grammar = @factory.Grammar(from.name)
     @copier = RuleCopy.new(@factory, @grammar)
-    @grammar.start = recurse(from.start)
-    raise "parse fail" unless to.rules.length > 0
+    r = recurse(from.start)
+    if r
+      @grammar.start = r 
+      @grammar
+    end
   end
 
   def Rule(from)
@@ -135,7 +129,7 @@ class Derivative < CyclicMapNew
         @grammar.rules << to
         to
       else
-        BadObject.new("A")
+        nil
       end
     end
   end
@@ -146,7 +140,7 @@ class Derivative < CyclicMapNew
       d = recurse(r)
       to.alts << d if d
     end
-    alt.alts.empty? ? BadObject.new("B") : alt
+    to.alts.empty? ? nil : to
   end
 
   # Dc(p;q)  ==>  if p.nullable then  Dc(p);q | Dc(q)  else  Dc(p);q
@@ -167,23 +161,23 @@ class Derivative < CyclicMapNew
       end
       break unless @nullable.recurse(from.elements[i])
     end
-    alt.alts.empty? ? BadObject.new("C") : alt
+    alt.alts.empty? ? nil : alt
   end
   
   # nonterminal
   def Call(from)
     d = recurse(from.rule)
-    d ? @factory.Call(d) : BadObject.new("D")
+    d ? @factory.Call(d) : nil
   end
 
   def Epsilon(from)
-    BadObject.new("E")
+    nil
   end
 
   # Dc(p*) ==>  if p.nullable then Dc(p)* else Dc(p);p*
   def Regular(from)
     d = recurse(from.arg)
-    BadObject.new("F") if d.nil?
+    nil if d.nil?
     if !from.many
       return d
     else
@@ -217,7 +211,7 @@ class Derivative < CyclicMapNew
     if (@token.class.name == from.kind)
       return @factory.Epsilon()
     else
-      return BadObject.new("G")
+      return nil
     end
   end
 
@@ -225,7 +219,7 @@ class Derivative < CyclicMapNew
     if (@token.class.name == "id")
       return @factory.Epsilon()
     else
-      return BadObject.new("H")
+      return nil
     end
   end
 
@@ -233,7 +227,7 @@ class Derivative < CyclicMapNew
     if (@token == from.value)
       return @factory.Epsilon()
     else
-      return BadObject.new("I")
+      return nil
     end
   end
 end
@@ -249,8 +243,10 @@ if __FILE__ == $0 then
   #Print.recurse(y, GrammarSchema.print_paths)
   
   x = Derivative.new("grammar").recurse(x)
+  
   x = Derivative.new(:foo).recurse(x)
   x = Derivative.new("start").recurse(x)
+  Print.new.recurse(x, GrammarSchema.print_paths)
   x = Derivative.new(:bar).recurse(x)
 
   x = Derivative.new(:r1).recurse(x)
@@ -258,7 +254,7 @@ if __FILE__ == $0 then
   x = Derivative.new("test").recurse(x)
   x = Derivative.new("*").recurse(x)
   
-  Print.recurse(x, GrammarSchema.print_paths)
+  Print.new.recurse(x, GrammarSchema.print_paths)
     
 end
 

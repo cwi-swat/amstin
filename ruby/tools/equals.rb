@@ -2,7 +2,7 @@
 
 require 'cyclicmap'
 
-class Equals < CyclicThing
+class Equals < MemoBase
 
   def recurse(this, o1, o2)
     if @memo[[this, o1, o2]] then

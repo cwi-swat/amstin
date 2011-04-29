@@ -3363,6 +3363,8 @@ FIELD: classes, {"Schema"=><Klass 6>, "Klass"=><Klass 8>, "Primitive"=><Klass 10
 THIS.Type: Klass
 KLASS: Checking {"Schema"=><Klass 6>, "Klass"=><Klass 8>, "Primitive"=><Klass 10>, "Type"=><Klass 12>, "Field"=><Klass 18>} against Klass
 KLASS: Checking <Klass 6> against Klass
+<<<<<<< .mine
+=======
 FIELD: schema, <Schema 1>
 THIS.Type: Schema
 KLASS: Checking <Schema 1> against Schema
@@ -4163,3 +4165,4 @@ THIS.Type: str
 FIELD: classes, {"Schema"=><Klass 6>, "Klass"=><Klass 8>, "Primitive"=><Klass 10>, "Type"=><Klass 12>, "Field"=><Klass 18>}
 THIS.Type: Klass
 KLASS: Checking {"Schema"=><Klass 6>, "Klass"=><Klass 8>, "Primitive"=><Klass 10>, "Type"=><Klass 12>, "Field"=><Klass 18>} against Klass
+>>>>>>> .r35013

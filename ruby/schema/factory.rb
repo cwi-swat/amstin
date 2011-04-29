@@ -64,7 +64,7 @@ class CheckedObject
 
   def [](field_name)
     field = @schema_class.fields[field_name]; 
-    raise "Accessing non-existant field '#{field_name}'" unless field
+    raise "Accessing non-existant field '#{field_name}' of #{schema_class.name} in #{schema_class.schema.name}" unless field
     return @hash[field_name]
   end
 
@@ -72,8 +72,12 @@ class CheckedObject
     #puts "Setting #{field_name} to #{v}"
     field = @schema_class.fields[field_name]
     raise "Assign to invalid field '#{field_name}'" unless field
-    raise "Can't assign to many-valued field '#{field_name}'" if field.many
-    if v.nil?
+    if field.many
+      col = self[field.name]
+      v.each do |x|
+        col << x
+      end
+    elsif v.nil?
       raise "Can't assign nil to required field '#{field_name}'" if !field.optional
     else
       case field.type.name
@@ -147,7 +151,7 @@ class ManyIndexedField
   def [](x)
     @hash[x]
   end
-  
+    
   def length
     @hash.length
   end

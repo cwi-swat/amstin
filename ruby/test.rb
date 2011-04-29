@@ -1,3 +1,4 @@
+#! /usr/bin/ruby -W0
 # to find tests:
 #  fgrep -R __FILE__ . | fgrep -v svn
 
@@ -9,7 +10,9 @@ def test(file, dest, diff)
   puts "Processing #{file}"
   
   %x[mkdir -p #{dest}/#{dir}]
-  %x[#{RUBY} -I. #{file} > #{dest}/#{file}.out]
+  cmd = "#{RUBY} -I. #{file} > #{dest}/#{file}.out"
+  #puts cmd
+  %x[#{cmd}]
 
   if diff == "full"
     `diff tests/out/#{file}.out tests/valid/#{file}.out 1>&2`
@@ -22,11 +25,16 @@ def test(file, dest, diff)
 end
 
 def process(dest, diff)
-  test "grammar/derivative.rb", dest, diff
+  test "grammar/cpsparser.rb", dest, diff
+  #test "grammar/derivative.rb", dest, diff
   test "grammar/grammargrammar.rb", dest, diff
   test "grammar/grammarschema.rb", dest, diff
+  test "grammar/layout.rb", dest, diff
+  test "grammar/layoutschema.rb", dest, diff
   test "grammar/tokenize.rb", dest, diff
-  test "schema/checkschema.rb", dest, diff
+  test "grammar/parsetree.rb", dest, diff
+  test "grammar/render.rb", dest, diff
+  #test "schema/checkschema.rb", dest, diff
   test "schema/schemaschema.rb", dest, diff
   test "tools/copy.rb", dest, diff
   test "tools/print.rb", dest, diff

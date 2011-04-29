@@ -257,7 +257,7 @@ Grammar
                   value: ?
                   case_sensitive: true
                 #2 Code
-                  code: self.optional = true; self.many = false
+                  code: self.optional = true; self.many = false; self.sep = nil
           #13 Create
             name: Regular
             arg: Sequence
@@ -269,7 +269,7 @@ Grammar
                   value: +
                   case_sensitive: true
                 #2 Code
-                  code: self.optional = false; self.many = true
+                  code: self.optional = false; self.many = true; self.sep = nil
           #14 Create
             name: Regular
             arg: Sequence
@@ -281,7 +281,7 @@ Grammar
                   value: *
                   case_sensitive: true
                 #2 Code
-                  code: self.optional = true; self.many = true
+                  code: self.optional = true; self.many = true; self.sep = nil
           #15 Create
             name: Regular
             arg: Sequence
@@ -595,7 +595,7 @@ Grammar
                   value: ?
                   case_sensitive: true
                 #2 Code
-                  code: self.optional = true; self.many = false
+                  code: self.optional = true; self.many = false; self.sep = nil
           #13 Create
             name: Regular
             arg: Sequence
@@ -607,7 +607,7 @@ Grammar
                   value: +
                   case_sensitive: true
                 #2 Code
-                  code: self.optional = false; self.many = true
+                  code: self.optional = false; self.many = true; self.sep = nil
           #14 Create
             name: Regular
             arg: Sequence
@@ -619,7 +619,7 @@ Grammar
                   value: *
                   case_sensitive: true
                 #2 Code
-                  code: self.optional = true; self.many = true
+                  code: self.optional = true; self.many = true; self.sep = nil
           #15 Create
             name: Regular
             arg: Sequence

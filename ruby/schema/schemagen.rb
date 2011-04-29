@@ -94,6 +94,19 @@ class SchemaGenerator
       return m
     end
 
+    def finalize(schema)
+      # this should be automatic
+      schema.schema_class = SchemaSchema::Schema.klass
+      schema.primitives.each do |p|
+        p.schema_class = SchemaSchema::Primitive.klass
+      end
+      schema.classes.each do |c|
+        c.schema_class = SchemaSchema::Klass.klass
+        c.fields.each do |f|
+          f.schema_class = SchemaSchema::Field.klass
+        end
+      end
+    end
   end
 
 end

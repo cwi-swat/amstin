@@ -8,12 +8,12 @@
   Alt ::= [Alt] alts:{Create "|"}+
 
   Create ::= [Create] "[" name:sym "]" arg:Sequence
-    | Sequence
+  	   | Sequence
 
   Sequence ::= [Sequence] elements:Field*
 
   Field ::= [Field] name:sym ":" arg:Pattern
-    | Pattern
+   	  | Pattern
   
   Pattern ::= 
       [Value] kind:"int"
@@ -22,8 +22,8 @@
     | [Value] kind:"real"
     | [Value] kind:"bool"
     | [Value] kind:"sym"
-    | [Code] "@" code:str
-    | [Key] "key"
+	  | [Code] "@" code:str
+	  | [Key] "key"
     | [Ref] name:sym "^"
     | [Lit] value:str				@"self.case_sensitive = true"
     | [Lit] value:sqstr				@"self.case_sensitive = false"
@@ -33,4 +33,4 @@
     | [Regular] arg:Pattern "*"  			@"self.optional = true; self.many = true; self.sep = nil"
     | [Regular] "{" arg:Pattern sep:str "}" "+" 	@"self.optional = false; self.many = true"
     | [Regular] "{" arg:Pattern sep:str "}" "*" 	@"self.optional = true; self.many = true"
-    | "(" Alt ")"
+	  | "(" Alt ")"

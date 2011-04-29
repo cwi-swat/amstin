@@ -10,40 +10,94 @@ schema Diagram
   class Point
     x: int
     y: int
+  end
   
   class Rect
     top: int
     bot: int
     left: int
     right: int
-        
-  class Shape < Part
-    position: Rect
-    format: str
-    content: Part
-    linkout: Link*
-    linkin: Link* 
-    
-  class Link
-    format: str
-    path: Point*
-    label: Part
-    from: Part / Shape.linkout
-    to: Part / Shape.linkin
-    
-  class List < Part
+  end
+ 
+  class Part end
+      
+  class Container < Part
     direction: int
     items: Part*
+  end
+
+  class Graph < Part
+    nodes: Shape*
+  end
   
-  class Iter < Part
-    direction: int
-    pattern: Part
+  class Shape < Part
+    position: Rect
+    format: ShapeFormat
+    content: Part
+    links: LinkEnd* 
+  end
+  
+  class ShapeFormat
+    line: LineFormat
+    fill_color: Color
+  end
+  
+  class LineFormat
+    width: int
+    style: str
+    color: Color
+  end
+  
+  class Link
+    line: LineFormat
+    path: Point*
+    label: Text
+    ends: LinkEnd[2] / LinkEnd.link
+  end   # :->
     
+  class LinkEnd
+    arrow: str
+    label: Text
+    link: Link / Link.from
+    part: Shape / Shape.links
+  end
+  
   class Text < Part
-    format: str
+    font: str
+    size: int
+    bold: bool
+    italic: bool
+    color: Color
     string: str
-    
-  class Field < Part
-    format: str
-    name: str
-    
+  end
+  
+  class Color
+    r: int
+    g: int
+    b: int
+  end
+  
+  // these are for the connection to schemas
+  class Computed
+    expression: Expression
+  end
+
+  class Iter < Part
+    expression: Expression
+    arg: Part
+  end
+
+  class Optional < Part
+    condition: Expression
+    arg: Part
+  end
+
+  class Placeholder < Part
+    id: Expression
+  end
+
+  class Tagged < Part
+    id: Expression
+    arg: Part
+  end
+end

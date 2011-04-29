@@ -1,0 +1,57 @@
+WIDTH = 1196
+BREAKING
+BREAKING
+BREAKING
+BREAKING
+BREAKING
+BREAKING
+BREAKING
+BREAKING
+grammar GrammarGrammar start Grammar 
+    Grammar ::= 
+        [ Grammar ] "grammar" name : int "start" start : Rule ^ rules : Rule * 
+    Rule ::= [ Rule ] name : key "::=" arg : Alt 
+    Alt ::= [ Alt ] alts : { Create "|" } + 
+    Create ::= [ Create ] "[" name : int "]" arg : Sequence |Sequence 
+    Sequence ::= [ Sequence ] elements : Field * 
+    Field ::= [ Field ] name : int ":" arg : Pattern |Pattern 
+    Pattern ::= 
+        [ Value ] kind : "int" |
+        [ Value ] kind : "str" |
+        [ Value ] kind : "sqstr" |
+        [ Value ] kind : "real" |
+        [ Value ] kind : "bool" |
+        [ Value ] kind : "sym" |
+        [ Code ] "@" code : int |
+        [ Key ] "key" |
+        [ Ref ] name : int "^" |
+        [ Lit ] value : int @ "self.case_sensitive = true" |
+        [ Lit ] value : int @ "self.case_sensitive = false" |
+        [ Call ] rule : Rule ^ |
+        [ Regular ] 
+            arg : Pattern 
+            "?" 
+            @ "self.optional = true; self.many = false; self.sep = nil" |
+        [ Regular ] 
+            arg : Pattern 
+            "+" 
+            @ "self.optional = false; self.many = true; self.sep = nil" |
+        [ Regular ] 
+            arg : Pattern 
+            "*" 
+            @ "self.optional = true; self.many = true; self.sep = nil" |
+        [ Regular ] 
+            "{" 
+            arg : Pattern 
+            sep : int 
+            "}" 
+            "+" 
+            @ "self.optional = false; self.many = true" |
+        [ Regular ] 
+            "{" 
+            arg : Pattern 
+            sep : int 
+            "}" 
+            "*" 
+            @ "self.optional = true; self.many = true" |
+        "(" Alt ")" 

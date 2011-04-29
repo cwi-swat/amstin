@@ -46,26 +46,15 @@ class SchemaSchema < SchemaGenerator
     field :inverse, :type => Field, :optional => true, :inverse => Field.inverse
   end
 
-  schema.schema_class = Schema.klass
-  schema.primitives.each do |p|
-    p.schema_class = Primitive.klass # unfortunate .klass because of wrapping
-  end
-  schema.classes.each do |c|
-    c.schema_class = Klass.klass
-    c.fields.each do |f|
-      f.schema_class = Field.klass
-    end
-  end
+  SchemaSchema.finalize(schema)
   
 end
 
 def main
-
   require 'tools/print'
   
   Print.new.recurse(SchemaSchema.schema, SchemaSchema.print_paths)
 end
-
 
 if __FILE__ == $0 then
   main

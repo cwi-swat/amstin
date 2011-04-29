@@ -321,16 +321,17 @@ def schema_grammar
   inst2 = Instantiate.new(Factory.new(SchemaSchema.schema))
   schema_schema = inst2.run(tree)
 
-  #Print.new.recurse(schema_schema, SchemaSchema.print_paths)
-  File.open('s1.txt', 'w') do |f|
-    Print.new(f).recurse(SchemaSchema.schema, SchemaSchema.print_paths)
-  end
-  File.open('s2.txt', 'w') do |f|
-    Print.new(f).recurse(schema_schema, SchemaSchema.print_paths)
-  end
-
-  system "diff s1.txt s2.txt"
+  if false
+    #Print.new.recurse(schema_schema, SchemaSchema.print_paths)
+    File.open('s1.txt', 'w') do |f|
+      Print.new(f).recurse(SchemaSchema.schema, SchemaSchema.print_paths)
+    end
+    File.open('s2.txt', 'w') do |f|
+      Print.new(f).recurse(schema_schema, SchemaSchema.print_paths)
+    end
   
+    system "diff s1.txt s2.txt"
+  end  
 end
 
 if __FILE__ == $0 then
