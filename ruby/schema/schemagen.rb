@@ -1,5 +1,56 @@
 
-require 'schema/schemamodel'
+class SchemaModel #< BasicObject
+  @@ids = 0
+
+  attr_accessor :schema_class
+	
+  def initialize()
+    @fields = {}
+    @id = @@ids += 1
+  end
+
+  def [](k)
+    @fields[k]
+  end
+
+  def []=(k, v)
+    @fields[k] = v
+  end
+
+  def method_missing(name, *args, &block)
+    if (name.to_s =~ /^(.*)=$/)
+      self[$1] = args[0]
+    else
+      return self[name.to_s]
+    end
+  end
+
+  def to_s
+    #  #{@fields.keys}
+    "<#{schema_class && schema_class.name} #{_id}>"
+  end
+
+  def hash
+    "boot#{_id}".hash
+  end
+
+  def nil?
+    false
+  end
+
+  def _id
+    return @id
+  end
+
+  def respond_to?(sym)
+    return false
+  end
+
+  def inspect
+    to_s
+  end
+end
+
 
 class ValueHash < Hash
   include Enumerable
@@ -95,7 +146,6 @@ class SchemaGenerator
     end
 
     def finalize(schema)
-      # this should be automatic
       schema.schema_class = SchemaSchema::Schema.klass
       schema.primitives.each do |p|
         p.schema_class = SchemaSchema::Primitive.klass
@@ -107,6 +157,8 @@ class SchemaGenerator
         end
       end
     end
+    
+    
   end
 
 end

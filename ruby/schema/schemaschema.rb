@@ -29,16 +29,16 @@ class SchemaSchema < SchemaGenerator
   end
 
   klass Klass, :super => Type do
-    field :schema, :type => Schema, :inverse => Schema.classes
     field :name, :type => :str, :key => true
+    field :schema, :type => Schema, :inverse => Schema.classes
     field :super, :type => Klass, :optional => true
     field :subtypes, :type => Klass, :optional => true, :many => true, :inverse => Klass.super
     field :fields, :type => Field, :optional => true, :many => true
   end
 
   klass Field do
-    field :owner, :type => Klass, :inverse => Klass.fields, :inverse => Klass.fields
     field :name, :type => :str, :key => true
+    field :owner, :type => Klass, :inverse => Klass.fields, :inverse => Klass.fields
     field :type, :type => Type
     field :optional, :type => :bool
     field :many, :type => :bool
@@ -47,6 +47,9 @@ class SchemaSchema < SchemaGenerator
   end
 
   SchemaSchema.finalize(schema)
+
+  
+
   
 end
 

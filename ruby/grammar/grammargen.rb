@@ -1,5 +1,4 @@
 
-require 'schema/schemamodel'
 require 'schema/factory'
 require 'grammar/grammarschema'
 

@@ -36,6 +36,7 @@ class Instantiate
       #puts "FIELD: #{field.name}"
       owner[field.name] = x
     end
+
     return pos
   end
       

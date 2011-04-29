@@ -7,9 +7,6 @@ class Factory
     schema_class = @schema.classes[class_name.to_s]
     raise "Unknown class '#{class_name}'" unless schema_class
     obj = CheckedObject.new(schema_class, self)
-#                            ManyIndexedField,
-#                            ManyField,
-#                            Integer, String, TrueClass, FalseClass)
     return obj
   end
   
@@ -58,6 +55,10 @@ class CheckedObject
     "<#{schema_class.name} #{@_id}>"
   end
 
+  def nil?
+    false
+  end
+  
   def _key(type)
     type.fields.find { |f| f.key && f.type.schema_class.name == "Primitive" }
   end  
@@ -159,6 +160,11 @@ class ManyIndexedField
   def empty?
     @hash.empty?
   end
+
+  def nil?
+    false
+  end
+
   
   def keys
     @hash.keys
@@ -225,6 +231,11 @@ class ManyField
   def empty?
     @list.empty?
   end
+
+  def nil?
+    false
+  end
+
   
   def last
     @list.last
@@ -244,7 +255,7 @@ class ManyField
 
   def _primitive_insert(v)
     raise "Inserting into the wrong model" unless @realself._factory.equal?(v._factory)
-    add = !@list.index(v)
+    add = !@list.include?(v)
     @list << v if add
     return add
   end

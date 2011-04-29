@@ -1,4 +1,35 @@
 
+# class Copy2 < CyclicMap
+
+#   def initialize(factory)
+#     super()
+#     @factory = factory
+#   end
+
+#   def run(schema, obj)
+#     recurse(schema[obj.schema_class.name], obj, @factory[obj.schema_class.name])
+#   end
+
+#   def Klass(this, src)
+#     register(@factory[this.name]) do |trg|
+#       this.fields.each do |f|
+#         if f.many then
+#           src[f.name].each do |x|
+#             trg[f.name] << recurse(f.type, x)
+#           end
+#         else
+#           trg[f.name] = recurse(f.type, src[f.name])
+#         end
+#       end
+#     end
+#   end
+
+#   def Primitive(this, v)
+#     return v
+#   end
+
+# end
+
 class Copy
   def initialize(factory)
     @factory = factory

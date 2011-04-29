@@ -2,9 +2,6 @@
 require 'schema/schemagen'
 require 'schema/schemaschema'
 
-# incomplete & incorrect
-
-
 class GrammarSchema < SchemaGenerator
   primitive :str
   primitive :int
@@ -89,6 +86,5 @@ if __FILE__ == $0 then
   require 'schema/schemaschema'
   require 'tools/print'
   
-  Print.new.recurse(GrammarSchema.schema, SchemaSchema.print_paths)
-  
+  Print.new.recurse(GrammarSchema.schema, SchemaSchema.print_paths)  
 end

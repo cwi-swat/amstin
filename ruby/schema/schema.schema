@@ -19,16 +19,16 @@ schema SchemaSchema
   end
   
   class Klass < Type
-    \schema: Schema / Schema.classes
     #name: str
+    \schema: Schema / Schema.classes
     super: Klass? 
     subtypes: Klass* / Klass.super
     fields: Field* 
   end
   
   class Field
-    owner: Klass / Klass.fields
     #name: str
+    owner: Klass / Klass.fields
     type: Type
     optional: bool
     many: bool

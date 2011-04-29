@@ -1,6 +1,7 @@
 
-require 'cyclicmap'
-
+require 'grammar/grammarschema'
+require 'grammar/parsetree'
+require 'schema/factory'
 
 class CPSParser
   def initialize(input, factory, gf = Factory.new(GrammarSchema.schema))
@@ -11,17 +12,11 @@ class CPSParser
   end
 
   def run(grammar)
-    begin
-      recurse(grammar, 0) do |pos, tree|
-        if pos == @input.tokens.length then
-          pt = @factory.ParseTree(@input.path, tree, @input.layout)
-          raise Success.new(pt)
-        end
+    recurse(grammar, 0) do |pos, tree|
+      if pos == @input.tokens.length then
+        return @factory.ParseTree(@input.path, tree, @input.layout)
       end
-    rescue Success => e
-      return e.tree
     end
-    nil
   end
 
   # todo: move to generic visit/dispatch class
@@ -174,6 +169,7 @@ class CPSParser
 
   ## NB: iters are right-recursive (otherwise we have to memoize them)
   ## This also means that iter'ed symbols should not be nullable
+  ## otherwise they become (hidden) left-recursive as well.
 
   def Regular(this, pos, &block)
     regular(this, pos) do |pos1, trees|
@@ -185,6 +181,7 @@ class CPSParser
     end
   end
 
+  # a helper function that produces normal lists of trees
   def regular(this, pos, &block)
     if this.optional && !this.many && !this.sep then
       # X?
@@ -250,93 +247,6 @@ class CPSParser
     end
   end
 
-end
-
-
-require 'grammar/tokenize'
-require 'grammar/parsetree'
-require 'grammar/grammargrammar'
-require 'grammar/unparse'
-require 'grammar/instantiate'
-
-require 'tools/print'
-require 'tools/equals'
-
-
-def parse_it(path, grammar)
-  tokenizer = Tokenize.new
-  src = File.read(path)
-  puts "Tokenizing #{path}"
-  input = tokenizer.tokenize(grammar, path, src) 
-  parse = CPSParser.new(input, Factory.new(ParseTreeSchema.schema))
-  parse.run(grammar)
-end
-
-def grammar_grammar
-  grammar = GrammarGrammar.grammar
-  tree = parse_it('grammar/grammar.grammar', grammar)
-
-  unparse = Unparse.new($stdout)
-  unparse.recurse(tree)
-
-  inst = Instantiate.new(Factory.new(GrammarSchema.schema))
-  grammar2 = inst.run(tree)
-
-  File.open('g1.txt', 'w') do |f|
-    Print.new(f).recurse(grammar, GrammarSchema.print_paths)
-  end
-  File.open('g2.txt', 'w') do |f|
-    Print.new(f).recurse(grammar2, GrammarSchema.print_paths)
-  end
-  
-  system "diff g1.txt g2.txt"
-
-  puts Equals.run(GrammarSchema.schema, grammar, grammar2)
-  
-  #Print.recurse(tree)
-end
-
-
-
-def schema_grammar
-  puts "Parsing schema.grammar"
-  grammar = GrammarGrammar.grammar
-  tree = parse_it('schema/schema.grammar', grammar)
-  unparse = Unparse.new($stdout)
-  unparse.recurse(tree)
-
-  inst = Instantiate.new(Factory.new(GrammarSchema.schema))
-  grammar2 = inst.run(tree)
-
-  #Print.new.recurse(grammar2, GrammarSchema.print_paths)
-  
-  # now we have a grammar for schemas, let's parse with it
-  puts "Parsing schema.schema"
-
-  tree = parse_it('schema/schema.schema', grammar2)
-  p tree
-  unparse = Unparse.new($stdout)
-  unparse.recurse(tree)
-
-  inst2 = Instantiate.new(Factory.new(SchemaSchema.schema))
-  schema_schema = inst2.run(tree)
-
-  if false
-    #Print.new.recurse(schema_schema, SchemaSchema.print_paths)
-    File.open('s1.txt', 'w') do |f|
-      Print.new(f).recurse(SchemaSchema.schema, SchemaSchema.print_paths)
-    end
-    File.open('s2.txt', 'w') do |f|
-      Print.new(f).recurse(schema_schema, SchemaSchema.print_paths)
-    end
-  
-    system "diff s1.txt s2.txt"
-  end  
-end
-
-if __FILE__ == $0 then
-  schema_grammar
-  grammar_grammar
 end
 
 

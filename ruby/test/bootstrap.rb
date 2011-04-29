@@ -53,8 +53,16 @@ class BootstrapTests < Test::Unit::TestCase
     inst2 = Instantiate.new(Factory.new(SchemaSchema.schema))
     schema_schema = inst2.run(tree)
 
+    assert(Equals.equals(SchemaSchema.schema, SchemaSchema.schema, SchemaSchema.schema),
+           "schemaschema != schemaschema according to schemaschema")
     assert(Equals.equals(SchemaSchema.schema, schema_schema, SchemaSchema.schema),
-           "parsed schema.schema != bootstrap schemaschema")
+           "schema.schema != schemaschema according to schemaschema")
+    assert(Equals.equals(SchemaSchema.schema, schema_schema, schema_schema),
+           "schema.schema != schema.schema according to schemaschema")
+    assert(Equals.equals(schema_schema, schema_schema, SchemaSchema.schema),
+           "schema.schema != schemaschema according to schema.schema")
+    assert(Equals.equals(schema_schema, schema_schema, schema_schema),
+           "schema.schema != schema.schema according to schema.schema")
   end
 
 

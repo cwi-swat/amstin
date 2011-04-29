@@ -24,6 +24,11 @@ class Print
     @output << args.join('')
   end
 
+  def self.print(obj, paths={}, indent=0, visited=[])
+    self.new.recurse(obj, paths, indent, visited)
+  end
+  
+
   def recurse(obj, paths={}, indent=0, visited=[])
     if obj.nil?
       myputs "nil"
