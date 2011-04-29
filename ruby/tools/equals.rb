@@ -17,8 +17,8 @@ class Equals < MemoBase
     return x
   end
 
-  def run(schema, o1, o2)
-    recurse(schema, o1, o2)
+  def self.equals(schema, o1, o2)
+    self.new.recurse(schema, o1, o2)
   end
 
   def Schema(this, o1, o2)
@@ -39,26 +39,48 @@ class Equals < MemoBase
     end
   end
 
-  def Field(this, o1, o2)
-    # o1 and o2 are the owners
-    #puts "FIELD: #{this.name}, #{o1} ==? #{o2}"
-    #puts this.many
-    if this.many then
-      return false unless o1[this.name].length == o2[this.name].length
-      each2 = o2[this.name].each
-      o1[this.name].each do |x|
-        # what if they are unordered collections?
-        return false unless recurse(this.type, x, each2.next)
+  def unordered(this, o1, o2)
+    puts "Unordered comparison"
+    o1[this.name].each do |x|
+      found = false
+      o2[this.name].each do |y|
+        found = recurse(this.type, x, y)
+        break if found
       end
-    end
-    return false if o1[this.name].nil? && !o2[this.name].nil?
-    return false if !o1[this.name].nil? && o2[this.name].nil?
-
-    if !o1[this.name].nil? then
-      return recurse(this.type, o1[this.name], o2[this.name])
+      return false unless found
     end
     return true
-    # should we check inverses?
+  end
+
+  def ordered(this, o1, o2) 
+    each2 = o2[this.name].each
+    o1[this.name].each do |x|
+      return false unless recurse(this.type, x, each2.next)
+    end
+  end
+
+  def many(this, o1, o2)
+    return false unless o1[this.name].length == o2[this.name].length
+    #if this.inverse then 
+    unordered(this, o1, o2)
+    #else
+    #  ordered(this, o1, o2)
+    #end
+  end
+
+  def single(this, o1, o2)
+    return false unless o1[this.name].nil? == o2[this.name].nil?
+    return true if o1[this.name].nil?
+    recurse(this.type, o1[this.name], o2[this.name])
+  end
+
+  def Field(this, o1, o2)
+    # o1 and o2 are the owners
+    if this.many then
+      many(this, o1, o2)
+    else
+      single(this, o1, o2)
+    end
   end
 
 end
