@@ -20,6 +20,10 @@ class Equals < MemoBase
   def Schema(this, o1, o2)
     #puts o1.schema_class
     #puts o2.schema_class
+#     if !this.classes.include?(o1.schema_class) || 
+#         !this.classes.include?(o2.schema_class) then
+#       raise "Objects' classes are not in schema"
+#     end
     return false unless o1.schema_class == o2.schema_class
     recurse(o1.schema_class, o1, o2)
   end

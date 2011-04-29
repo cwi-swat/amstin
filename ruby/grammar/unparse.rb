@@ -1,11 +1,33 @@
 
 
 require 'cyclicmap'
+require 'grammar/tokenize'
+
+
+# TODO: refactor not to use instance var @output
 
 class Unparse < CyclicCollect 
-  def initialize(output)
+  attr_reader :output
+
+  def initialize(grammar, output)
     super()
+    lits = CollectLiterals.run(grammar).join("|")
+    @literals = Regexp.new("^(#{lits})")
     @output = output
+  end
+
+  def self.run(grammar, pt, output = '')
+    unp = self.new(grammar, output)
+    unp.recurse(pt)
+    return unp.output
+  end
+
+  def escape(this)
+    if this.kind == "sym" && @literals.match(this.value) then
+      "\\#{this.value}"
+    else
+      this.value
+    end
   end
 
   def ParseTree(this)
@@ -31,10 +53,7 @@ class Unparse < CyclicCollect
   end
 
   def Value(this)
-    # todo: escaping for str, sqstr and sym
-    # how to insert \ for syms again?
-    # do we need the literal regexp?
-    @output << this.value
+    @output << escape(this)
     @output << this.layout
   end
 
