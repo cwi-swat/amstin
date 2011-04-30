@@ -69,6 +69,7 @@ if __FILE__ == $0 then
   require 'schema/factory'
   
   newSchema = Copy.new(Factory.new(SchemaSchema.schema)).copy(SchemaSchema.schema)
+  newSchema.finalize()
   
   Print.new.recurse(newSchema, SchemaSchema.print_paths)
   

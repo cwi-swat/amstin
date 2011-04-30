@@ -34,7 +34,7 @@ def process(dest, diff)
   test "grammar/tokenize.rb", dest, diff
   test "grammar/parsetree.rb", dest, diff
   test "grammar/render.rb", dest, diff
-  #test "schema/checkschema.rb", dest, diff
+  test "schema/checkschema.rb", dest, diff
   test "schema/schemaschema.rb", dest, diff
   test "tools/copy.rb", dest, diff
   test "tools/print.rb", dest, diff

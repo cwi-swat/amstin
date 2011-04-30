@@ -118,12 +118,7 @@ def main
   require 'tools/print'
   require 'grammar/grammargrammar'
 
-  render = Render.new(Factory.new(LayoutSchema.schema))
-  
-  layout = render.recurse(GrammarGrammar.grammar, GrammarGrammar.grammar)
-  
-  puts "WIDTH = #{FormatWidth.new.recurse(layout)}"
-  
+  layout = Render.new.recurse(GrammarGrammar.grammar, GrammarGrammar.grammar)
   FormatChoice.new(80).run(layout)
   DisplayFormat.new($stdout).recurse(layout)
   $stdout << "\n"

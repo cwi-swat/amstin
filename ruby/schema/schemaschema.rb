@@ -15,6 +15,10 @@ class SchemaSchema < SchemaGenerator
     { :classes => { :fields => {} } }
   end
 
+  def self.key(klass)
+    klass.fields.find { |f| f.key && f.type.schema_class.name == "Primitive" }
+  end
+
   klass Schema do
     field :name, :type => :str, :key => true
     field :classes, :type => Klass, :optional => true, :many => true
@@ -47,11 +51,14 @@ class SchemaSchema < SchemaGenerator
   end
 
   SchemaSchema.finalize(schema)
-
-  
-
-  
 end
+
+# make a copy so it uses checked objects (but its not quite right, because
+# we don't update the schema pointers!
+require 'tools/copy'
+require 'schema/factory'
+SchemaSchema.schema = Copy.new(Factory.new(SchemaSchema.schema)).copy(SchemaSchema.schema)
+
 
 def main
   require 'tools/print'

@@ -3,8 +3,8 @@ require 'cyclicmap'
 
 # render an object into a grammar, to create a parse tree
 class Render < Dispatch
-  def initialize(factory)
-    @factory = factory
+  def initialize()
+    @factory = Factory.new(LayoutSchema.schema)
   end
 
   def Grammar(this, obj)
@@ -60,7 +60,7 @@ class Render < Dispatch
   end
 
   def Ref(this, obj)
-    space(obj[_key(obj.schema_class).name])  # need "." keys
+    space(obj[SchemaSchema.key(obj.schema_class).name])  # need "." keys
   end
 
   def Lit(this, obj)
@@ -96,10 +96,6 @@ class Render < Dispatch
       return @factory.Group(@factory.Nest(s, 4))
     end
   end
-
-  def _key(type)
-    type.fields.find { |f| f.key && f.type.schema_class.name == "Primitive" }
-  end  
 end
 
 def main
@@ -108,7 +104,7 @@ def main
   require 'tools/print'
   require 'grammar/grammargrammar'
 
-  render = Render.new(Factory.new(LayoutSchema.schema))
+  render = Render.new
   pt = render.recurse(GrammarGrammar.grammar, GrammarGrammar.grammar)  
   Print.new.recurse(pt, LayoutSchema.print_paths)
 end

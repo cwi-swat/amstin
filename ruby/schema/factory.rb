@@ -1,17 +1,20 @@
+require 'cyclicmap'
+
 class Factory
   def initialize(schema)
     @schema = schema
+    @graph_id = GraphIdentity.new
   end
 
   def [](class_name)
     schema_class = @schema.classes[class_name.to_s]
     raise "Unknown class '#{class_name}'" unless schema_class
-    obj = CheckedObject.new(schema_class, self)
+    obj = CheckedObject.new(schema_class, @graph_id)
     return obj
   end
   
-  def method_missing(m, *args)
-    obj = self[m.to_s]
+  def method_missing(class_name, *args)
+    obj = self[class_name.to_s]
     obj.schema_class.fields.each_with_index do |field, i|
       break if i >= args.length
       obj[field.name] = args[i]
@@ -20,25 +23,32 @@ class Factory
   end
 end
 
+class GraphIdentity
+  attr_accessor :locked
+  def initialize()
+  end  
+end
+
 class CheckedObject
 
   attr_reader :schema_class
-  attr_reader :_factory
+  attr_reader :_graph_id
+  attr_reader :_id
   @@_id = 0
   
-  def initialize(schema_class, factory) #, many_index, many, int, str, b1, b2)
+  def initialize(schema_class, graph_id) #, many_index, many, int, str, b1, b2)
     @_id = @@_id += 1
     @hash = {}
     @schema_class = schema_class
-    @_factory = factory
+    @graph_id = graph_id
     schema_class.fields.each do |field|
       if field.many
         # TODO: check for primitive many-valued???
-        key = _key(field.type)
+        key = SchemaSchema.key(field.type)
         if key
-          _primitive_set(field.name, ManyIndexedField.new(self, field, key))
+          @hash[field.name] = ManyIndexedField.new(self, field, key)
         else
-          _primitive_set(field.name, ManyField.new(self, field))
+          @hash[field.name] = ManyField.new(self, field)
         end
       #else if field.expression && !field.computed
       #  @hash[field.name] = eval(field.expression)
@@ -50,60 +60,51 @@ class CheckedObject
     @_id
   end
   
-  def to_s
-    #  #{@fields.keys}
-    "<#{schema_class.name} #{@_id}>"
+  def ==(other)
+    return false if other.nil?
+    return false unless other.is_a?(CheckedObject)
+    return _id == other._id
   end
-
+  
   def nil?
     false
   end
   
-  def _key(type)
-    type.fields.find { |f| f.key && f.type.schema_class.name == "Primitive" }
-  end  
-
   def [](field_name)
     field = @schema_class.fields[field_name]; 
     raise "Accessing non-existant field '#{field_name}' of #{schema_class.name} in #{schema_class.schema.name}" unless field
     return @hash[field_name]
   end
 
-  def []=(field_name, v)
-    #puts "Setting #{field_name} to #{v}"
+  def []=(field_name, new)
+    #puts "Setting #{field_name} to #{new}"
     field = @schema_class.fields[field_name]
     raise "Assign to invalid field '#{field_name}'" unless field
     if field.many
       col = self[field.name]
-      v.each do |x|
+      new.each do |x|
         col << x
       end
-    elsif v.nil?
+      return new
+    elsif new.nil?
       raise "Can't assign nil to required field '#{field_name}'" if !field.optional
     else
       case field.type.name
-        when "str" then raise "Expected string found #{v.class} #{v}" unless v.is_a?(String)
-        when "int" then raise "Expected int found #{v}" unless v.is_a?(Integer)
-        when "bool" then raise "Expected bool found #{v}" unless v.is_a?(TrueClass) || v.is_a?(FalseClass)
+        when "str" then raise "Expected string found #{new.class} #{new}" unless new.is_a?(String)
+        when "int" then raise "Expected int found #{new}" unless new.is_a?(Integer)
+        when "bool" then raise "Expected bool found #{new}" unless new.is_a?(TrueClass) || new.is_a?(FalseClass)
         else 
-          raise "Inserting into the wrong model" unless _factory.equal?(v._factory)
-          unless _subtypeOf(v.schema_class, field.type)
-            raise "Expected #{field.type.name} found #{v.schema_class.name}" 
+          raise "Inserting into the wrong model" unless _graph_id.equal?(new._graph_id)
+          unless _subtypeOf(new.schema_class, field.type)
+            raise "Expected #{field.type.name} found #{new.schema_class.name}" 
           end
       end
     end
-    #if hash[field_name].primequal(v)  # SCARY!!!
-      if _primitive_set(field_name, v)
-        if field.inverse
-          if field.inverse.many
-            v.send(field.inverse.name)._primitive_insert(self)
-          else
-            v._primitive_set(field.inverse.name, self);
-          end
-        end
-      end
-    #end
-    return v
+    old = @hash[field_name]
+    return new if old == new
+    @hash[field_name] = new
+    notify_update(field, old, new)
+    return new
   end
   
   def _subtypeOf(a, b)
@@ -111,12 +112,6 @@ class CheckedObject
     return _subtypeOf(a.super, b) if a.super
   end
   
-  def _primitive_set(k, v)
-    set = @hash[k] != v
-    @hash[k] = v if set
-    return set
-  end
-    
   def method_missing(m, *args, &block)
     if m =~ /(.*)=/
       self[$1] = args[0]
@@ -126,27 +121,123 @@ class CheckedObject
   end
 
   def to_s
-    "<#{schema_class.name} #{@_id}>"
+    k = SchemaSchema.key(schema_class)
+    "<#{schema_class.name} #{k ? self[k.name] : @_id}>"
   end
 
   def inspect
     to_s
   end
+  
+  def notify_update(field, old, new)
+    if field.inverse
+      inverse = field.inverse
+      # remove the old one
+      if old
+        if !inverse.many
+          old[inverse.name] = nil
+        else
+          old[inverse.name].delete(self)
+        end
+      end
+      # add the new one
+      if new
+        if !inverse.many
+          new[inverse.name] = self
+        else
+          # don't do this now... it will get done during finalize
+        end
+      end
+    end
+  end
+  
+  def finalize()
+    Finalize.new.Klass(self.schema_class, self)
+    @graph_id.locked = true
+  end  
+end
+
+class Finalize < CyclicCollectOnSecondArg
+
+  def Primitive(this, obj)
+  end
+
+  def Type(this, obj)
+    #puts "FINALIZE #{obj}"
+    return send(this.schema_class.name, this, obj)
+  end
+
+  def Primitive(this, obj)
+  end
+
+  def Klass(this, obj)
+    return if obj.nil? || @memo[obj]
+    @memo[obj] = true
+    this.fields.each do |f|
+      Field(f, obj)
+    end
+  end
+  
+  def Field(field, obj)
+    val = obj[field.name]
+
+    if field.optional
+      return if val.nil?
+    else
+      if !field.many ? val.nil? : val.empty?
+        raise "Field #{field.name} is required" 
+      end
+    end
+
+    # update delayed inverses    
+    if field.inverse && field.inverse.many
+      _each(obj, field) do |val|
+        if val[field.inverse.name].include?(obj)
+          puts "FIXING #{val}.#{field.inverse} << #{obj}"
+          val[field.inverse.name] << obj
+        end
+      end
+    end
+
+    # check the field values    
+    _each(obj, field) do |val|
+      Type(field.type, val)
+    end
+  end  
+
+  def _each(obj, field)
+    if !field.many
+      x = obj[field.name]
+      yield x if x
+    else
+      obj[field.name].each do |x|
+        yield x
+      end
+    end
+  end
+end
+
+class BaseManyField 
+  include Enumerable
+
+  def initialize(realself, field)
+    @realself = realself
+    @field = field
+  end
+
+  def to_s
+    "[" + map(&:to_s).join(", ") + "]"
+  end
+
 end
 
 # eg. "classes" field on Schema
-class ManyIndexedField
-  include Enumerable
+class ManyIndexedField < BaseManyField
   
   def initialize(realself, field, key)
+    super(realself, field)
     @hash = {}
-    @realself = realself
-    @field = field
     @key = key
-  end
-  
-  def to_s
-    "[" + map(&:to_s).join(", ") + "]"
   end
   
   def [](x)
@@ -179,47 +270,35 @@ class ManyIndexedField
     self[k] = v
   end
 
+  # public main insertion function
   def []=(k, v)
+    raise "Key cannot be nil for field #{v}" if !k
     if @hash[k] != v
+      @realself.notify_update(@field, @hash[k], v)
       @hash[k] = v
-      if v && @field.inverse
-        if @field.inverse.many
-          v.send(@field.inverse.name)._primitive_insert(@realself)
-        else
-          v._primitive_set(@field.inverse.name, @realself)
-        end
-      end
     end
     return v
   end
   
-  def _primitive_insert(v)
-    raise "Inserting into the wrong model" unless @realself._factory.equal?(v._factory)
+  def delete(v)
     k = v.send(@key.name)
-    change = @hash[k] != v
-    @hash[k] = v if change
-    return change
+    @hash.delete(k)
   end
-    
+  
   def each(&block) 
     @hash.each_value &block
   end
 end  
 
 # eg. "classes" field on Schema
-class ManyField
+class ManyField < BaseManyField
   include Enumerable
   
   def initialize(realself, field)
+    super(realself, field)
     @list = []
-    @realself = realself
-    @field = field
   end
 
-  def to_s
-    "[" + map(&:to_s).join(", ") + "]"
-  end
-  
   def [](x)
     @list[x]
   end
@@ -235,32 +314,32 @@ class ManyField
   def nil?
     false
   end
-
   
   def last
     @list.last
   end
   
   def <<(v)
-    if _primitive_insert(v)
-      if v && @field.inverse
-        if @field.inverse.many
-          v.send(@field.inverse.name)._primitive_insert(@realself)
-        else
-          v._primitive_set(@field.inverse.name, @realself)
-        end
-      end
-    end
+    @realself.notify_update(@field, nil, v) 
+    @list << v
   end
 
-  def _primitive_insert(v)
-    raise "Inserting into the wrong model" unless @realself._factory.equal?(v._factory)
-    add = !@list.include?(v)
-    @list << v if add
-    return add
+  def []=(i, v)
+    @realself.notify_update(@field, @list[i], v)
+    @list[i] = v
   end
-    
+
+  def delete(v)
+    @list.delete(v)
+  end
+  
   def each(&block) 
     @list.each &block
+  end
+  
+  # sligthly nonstandard zip, includes all elements of this and other
+  def zip(other)
+    extra = length.upto(other.length - 1).map do |x| nil end
+    return (@list + extra).zip(other)
   end
 end  

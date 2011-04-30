@@ -26,8 +26,8 @@ class SchemaModel #< BasicObject
   end
 
   def to_s
-    #  #{@fields.keys}
-    "<#{schema_class && schema_class.name} #{_id}>"
+    k = SchemaSchema.key(schema_class)
+    "BOOT <#{schema_class.name} #{k ? self[k.name] : @_id}>"
   end
 
   def hash
@@ -89,6 +89,10 @@ class SchemaGenerator
 
   def self.schema
     @@schemas[self.to_s]
+  end
+
+  def self.schema=(schema)
+    @@schemas[schema.name] = schema
   end
     
 

@@ -9,6 +9,7 @@ require 'grammar/grammargrammar'
 require 'grammar/instantiate'
 
 require 'tools/equals'
+require 'tools/diff'
 
 
 class BootstrapTests < Test::Unit::TestCase
@@ -27,18 +28,20 @@ class BootstrapTests < Test::Unit::TestCase
     tree = parse(grammargrammar, grammar)
     inst = Instantiate.new(Factory.new(GrammarSchema.schema))
     grammar2 = inst.run(tree)
-    assert(Equals.equals(GrammarSchema.schema, grammar, grammar2),
+    assert_equal([], Diff.diff(grammar, grammar2),
+           "parsed grammar.grammar != bootstrap grammargrammar")
+    assert_not_equal([], Diff.diff(GrammarSchema.schema, SchemaSchema.schema),
            "parsed grammar.grammar != bootstrap grammargrammar")
 
     tree2 = parse(grammargrammar, grammar2)
     grammar3 = inst.run(tree2)
-    assert(Equals.equals(GrammarSchema.schema, grammar, grammar3),
+    assert_equal([], Diff.diff(grammar, grammar3),
            "parsed grammar.grammar using itself != bootstrap grammar")
 
     tree3 = parse(grammargrammar, grammar3)
     grammar4 = inst.run(tree3)
 
-    assert(Equals.equals(GrammarSchema.schema, grammar, grammar4),
+    assert_equal([], Diff.diff(grammar, grammar4),
            "parsed grammar.grammar using itself from itself != bootstrap grammar")
   end
   
@@ -52,17 +55,16 @@ class BootstrapTests < Test::Unit::TestCase
 
     inst2 = Instantiate.new(Factory.new(SchemaSchema.schema))
     schema_schema = inst2.run(tree)
+    schema_schema.finalize
 
-    assert(Equals.equals(SchemaSchema.schema, SchemaSchema.schema, SchemaSchema.schema),
-           "schemaschema != schemaschema according to schemaschema")
-    assert(Equals.equals(SchemaSchema.schema, schema_schema, SchemaSchema.schema),
-           "schema.schema != schemaschema according to schemaschema")
-    assert(Equals.equals(SchemaSchema.schema, schema_schema, schema_schema),
-           "schema.schema != schema.schema according to schemaschema")
-    assert(Equals.equals(schema_schema, schema_schema, SchemaSchema.schema),
-           "schema.schema != schemaschema according to schema.schema")
-    assert(Equals.equals(schema_schema, schema_schema, schema_schema),
-           "schema.schema != schema.schema according to schema.schema")
+    assert_equal([], Diff.diff(SchemaSchema.schema, SchemaSchema.schema),
+           "Boot SchemaSchema != Boot SchemaSchema")
+    assert_equal([], Diff.diff(schema_schema, SchemaSchema.schema),
+           "Parsed schema != Boot SchemaSchema")
+    assert_equal([], Diff.diff(SchemaSchema.schema, schema_schema),
+           "Boot SchemaSchema != Parsed schema")
+    assert_equal([], Diff.diff(schema_schema, schema_schema),
+           "Parsed schema != Parsed schema")
   end
 
 

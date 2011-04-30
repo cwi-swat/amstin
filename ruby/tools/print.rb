@@ -36,6 +36,7 @@ class Print
       visited.push obj
       klass = obj.schema_class   # TODO: pass as an argument for partial evaluation
       myputs klass.name
+      #myputs "#{klass.name} #{obj._id}"
       #myputs "FOO #{obj} p=#{paths} i=#{visited}"
       indent += 2
       klass.fields.each do |field|

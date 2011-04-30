@@ -9,8 +9,6 @@ require 'grammar/parsetree'
 require 'grammar/grammargrammar'
 require 'grammar/unparse'
 
-require 'diffy'
-
 class ParseTest < Test::Unit::TestCase
 
   def parse(path, grammar, string = File.read(path))

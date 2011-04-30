@@ -7,7 +7,7 @@ class Merge
     @memo = {}
   end
 
-  def identify(source)
+  def unify(source)
     return nil if source.nil?
     target = @memo[source]
     return target if target
