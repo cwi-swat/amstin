@@ -27,7 +27,7 @@ class SchemaModel #< BasicObject
 
   def to_s
     k = SchemaSchema.key(schema_class)
-    "BOOT <#{schema_class.name} #{k ? self[k.name] : @_id}>"
+    "<BOOT #{schema_class.name} #{k ? self[k.name] : @_id}>"
   end
 
   def hash
@@ -57,6 +57,9 @@ class ValueHash < Hash
   def each(&block)
     values.each &block
   end
+  def <<(x)
+    self[x.name] = x
+  end
 end
 
 class SchemaGenerator
@@ -85,6 +88,7 @@ class SchemaGenerator
     schema.name = subclass.to_s
     schema.classes = ValueHash.new
     schema.primitives = ValueHash.new
+    schema._primitives = ValueHash.new
   end
 
   def self.schema
@@ -100,7 +104,8 @@ class SchemaGenerator
     def primitive(name)
       m = SchemaModel.new
       m.name = name.to_s
-      schema.primitives[name] = m
+      schema.primitives[name.to_s] = m
+      schema._primitives[name] = m
     end
       
     def klass(wrapped, opts = {}, &block)
@@ -115,7 +120,7 @@ class SchemaGenerator
     def field(name, opts = {})
       f = get_field(@@current, name.to_s)
       t = opts[:type]
-      f.type = schema.primitives.keys.include?(t) ? schema.primitives[t] : t.klass
+      f.type = schema._primitives.keys.include?(t) ? schema._primitives[t] : t.klass
       f.optional = opts[:optional] || false
       f.many = opts[:many] || false
       f.key = opts[:key] || false
@@ -140,12 +145,14 @@ class SchemaGenerator
     end
 
     def get_class(name)
-      schema.classes[name] ||= SchemaModel.new
       m = schema.classes[name]
+      return m if m
+      m = SchemaModel.new
+      schema.classes[name] = m
       #puts "Getting class #{name} (#{m._id})"
       m.name = name
-      m.fields ||= ValueHash.new
-      m.subtypes ||= []
+      m.fields = ValueHash.new
+      m.subtypes = ValueHash.new
       return m
     end
 

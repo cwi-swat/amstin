@@ -13,30 +13,30 @@ class Diff < MemoBase
   end
   
   def diff(o1, o2)
-    Klass(o1.schema_class, o1, o2)
-    #@diffs.each do |d| puts "DIFF #{d}" end
+    Klass(o1, o2)
     @diffs
   end
 
   def Type(this, o1, o2)
     #puts "#{this.class} #{this.name} #{o1} #{o2}"
-    return send(this.schema_class.name, this, o1, o2)
+    return send(this.schema_class.name, o1, o2)
   end
 
-  def Primitive(this, o1, o2)
+  def Primitive(o1, o2)
     return o1 == o2
   end
 
-  def Klass(this, o1, o2)
+  def Klass(o1, o2)
     if o1.nil? || o2.nil?
       return o1.nil? == o2.nil?
     end
+    return false if o1.schema_class.name != o2.schema_class.name
+
     existing = @memo[o1]
-    if existing
-      return existing == o2
-    end
+    return existing == o2 if existing
     @memo[o1] = o2
-    this.fields.each do |f|
+    
+    o1.schema_class.fields.each do |f|
       Field(f, o1, o2)
     end
     return true # diffs have already been accounted for
@@ -53,7 +53,7 @@ class Diff < MemoBase
 
   def single(field, o1, o2)
     if !Type(field.type, o1[field.name], o2[field.name])
-      @diffs << [:set, o1, field.name, o1[field.name]]
+      @diffs << [:change, o1, field.name, o1[field.name], o2[field.name]]
     end
   end
 
@@ -78,21 +78,17 @@ class Diff < MemoBase
   end
 
   def keyed(field, o1, o2)
-    key = SchemaSchema.key(field.type)
-    o1[field.name].each do |left|
-      key_val = left[key.name]
-      right = o2[field.name][key_val]
-      if right
-        Type(field.type, left, right)
-      else
-        @diffs << [:delete_key, o1, field.name, key_val]
-      end
-    end
-    o2[field.name].each do |right|
-      key_val = right[key.name]
+    #puts "KEY #{field} #{o1[field.name]} #{o2[field.name]}"
+    keys = o1[field.name].keys | o2[field.name].keys
+    keys.each do |key_val|
       left = o1[field.name][key_val]
+      right = o2[field.name][key_val]
       if left.nil?
         @diffs << [:insert, o1, field.name, right]
+      elsif right.nil?
+        @diffs << [:delete, o1, field.name, left]
+      else
+        Type(field.type, left, right)
       end
     end
   end

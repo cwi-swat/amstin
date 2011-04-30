@@ -64,10 +64,6 @@ Schema
           key: false
           inverse: owner
     #2 Klass
-      name: Type
-      super: nil
-      fields
-    #3 Klass
       name: Primitive
       super: Type
       fields
@@ -78,6 +74,10 @@ Schema
           many: false
           key: true
           inverse: nil
+    #3 Klass
+      name: Type
+      super: nil
+      fields
     #4 Klass
       name: Field
       super: nil
@@ -94,7 +94,7 @@ Schema
           type: Klass
           optional: false
           many: false
-          key: false
+          key: true
           inverse: fields
         #2 Field
           name: type

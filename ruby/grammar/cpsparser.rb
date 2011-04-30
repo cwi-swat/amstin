@@ -2,8 +2,25 @@
 require 'grammar/grammarschema'
 require 'grammar/parsetree'
 require 'schema/factory'
+require 'grammar/tokenize'
+require 'grammar/instantiate'
 
 class CPSParser
+  def self.parse(path, grammar)
+    tokenizer = Tokenize.new
+    input = tokenizer.tokenize(grammar, path, File.read(path)) 
+    parse = CPSParser.new(input, Factory.new(ParseTreeSchema.schema))
+    parse.run(grammar)
+  end
+  
+  def self.load(path, grammar, schema)
+    tree = CPSParser.parse(path, grammar)
+    inst2 = Instantiate.new(Factory.new(schema))
+    data = inst2.run(tree)
+    data.finalize
+    return data
+  end
+
   def initialize(input, factory, gf = Factory.new(GrammarSchema.schema))
     @input = input
     @table = Table.new

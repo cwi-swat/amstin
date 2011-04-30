@@ -1,4 +1,5 @@
 require 'cyclicmap'
+require 'schema/factory'
 
 # problem
 # cyclic visiting on schema: stops to early, because it may find the the same class many times
@@ -11,9 +12,6 @@ class Conformance < CyclicCollectOnBoth
   def initialize()
     super()
     @errors = []
-  end
-
-  def Type(this)
   end
 
   def Primitive(this, obj)
@@ -29,18 +27,13 @@ class Conformance < CyclicCollectOnBoth
 
   def Klass(this, obj)
     puts "KLASS: Checking #{obj} against #{this.name}"
-    if obj.is_a?(String) || obj.is_a?(Integer) || obj == true || obj == false then
-      @errors << "Expected class type, not primitive #{obj}"
-    elsif obj.is_a?(Array) || obj.is_a?(Hash) then
-      # check all elements
-      obj.each do |elt|
-        recurse(this, elt)
-      end
+    if !obj.is_a?(CheckedObject) && !obj.is_a?(SchemaModel)
+      @errors << "Expected class type, not primitive '#{obj.class}'"
     elsif !subtypeOf(obj.schema_class, this) then
       @errors << "Invalid class: expected #{this.name}, got #{obj.schema_class.name}"
     else
       this.fields.each do |f|
-        recurse(f, obj[f.name])
+        recurse(f, obj)
       end
     end
   end
@@ -50,34 +43,35 @@ class Conformance < CyclicCollectOnBoth
     return subtypeOf(a.super, b) if a.super
   end
 
-  def Field(this, obj)
-    puts "FIELD: #{this.name}, #{obj}"
-    return if this.optional && !this.many && obj.nil? 
-    return if this.optional && this.many && obj == []
+  def Field(field, obj)
+    val = obj[field.name]
+    puts "FIELD: #{field.name}, #{val}"
 
-    if !this.optional && !this.many && obj.nil? then
-      @errors << "Field #{this.name} is required"
-    elsif this.many && !(obj.is_a?(Array) || obj.is_a?(Hash)) then
-      @errors << "Field #{this.name} is many but did not get array"
-    elsif !this.many && (obj.is_a?(Array) || obj.is_a?(Hash)) then
-      @errors << "Field #{this.name} is not many but got an array"
-    elsif this.many && !this.optional && obj == [] then
-      @errors << "Field #{this.name} is non-optional many but got empty array"
-    elsif this.inverse && (obj.is_a?(Array) || obj.is_a?(Hash)) then
-      # for each element in obj, there should be a field named this.inverse.name
-      # that's not null if this.inverse. And it should point to the current thing
-      # e.g. the klass containing "this" field.
-    elsif this.inverse && prim?(obj) then
-      @errors << "Primitive field #{this.name} cannot have inverse"
-    elsif this.inverse && !this.inverse.optional && !obj.send(this.inverse.name) then
-      @errors << "Inverse of field #{this.name} is non-optional"
+    if field.optional
+      return if !field.many && val.nil?
+    else
+      if !field.many ? val.nil? : val.empty?
+        @errors << "Field #{field.name} is required" 
+      end
     end
+    
+    # check the field values    
+    _each(obj, field) do |val|
+      recurse(field.type, val)
+    end
+   
+    puts "THIS.Type: #{field.type.name}"
+  end  
 
-    puts "THIS.Type: #{this.type.name}"
-    recurse(this.type, obj)
+  def _each(obj, field)
+    if !field.many
+      yield obj[field.name]
+    else
+      obj[field.name].each do |x|
+        yield x
+      end
+    end
   end
-
-  
 end
 
 if __FILE__ == $0 then

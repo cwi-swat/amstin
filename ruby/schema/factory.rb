@@ -1,4 +1,5 @@
 require 'cyclicmap'
+require 'schema/finalize'
 
 class Factory
   def initialize(schema)
@@ -122,7 +123,7 @@ class CheckedObject
 
   def to_s
     k = SchemaSchema.key(schema_class)
-    "<#{schema_class.name} #{k ? self[k.name] : @_id}>"
+    "<#{schema_class.name} #{k ? self[k.name] + " " : ""}#{@_id}>"
   end
 
   def inspect
@@ -152,70 +153,11 @@ class CheckedObject
   end
   
   def finalize()
-    Finalize.new.Klass(self.schema_class, self)
+    Finalize.new.finalize(self)
     @graph_id.locked = true
   end  
 end
 
-class Finalize < CyclicCollectOnSecondArg
-
-  def Primitive(this, obj)
-  end
-
-  def Type(this, obj)
-    #puts "FINALIZE #{obj}"
-    return send(this.schema_class.name, this, obj)
-  end
-
-  def Primitive(this, obj)
-  end
-
-  def Klass(this, obj)
-    return if obj.nil? || @memo[obj]
-    @memo[obj] = true
-    this.fields.each do |f|
-      Field(f, obj)
-    end
-  end
-  
-  def Field(field, obj)
-    val = obj[field.name]
-
-    if field.optional
-      return if val.nil?
-    else
-      if !field.many ? val.nil? : val.empty?
-        raise "Field #{field.name} is required" 
-      end
-    end
-
-    # update delayed inverses    
-    if field.inverse && field.inverse.many
-      _each(obj, field) do |val|
-        if val[field.inverse.name].include?(obj)
-          puts "FIXING #{val}.#{field.inverse} << #{obj}"
-          val[field.inverse.name] << obj
-        end
-      end
-    end
-
-    # check the field values    
-    _each(obj, field) do |val|
-      Type(field.type, val)
-    end
-  end  
-
-  def _each(obj, field)
-    if !field.many
-      x = obj[field.name]
-      yield x if x
-    else
-      obj[field.name].each do |x|
-        yield x
-      end
-    end
-  end
-end
 
 class BaseManyField 
   include Enumerable
@@ -255,7 +197,6 @@ class ManyIndexedField < BaseManyField
   def nil?
     false
   end
-
   
   def keys
     @hash.keys

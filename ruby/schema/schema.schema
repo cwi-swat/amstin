@@ -28,7 +28,7 @@ schema SchemaSchema
   
   class Field
     #name: str
-    owner: Klass / Klass.fields
+    #owner: Klass / Klass.fields
     type: Type
     optional: bool
     many: bool

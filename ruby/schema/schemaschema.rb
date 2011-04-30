@@ -42,7 +42,7 @@ class SchemaSchema < SchemaGenerator
 
   klass Field do
     field :name, :type => :str, :key => true
-    field :owner, :type => Klass, :inverse => Klass.fields, :inverse => Klass.fields
+    field :owner, :type => Klass, :inverse => Klass.fields, :inverse => Klass.fields, :key => true
     field :type, :type => Type
     field :optional, :type => :bool
     field :many, :type => :bool
@@ -55,9 +55,11 @@ end
 
 # make a copy so it uses checked objects (but its not quite right, because
 # we don't update the schema pointers!
-require 'tools/copy'
-require 'schema/factory'
-SchemaSchema.schema = Copy.new(Factory.new(SchemaSchema.schema)).copy(SchemaSchema.schema)
+
+#require 'tools/copy'
+#require 'schema/factory'
+
+#SchemaSchema.schema = Copy.new(Factory.new(SchemaSchema.schema)).copy(SchemaSchema.schema)
 
 
 def main

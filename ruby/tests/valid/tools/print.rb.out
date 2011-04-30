@@ -94,7 +94,7 @@ Schema
           type: Klass
           optional: false
           many: false
-          key: false
+          key: true
           inverse: fields
         #2 Field
           name: type
