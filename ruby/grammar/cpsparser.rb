@@ -13,10 +13,15 @@ class CPSParser
     parse.run(grammar)
   end
   
-  def self.load(path, grammar, schema)
+  def self.load_raw(path, grammar, schema)
     tree = CPSParser.parse(path, grammar)
     inst2 = Instantiate.new(Factory.new(schema))
     data = inst2.run(tree)
+    return data
+  end
+
+  def self.load(path, grammar, schema)
+    data = load_raw(path, grammar, schema)
     data.finalize
     return data
   end

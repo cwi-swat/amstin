@@ -40,24 +40,27 @@ class Print
       #myputs "FOO #{obj} p=#{paths} i=#{visited}"
       indent += 2
       klass.fields.each do |field|
-        if field.type && field.type.schema_class.name == "Primitive"
+        if field.type.schema_class.name == "Primitive"
           myprint " "*indent, field.name, ": ", obj[field.name], "\n"
         else
           sub_path = paths[field.name.to_sym]
+
           if sub_path || !field.inverse ||
                 (!field.many && (obj[field.name].nil? || key(obj[field.name].schema_class)))
             if !field.many
               sub = obj[field.name]
-              if !visited.include?(sub)
+              use_key = sub_path.nil? && !sub.nil? && key(sub.schema_class)
+              if !visited.include?(sub) || visited[-2] != sub && use_key
                 myprint " "*indent, field.name, ": "
-                print1(sub, sub_path, indent, visited)
+                print1(use_key, sub, sub_path, indent, visited)
               end
             else
               myprint " "*indent, field.name, "\n"
               subindent = indent + 2
               obj[field.name].each_with_index do |sub, i|
                 myprint " "*subindent, "#", i, " "
-                print1(sub, sub_path, subindent, visited)
+                use_key = sub_path.nil? && key(sub.schema_class)
+                print1(use_key, sub, sub_path, subindent, visited)
               end
             end
           end
@@ -67,8 +70,8 @@ class Print
     end
   end
   
-  def print1(obj, path, indent, visited)
-    if path.nil? && !obj.nil? && key(obj.schema_class)  
+  def print1(use_key, obj, path, indent, visited)
+    if use_key  
       # TODO: annoying that we need to know actual type, not just declared type
       # This is because we don't have field inheritance in the base schema
       myprint obj[key(obj.schema_class).name], "\n"

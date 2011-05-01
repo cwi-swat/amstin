@@ -60,6 +60,7 @@ class Render < Dispatch
   end
 
   def Ref(this, obj)
+    throw :fail if obj.nil?
     space(obj[SchemaSchema.key(obj.schema_class).name])  # need "." keys
   end
 

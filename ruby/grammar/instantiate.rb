@@ -107,6 +107,10 @@ class Instantiate
 
   def Ref(this, owner, field, pos)
     #puts "Stubbing ref #{this.name} in #{owner}"
+    
+    #TODO: hack!! to allow undefined symbols to be nil
+    return if this.name == "_"
+    
     stub = @factory.send(field.type.name)
     if this.name =~ /\./ then
       @nested_fixes << Fix.new(this.name, owner, field, pos)

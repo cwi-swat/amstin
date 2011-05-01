@@ -253,6 +253,7 @@ Grammar
                 #0 Field
                   name: arg
                   arg: Call
+                    rule: Pattern
                 #1 Lit
                   value: ?
                   case_sensitive: true
@@ -265,6 +266,7 @@ Grammar
                 #0 Field
                   name: arg
                   arg: Call
+                    rule: Pattern
                 #1 Lit
                   value: +
                   case_sensitive: true
@@ -277,6 +279,7 @@ Grammar
                 #0 Field
                   name: arg
                   arg: Call
+                    rule: Pattern
                 #1 Lit
                   value: *
                   case_sensitive: true
@@ -292,6 +295,7 @@ Grammar
                 #1 Field
                   name: arg
                   arg: Call
+                    rule: Pattern
                 #2 Field
                   name: sep
                   arg: Value
@@ -314,6 +318,7 @@ Grammar
                 #1 Field
                   name: arg
                   arg: Call
+                    rule: Pattern
                 #2 Field
                   name: sep
                   arg: Value
@@ -591,6 +596,7 @@ Grammar
                 #0 Field
                   name: arg
                   arg: Call
+                    rule: Pattern
                 #1 Lit
                   value: ?
                   case_sensitive: true
@@ -603,6 +609,7 @@ Grammar
                 #0 Field
                   name: arg
                   arg: Call
+                    rule: Pattern
                 #1 Lit
                   value: +
                   case_sensitive: true
@@ -615,6 +622,7 @@ Grammar
                 #0 Field
                   name: arg
                   arg: Call
+                    rule: Pattern
                 #1 Lit
                   value: *
                   case_sensitive: true
@@ -630,6 +638,7 @@ Grammar
                 #1 Field
                   name: arg
                   arg: Call
+                    rule: Pattern
                 #2 Field
                   name: sep
                   arg: Value
@@ -652,6 +661,7 @@ Grammar
                 #1 Field
                   name: arg
                   arg: Call
+                    rule: Pattern
                 #2 Field
                   name: sep
                   arg: Value

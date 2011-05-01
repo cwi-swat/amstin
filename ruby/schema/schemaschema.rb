@@ -19,6 +19,10 @@ class SchemaSchema < SchemaGenerator
     klass.fields.find { |f| f.key && f.type.schema_class.name == "Primitive" }
   end
 
+  def self.keyRel(klass)
+    klass.fields.find { |f| f.key && f.type.schema_class.name != "Primitive" }
+  end
+
   klass Schema do
     field :name, :type => :str, :key => true
     field :classes, :type => Klass, :optional => true, :many => true

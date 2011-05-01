@@ -31,20 +31,23 @@
 # end
 
 class Copy
-  def initialize(factory)
+  def initialize(factory, memo = {})
     @factory = factory
-    @memo = {}
+    @memo = memo
   end
 
   def copy(source)
     return nil if source.nil?
     target = @memo[source]
-    return target if target
-    
+    if target
+      #puts "FOUND #{source} => #{target}"
+      return target 
+    end
     klass = source.schema_class
     raise "Source does not have a schema_class #{source}" unless klass
     target = @factory[klass.name]
     @memo[source] = target
+
     klass.fields.each do |field|
       #puts "Copying #{field.name} #{source[field.name].class} #{source[field.name]}"
       if field.type.schema_class.name == "Primitive"

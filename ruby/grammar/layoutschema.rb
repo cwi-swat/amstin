@@ -42,6 +42,13 @@ class LayoutSchema < SchemaGenerator
 end
 
 if __FILE__ == $0 then
-  require 'tools/print'
-  Print.new.recurse(LayoutSchema.schema, SchemaSchema.print_paths)
+
+  require 'grammar/layout'
+  require 'grammar/grammargrammar'
+  require 'grammar/cpsparser'
+
+  GG = GrammarGrammar.grammar
+  schema_grammar = CPSParser.load('schema/schema.grammar', GG, GrammarSchema.schema)
+
+  DisplayFormat.print(schema_grammar, LayoutSchema.schema)
 end

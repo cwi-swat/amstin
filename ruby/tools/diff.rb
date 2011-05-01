@@ -2,11 +2,7 @@
 
 require 'cyclicmap'
 
-class Diff < MemoBase
-  def initialize()
-    super()
-    @diffs = []
-  end
+class DiffBase < MemoBase
 
   def self.diff(o1, o2)
     self.new.diff(o1, o2)
@@ -14,11 +10,9 @@ class Diff < MemoBase
   
   def diff(o1, o2)
     Klass(o1, o2)
-    @diffs
   end
 
   def Type(this, o1, o2)
-    #puts "#{this.class} #{this.name} #{o1} #{o2}"
     return send(this.schema_class.name, o1, o2)
   end
 
@@ -32,6 +26,8 @@ class Diff < MemoBase
     end
     return false if o1.schema_class.name != o2.schema_class.name
 
+    #puts "DIFF #{o1} #{o2}"
+
     existing = @memo[o1]
     return existing == o2 if existing
     @memo[o1] = o2
@@ -44,6 +40,7 @@ class Diff < MemoBase
 
   def Field(field, o1, o2)
     # o1 and o2 are the owners
+    #puts " FIELD #{field} #{o1[field.name]} #{o2[field.name]}"
     if field.many then
       many(field, o1, o2)
     else
@@ -53,7 +50,7 @@ class Diff < MemoBase
 
   def single(field, o1, o2)
     if !Type(field.type, o1[field.name], o2[field.name])
-      @diffs << [:change, o1, field.name, o1[field.name], o2[field.name]]
+      different_single(o2, field, o2[field.name], o1[field.name])
     end
   end
 
@@ -67,10 +64,10 @@ class Diff < MemoBase
 
   def ordered(field, o1, o2) 
     o1[field.name].zip(o2[field.name]).each do |left, right|
-      if left.nil?
-        @diffs << [:insert, o1, field.name, right]
-      elsif right.nil?
-        @diffs << [:delete, o1, field.name, left]
+      if right.nil?
+        different_insert(o2, field, left)
+      elsif left.nil?
+        different_delete(o2, field, right)
       else
         Type(field.type, left, right)
       end
@@ -78,21 +75,43 @@ class Diff < MemoBase
   end
 
   def keyed(field, o1, o2)
-    #puts "KEY #{field} #{o1[field.name]} #{o2[field.name]}"
     keys = o1[field.name].keys | o2[field.name].keys
     keys.each do |key_val|
       left = o1[field.name][key_val]
       right = o2[field.name][key_val]
-      if left.nil?
-        @diffs << [:insert, o1, field.name, right]
-      elsif right.nil?
-        @diffs << [:delete, o1, field.name, left]
+      if right.nil?
+        different_insert(o2, field, left)
+      elsif left.nil?
+        different_delete(o2, field, right)
       else
         Type(field.type, left, right)
       end
     end
   end
-
 end
 
+
+class Diff < DiffBase
+  def initialize()
+    super()
+    @diffs = []
+  end
+
+  def diff(o1, o2)
+    super(o1, o2)
+    @diffs
+  end
+
+  def different_single(target, field, old, new)
+    @diffs << [:change, target, field.name, old, new]
+  end
+
+  def different_insert(target, field, new)
+    @diffs << [:insert, target, field.name, new]
+  end
+  
+  def different_delete(target, field, old)
+    @diffs << [:delete, target, field.name, old]
+  end
+end
 

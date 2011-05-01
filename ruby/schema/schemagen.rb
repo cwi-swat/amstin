@@ -10,10 +10,12 @@ class SchemaModel #< BasicObject
   end
 
   def [](k)
+    raise "undefined internal field #{k}" if k[0] == "_"
     @fields[k]
   end
 
   def []=(k, v)
+    raise "undefined internal field #{k}" if k[0] == "_"
     @fields[k] = v
   end
 
@@ -88,7 +90,7 @@ class SchemaGenerator
     schema.name = subclass.to_s
     schema.classes = ValueHash.new
     schema.primitives = ValueHash.new
-    schema._primitives = ValueHash.new
+    schema.sym_primitives = ValueHash.new
   end
 
   def self.schema
@@ -105,7 +107,7 @@ class SchemaGenerator
       m = SchemaModel.new
       m.name = name.to_s
       schema.primitives[name.to_s] = m
-      schema._primitives[name] = m
+      schema.sym_primitives[name] = m
     end
       
     def klass(wrapped, opts = {}, &block)
@@ -120,7 +122,7 @@ class SchemaGenerator
     def field(name, opts = {})
       f = get_field(@@current, name.to_s)
       t = opts[:type]
-      f.type = schema._primitives.keys.include?(t) ? schema._primitives[t] : t.klass
+      f.type = schema.sym_primitives.keys.include?(t) ? schema.sym_primitives[t] : t.klass
       f.optional = opts[:optional] || false
       f.many = opts[:many] || false
       f.key = opts[:key] || false

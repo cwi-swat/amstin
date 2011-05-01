@@ -1,6 +1,7 @@
 
 require 'cyclicmap'
 require 'grammar/layoutschema'
+require 'grammar/render'
 
 class FormatWidth < MemoBase
   def Sequence(obj)
@@ -56,7 +57,7 @@ class FormatChoice < Dispatch
     if current + subwidth <= @width
       return current + subwidth
     else
-      puts "BREAKING"
+      #puts "BREAKING"
       return recurse(obj.arg, indent, current) # flip the bits
     end
   end
@@ -80,6 +81,13 @@ class DisplayFormat < Dispatch
   def initialize(output)
     super()
     @output = output
+  end
+
+  def self.print(grammar, obj, width = 80, output=$stdout)
+    layout = Render.new.recurse(grammar, obj)
+    FormatChoice.new(width).run(layout)
+    DisplayFormat.new(output).recurse(layout)
+    output << "\n"
   end
   
   def Sequence(obj)
@@ -112,16 +120,9 @@ end
 
 
 def main
-  require 'schema/factory'
-  require 'grammar/layoutschema'
-  require 'grammar/render'
-  require 'tools/print'
   require 'grammar/grammargrammar'
 
-  layout = Render.new.recurse(GrammarGrammar.grammar, GrammarGrammar.grammar)
-  FormatChoice.new(80).run(layout)
-  DisplayFormat.new($stdout).recurse(layout)
-  $stdout << "\n"
+  DisplayFormat.print(GrammarGrammar.grammar, GrammarGrammar.grammar)
 end
 
 if __FILE__ == $0 then

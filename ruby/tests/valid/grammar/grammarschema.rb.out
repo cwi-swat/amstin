@@ -25,7 +25,7 @@ Schema
           optional: false
           many: true
           key: false
-          inverse: nil
+          inverse: grammar
     #1 Klass
       name: Rule
       super: nil
@@ -38,6 +38,13 @@ Schema
           key: true
           inverse: nil
         #1 Field
+          name: grammar
+          type: Grammar
+          optional: false
+          many: false
+          key: true
+          inverse: rules
+        #2 Field
           name: arg
           type: Expression
           optional: false

@@ -1,0 +1,36 @@
+  grammar GrammarGrammar
+  start Grammar
+  
+  Grammar ::= [Grammar] "grammar" name:sym "start" / \start:Rule^ / rules:Rule*
+
+  Rule ::= [Rule] name:key "::=" arg:Alt
+
+  Alt ::= [Alt] alts:{Create / "|" }+
+
+  Create ::= [Create] "["_ name:sym _"]" arg:Sequence
+    | Sequence
+
+  Sequence ::= [Sequence] elements:Field*
+
+  Field ::= [Field] / name:sym _":"_ arg:Pattern
+    | Pattern
+  
+  Pattern ::= 
+      [Value] kind:"int"
+    | [Value] kind:"str"
+    | [Value] kind:"sqstr"
+    | [Value] kind:"real"
+    | [Value] kind:"bool"
+    | [Value] kind:"sym"
+    | [Code] "@"_ code:str
+    | [Key] "key"
+    | [Ref] name:sym _"^"
+    | [Lit] value:str				@"self.case_sensitive = true"
+    | [Lit] value:sqstr				@"self.case_sensitive = false"
+    | [Call] rule:Rule^
+    | [Regular] arg:Pattern _"?"			@"self.optional = true; self.many = false; self.sep = nil"
+    | [Regular] arg:Pattern _"+"  			@"self.optional = false; self.many = true; self.sep = nil"
+    | [Regular] arg:Pattern _"*"  			@"self.optional = true; self.many = true; self.sep = nil"
+    | [Regular] "{"_ arg:Pattern sep:str _"}" _"+" 	@"self.optional = false; self.many = true"
+    | [Regular] "{"_ arg:Pattern sep:str _"}" _"*" 	@"self.optional = true; self.many = true"
+    | "("_ Alt _")"

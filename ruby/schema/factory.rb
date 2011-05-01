@@ -4,13 +4,12 @@ require 'schema/finalize'
 class Factory
   def initialize(schema)
     @schema = schema
-    @graph_id = GraphIdentity.new
   end
 
   def [](class_name)
     schema_class = @schema.classes[class_name.to_s]
     raise "Unknown class '#{class_name}'" unless schema_class
-    obj = CheckedObject.new(schema_class, @graph_id)
+    obj = CheckedObject.new(schema_class, self)
     return obj
   end
   
@@ -24,12 +23,6 @@ class Factory
   end
 end
 
-class GraphIdentity
-  attr_accessor :locked
-  def initialize()
-  end  
-end
-
 class CheckedObject
 
   attr_reader :schema_class
@@ -41,7 +34,7 @@ class CheckedObject
     @_id = @@_id += 1
     @hash = {}
     @schema_class = schema_class
-    @graph_id = graph_id
+    @_graph_id = graph_id
     schema_class.fields.each do |field|
       if field.many
         # TODO: check for primitive many-valued???
@@ -154,7 +147,7 @@ class CheckedObject
   
   def finalize()
     Finalize.new.finalize(self)
-    @graph_id.locked = true
+    #@graph_id.locked = true
   end  
 end
 

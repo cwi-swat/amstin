@@ -62,7 +62,6 @@ end
 class CyclicMapNew < MemoBase
   def initialize()
     super()
-    puts @memo
   end
   def recurse(from)
     raise "shouldn't be nil" if from.nil?

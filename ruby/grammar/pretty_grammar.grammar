@@ -1,0 +1,6 @@
+grammar PrettyGrammarGrammar
+  start _
+  
+  _Pattern ::= 
+      [Break] "/"
+    | [NoSpace] "_"

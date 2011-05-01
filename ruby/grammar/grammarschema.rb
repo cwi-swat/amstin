@@ -19,7 +19,7 @@ class GrammarSchema < SchemaGenerator
 
   klass Rule do
     field :name, :type => :str, :key => true
-    # do NOT define an inverse here for rules
+    field :grammar, :type => Grammar, :inverse => Grammar.rules, :key => true
     field :arg, :type => Expression
   end
 

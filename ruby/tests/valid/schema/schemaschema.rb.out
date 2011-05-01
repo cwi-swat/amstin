@@ -129,6 +129,7 @@ Schema
           optional: true
           many: false
           key: false
+          inverse: inverse
   primitives
     #0 str
     #1 int

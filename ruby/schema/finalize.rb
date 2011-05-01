@@ -9,8 +9,7 @@ class Finalize < MemoBase
     #puts " "*@indent + "FINALIZE #{obj}"
     @indent += 1    
     @memo[obj] = true
-    klass = obj.schema_class
-    klass.fields.each do |f|
+    obj.schema_class.fields.each do |f|
       Field(f, obj)
     end
     @indent -= 1
