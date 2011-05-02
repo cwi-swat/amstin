@@ -162,11 +162,11 @@ class CPSParser
   end
 
 
-  def Key(this, pos, &block)
-    with_token(pos, 'sym') do |tk|
-      block.call(pos + 1, @factory.Key(tk.value, tk.layout))
-    end
-  end
+#   def Key(this, pos, &block)
+#     with_token(pos, 'sym') do |tk|
+#       block.call(pos + 1, @factory.Key(tk.value, tk.layout))
+#     end
+#   end
 
   def Ref(this, pos, &block)
     with_token(pos, 'sym') do |tk|
@@ -241,17 +241,6 @@ class CPSParser
             block.call(pos3, [tree1, sep, *trees])
           end
         end
-# Why o why does this not work...
-#         return if eof?(pos1)
-#         tk = token(pos1)
-#         if tk.kind == "lit" && tk.value == this.sep then
-#           puts "Matched separator!: #{tk.value}"
-#           sep = @factory.Lit(tk.value, true, tk.layout)
-#           regular(this, pos1 + 1) do |pos3, trees|
-#             puts "TREES = #{trees}"
-#             block.call(pos3, [tree1, sep, *trees])
-#           end
-#         end
       end
       recurse(this.arg, pos) do |pos1, tree|
         block.call(pos1, [tree])

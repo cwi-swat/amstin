@@ -23,6 +23,7 @@ class Unparse < CyclicCollect
   end
 
   def escape(this)
+    # TODO: for sym a.b.c check only on a
     if this.kind == "sym" && @literals.match(this.value) then
       "\\#{this.value}"
     else

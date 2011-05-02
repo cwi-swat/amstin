@@ -55,8 +55,8 @@ class GrammarSchema < SchemaGenerator
     field :kind, :type => :str
   end
 
-  klass Key, :super => Expression do 
-  end
+#   klass Key, :super => Expression do 
+#   end
 
   klass Ref, :super => Expression do
     field :name, :type => :str

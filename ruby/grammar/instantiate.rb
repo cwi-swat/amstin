@@ -93,8 +93,23 @@ class Instantiate
   def Value(this, owner, field, pos)
     return pos unless field # values without field????
     #puts "Value: #{this} for #{field}"
+
+    if field.key then
+      #puts "--------> Defining key #{this} to #{owner}"
+      #todo? check this.type == 'sym'?
+      @defs[convert(this)] = owner
+    end
+
     update(owner, field, pos, convert(this))
   end
+
+#   def Key(this, owner, field, pos)
+#     #puts "--------> Defining key #{this.name} to #{owner}"
+#     owner[field.name] = this.name
+#     @defs[this.name] = owner
+#     # todo: assert field is never many
+#     update(owner, field, pos, this.name)
+#   end
 
   def Lit(this, owner, field, pos)
     if field && !field.many then
@@ -104,6 +119,7 @@ class Instantiate
     end
     pos
   end
+
 
   def Ref(this, owner, field, pos)
     #puts "Stubbing ref #{this.name} in #{owner}"
@@ -120,13 +136,6 @@ class Instantiate
     update(owner, field, pos, stub)
   end
 
-  def Key(this, owner, field, pos)
-    #puts "--------> Defining key #{this.name} to #{owner}"
-    owner[field.name] = this.name
-    @defs[this.name] = owner
-    # todo: assert field is never many
-    update(owner, field, pos, this.name)
-  end
 
   class Fix
     def initialize(name, this, field, pos)

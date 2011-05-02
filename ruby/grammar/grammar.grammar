@@ -3,7 +3,7 @@
   
   Grammar ::= [Grammar] "grammar" name:sym "start" \start:Rule^ rules:Rule*
 
-  Rule ::= [Rule] name:key "::=" arg:Alt
+  Rule ::= [Rule] name:sym "::=" arg:Alt
 
   Alt ::= [Alt] alts:{Create "|"}+
 
@@ -23,7 +23,6 @@
     | [Value] kind:"bool"
     | [Value] kind:"sym"
     | [Code] "@" code:str
-    | [Key] "key"
     | [Ref] name:sym "^"
     | [Lit] value:str				@"self.case_sensitive = true"
     | [Lit] value:sqstr				@"self.case_sensitive = false"

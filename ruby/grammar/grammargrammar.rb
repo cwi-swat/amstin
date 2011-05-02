@@ -10,7 +10,7 @@ class GrammarGrammar < GrammarGenerator
   end
 
   rule Rule do
-    alt [:Rule], {name: :key}, "::=", {arg: Alt}
+    alt [:Rule], {name: :sym}, "::=", {arg: Alt}
   end
 
   rule Alt do
@@ -41,7 +41,7 @@ class GrammarGrammar < GrammarGenerator
 
     alt [:Code], "@", {code: :str}
 
-    alt [:Key], "key"
+    #alt [:Key], "key"
 
     alt [:Ref], {name: :sym}, "^"
 

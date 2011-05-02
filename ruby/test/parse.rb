@@ -5,6 +5,7 @@ require 'test/unit'
 
 require 'grammar/cpsparser'
 require 'grammar/tokenize'
+require 'grammar/tokenschema'
 require 'grammar/parsetree'
 require 'grammar/grammargrammar'
 require 'grammar/unparse'
@@ -28,5 +29,23 @@ class ParseTest < Test::Unit::TestCase
     #puts Diffy::Diff.new(src, s)
     assert_equal(src, s, "unparse not the same as input source")
   end
+
+  def test_tokenize
+    tokenizer = Tokenize.new
+    path = 'grammar/token.grammar'
+    src = File.read(token_grammar)
+    input = tokenizer.tokenize(GrammarGrammar.grammar, path, src)
+    token_grammar_pt = CPSParser.new(input, Factory.new(ParseTreeSchema.schema))
+    token_grammar = Instantiate.new
+    render = Render.new(Factory.new(LayoutSchema.schema))
+    layout = render.recurse(GrammarGrammar.grammar, GrammarGrammar.grammar)
+  
+    puts "WIDTH = #{FormatWidth.new.recurse(layout)}"
+  
+    FormatChoice.new(80).run(layout)
+    DisplayFormat.new($stdout).recurse(layout)
+    $stdout << "\n"
+  end
+    
 
 end

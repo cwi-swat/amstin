@@ -6,11 +6,11 @@ Schema ::= [Schema] "schema" name:sym primitives:Primitive* classes:Klass* "end"
 
 Primitive ::= [Primitive] "primitive" name:sym
 
-Klass ::= [Klass] "class" name:key Parent? fields:Field* "end"
+Klass ::= [Klass] "class" name:sym Parent? fields:Field* "end"
 
 Parent ::= "<" super:Klass^
 
-Field ::= [Field] Key name:key ":" type:Type Multiplicity Inverse?
+Field ::= [Field] Key name:sym ":" type:Type Multiplicity Inverse?
 
 Key ::= "#" @"self.key = true"
       | @"self.key = false"

@@ -60,10 +60,10 @@ class ParseTreeSchema < SchemaGenerator
     field :layout, :type => :str
   end
 
-  klass Key, :super => Tree do
-    field :name, :type => :str
-    field :layout, :type => :str
-  end
+#  klass Key, :super => Tree do
+#    field :name, :type => :str
+#    field :layout, :type => :str
+#  end
 
 #   klass Regular, :super => Tree do
 #     field :args, :type => Tree, :optional => true, :many => true
