@@ -1,12 +1,13 @@
-class Finalize < MemoBase
-  def initialize()
+class VisitFields < MemoBase
+  def initialize(pass)
     super()
+    @pass = pass
     @indent = 0
   end
 
   def finalize(obj)
     return if obj.nil? || @memo[obj]
-    #puts " "*@indent + "FINALIZE #{obj}"
+    #puts " "*@indent + "#{@pass} #{obj}"
     @indent += 1    
     @memo[obj] = true
     obj.schema_class.fields.each do |f|
@@ -16,35 +17,18 @@ class Finalize < MemoBase
   end
   
   def Field(field, obj)
+    return if field.computed
     val = obj[field.name]
-
-    if field.optional
-      return if val.nil?
-    else
-      if !field.many ? val.nil? : val.empty?
-        raise "Field #{field.name} is required" 
-      end
-    end
-
-    return if field.type.schema_class.name == "Primitive"
 
     #puts " "*@indent + "CHECKING #{obj}.#{field.name}:'#{val}'"
     @indent += 1
 
-    # update delayed inverses
-    if field.inverse && field.inverse.many
-      #puts " "*@indent + "INVERTED #{field.inverse.name}:'#{val[field.inverse.name]}'"
+    visitField(field, obj, val)
+    if !(field.type.Primitive? || val.nil?)
+      # check the field values    
       _each(field, val) do |val|
-        if !val[field.inverse.name].include?(obj)
-          #puts " "*@indent + "FIXING #{obj}"
-          val[field.inverse.name] << obj
-        end
+        finalize(val)
       end
-    end
-
-    # check the field values    
-    _each(field, val) do |val|
-      finalize(val)
     end
     @indent -= 1
   end  
@@ -55,6 +39,31 @@ class Finalize < MemoBase
     else
       val.each do |x|
         yield x
+      end
+    end
+  end
+end
+
+class CheckRequired < VisitFields
+  def visitField(field, obj, val)
+    if !field.optional && (!field.many ? val.nil? : val.empty?)
+      raise "Field #{field.name} is required for #{obj}" 
+    end
+  end
+end
+
+
+class UpdateInverses < VisitFields
+  def visitField(field, obj, val)
+    return if val.nil? || field.type.Primitive?
+    # update delayed inverses
+    if field.inverse && field.inverse.many
+      #puts " "*@indent + "INVERTED #{field.inverse.name}:'#{val[field.inverse.name]}'"
+      _each(field, val) do |val|
+        if !val[field.inverse.name].include?(obj)
+          #puts " "*@indent + "FIXING #{obj}.#{field.inverse.name}"
+          val[field.inverse.name] << obj
+        end
       end
     end
   end

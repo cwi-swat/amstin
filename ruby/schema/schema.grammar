@@ -2,15 +2,17 @@ grammar SchemaGrammar
 
 start Schema
 
-Schema ::= [Schema] "schema" name:sym primitives:Primitive* classes:Klass* "end"
+Schema ::= [Schema] "schema" name:sym types:TypeDef* "end"
+
+TypeDef ::= Primitive | Klass
 
 Primitive ::= [Primitive] "primitive" name:sym
 
-Klass ::= [Klass] "class" name:sym Parent? fields:Field* "end"
+Klass ::= [Klass] "class" name:sym Parent? defined_fields:Field* "end"
 
 Parent ::= "<" super:Klass^
 
-Field ::= [Field] Key name:sym ":" type:Type Multiplicity Inverse?
+Field ::= [Field] Key name:sym ":" type:Type Multiplicity Annot?
 
 Key ::= "#" @"self.key = true"
       | @"self.key = false"
@@ -23,5 +25,5 @@ Multiplicity ::= "*" @"self.many = true; self.optional = true"
 	       | "+" @"self.many = true; self.optional = false"
 	       | @"self.many = false; self.optional = false"
 
-Inverse ::= "/" inverse:Field^
-
+Annot ::= "/" inverse:Field^
+        | "=" computed:str

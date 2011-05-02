@@ -1,15 +1,7 @@
-BREAKING
-BREAKING
-BREAKING
-BREAKING
-BREAKING
-BREAKING
-BREAKING
-BREAKING
 grammar GrammarGrammar start Grammar 
     Grammar ::= 
         [ Grammar ] "grammar" name : int "start" start : Rule ^ rules : Rule * 
-    Rule ::= [ Rule ] name : key "::=" arg : Alt 
+    Rule ::= [ Rule ] name : int "::=" arg : Alt 
     Alt ::= [ Alt ] alts : { Create "|" } + 
     Create ::= [ Create ] "[" name : int "]" arg : Sequence |Sequence 
     Sequence ::= [ Sequence ] elements : Field * 
@@ -17,15 +9,12 @@ grammar GrammarGrammar start Grammar
     Pattern ::= 
         [ Value ] kind : "int" |
         [ Value ] kind : "str" |
-        [ Value ] kind : "sqstr" |
         [ Value ] kind : "real" |
         [ Value ] kind : "bool" |
         [ Value ] kind : "sym" |
         [ Code ] "@" code : int |
-        [ Key ] "key" |
         [ Ref ] name : int "^" |
-        [ Lit ] value : int @ "self.case_sensitive = true" |
-        [ Lit ] value : int @ "self.case_sensitive = false" |
+        [ Lit ] value : int |
         [ Call ] rule : Rule ^ |
         [ Regular ] 
             arg : Pattern 

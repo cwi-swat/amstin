@@ -98,12 +98,5 @@ class BootstrapTests < Test::Unit::TestCase
            "Parsed schema != Parsed schema")
   end
 
-  def test_parsetree_schema
-    grammar = GrammarGrammar.grammar
-    grammar2 = CPSParser.load('schema/schema.grammar', grammar, GrammarSchema.schema)
-    pt_schema = CPSParser.load('grammar/parsetree.schema', grammar2, SchemaSchema.schema)
-    assert_not_nil(pt_schema)
-  end
-    
 
 end

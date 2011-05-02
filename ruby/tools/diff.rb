@@ -28,10 +28,8 @@ class DiffBase < MemoBase
     return false if o1.schema_class.name != o2.schema_class.name
     #puts "DIFF #{o1} #{o2}"
 
-    existing = @memo[o1]
-    #puts "Memoized: #{existing} " if existing
-    return true if existing && existing.equal?(o2)
-    @memo[o1] = o2
+    return true if @memo[[o1, o2]]
+    @memo[[o1, o2]] = true
     
     o1.schema_class.fields.each do |f|
       Field(f, o1, o2)
@@ -40,6 +38,7 @@ class DiffBase < MemoBase
   end
 
   def Field(field, o1, o2)
+    return if field.computed
     # o1 and o2 are the owners
     if field.many then
       many(field, o1, o2)

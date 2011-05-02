@@ -50,7 +50,8 @@ class Copy
 
     klass.fields.each do |field|
       #puts "Copying #{field.name} #{source[field.name].class} #{source[field.name]}"
-      if field.type.schema_class.name == "Primitive"
+      next if field.computed
+      if field.type.Primitive?
         target[field.name] = source[field.name]
       elsif !field.many
         target[field.name] = copy(source[field.name])
@@ -76,6 +77,7 @@ if __FILE__ == $0 then
   
   Print.new.recurse(newSchema, SchemaSchema.print_paths)
   
+  puts "#{newSchema.classes.class}"
   puts "WOA: #{newSchema.classes['Klass'].schema.name}"
 
 end

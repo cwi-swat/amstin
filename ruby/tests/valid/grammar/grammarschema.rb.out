@@ -12,6 +12,7 @@ Schema
           many: false
           key: false
           inverse: nil
+          computed: 
         #1 Field
           name: start
           type: Rule
@@ -19,6 +20,7 @@ Schema
           many: false
           key: false
           inverse: nil
+          computed: 
         #2 Field
           name: rules
           type: Rule
@@ -26,6 +28,7 @@ Schema
           many: true
           key: false
           inverse: grammar
+          computed: 
     #1 Klass
       name: Rule
       super: nil
@@ -37,6 +40,7 @@ Schema
           many: false
           key: true
           inverse: nil
+          computed: 
         #1 Field
           name: grammar
           type: Grammar
@@ -44,6 +48,7 @@ Schema
           many: false
           key: true
           inverse: rules
+          computed: 
         #2 Field
           name: arg
           type: Expression
@@ -51,6 +56,7 @@ Schema
           many: false
           key: false
           inverse: nil
+          computed: 
     #2 Klass
       name: Expression
       super: nil
@@ -70,6 +76,7 @@ Schema
           many: true
           key: false
           inverse: nil
+          computed: 
     #5 Klass
       name: Sequence
       super: Expression
@@ -81,6 +88,7 @@ Schema
           many: true
           key: false
           inverse: nil
+          computed: 
     #6 Klass
       name: Create
       super: Expression
@@ -92,6 +100,7 @@ Schema
           many: false
           key: false
           inverse: nil
+          computed: 
         #1 Field
           name: arg
           type: Expression
@@ -99,6 +108,7 @@ Schema
           many: false
           key: false
           inverse: nil
+          computed: 
     #7 Klass
       name: Field
       super: Expression
@@ -110,6 +120,7 @@ Schema
           many: false
           key: false
           inverse: nil
+          computed: 
         #1 Field
           name: arg
           type: Expression
@@ -117,6 +128,7 @@ Schema
           many: false
           key: false
           inverse: nil
+          computed: 
     #8 Klass
       name: Code
       super: Expression
@@ -128,6 +140,7 @@ Schema
           many: false
           key: false
           inverse: nil
+          computed: 
     #9 Klass
       name: Value
       super: Expression
@@ -139,11 +152,8 @@ Schema
           many: false
           key: false
           inverse: nil
+          computed: 
     #10 Klass
-      name: Key
-      super: Expression
-      fields
-    #11 Klass
       name: Ref
       super: Expression
       fields
@@ -154,7 +164,8 @@ Schema
           many: false
           key: false
           inverse: nil
-    #12 Klass
+          computed: 
+    #11 Klass
       name: Lit
       super: Expression
       fields
@@ -165,14 +176,8 @@ Schema
           many: false
           key: false
           inverse: nil
-        #1 Field
-          name: case_sensitive
-          type: bool
-          optional: false
-          many: false
-          key: false
-          inverse: nil
-    #13 Klass
+          computed: 
+    #12 Klass
       name: Call
       super: Expression
       fields
@@ -183,7 +188,8 @@ Schema
           many: false
           key: false
           inverse: nil
-    #14 Klass
+          computed: 
+    #13 Klass
       name: Regular
       super: Expression
       fields
@@ -194,6 +200,7 @@ Schema
           many: false
           key: false
           inverse: nil
+          computed: 
         #1 Field
           name: optional
           type: bool
@@ -201,6 +208,7 @@ Schema
           many: false
           key: false
           inverse: nil
+          computed: 
         #2 Field
           name: many
           type: bool
@@ -208,6 +216,7 @@ Schema
           many: false
           key: false
           inverse: nil
+          computed: 
         #3 Field
           name: sep
           type: str
@@ -215,6 +224,7 @@ Schema
           many: false
           key: false
           inverse: nil
+          computed: 
   primitives
     #0 str
     #1 int

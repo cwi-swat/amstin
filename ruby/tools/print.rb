@@ -40,7 +40,7 @@ class Print
       #myputs "FOO #{obj} p=#{paths} i=#{visited}"
       indent += 2
       klass.fields.each do |field|
-        if field.type.schema_class.name == "Primitive"
+        if field.type.Primitive?
           myprint " "*indent, field.name, ": ", obj[field.name], "\n"
         else
           sub_path = paths[field.name.to_sym]
@@ -81,7 +81,7 @@ class Print
   end
   
   def key(klass)
-    klass.fields.find { |f| f.key && f.type.schema_class.name == "Primitive" }
+    klass.fields.find { |f| f.key && f.type.Primitive? }
   end  
 
 end

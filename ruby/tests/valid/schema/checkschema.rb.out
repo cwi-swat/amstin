@@ -11,7 +11,7 @@ THIS.Type: Schema
 FIELD: super, 
 FIELD: subtypes, {}
 THIS.Type: Klass
-FIELD: fields, {"name"=><BOOT Field name>, "classes"=><BOOT Field classes>, "primitives"=><BOOT Field primitives>}
+FIELD: defined_fields, {"name"=><BOOT Field name>, "classes"=><BOOT Field classes>, "primitives"=><BOOT Field primitives>, "types"=><BOOT Field types>}
 KLASS: Checking <BOOT Field name> against Field
 FIELD: name, name
 THIS.Type: str
@@ -19,6 +19,10 @@ FIELD: owner, <BOOT Klass Schema>
 THIS.Type: Klass
 FIELD: type, <BOOT Primitive str>
 KLASS: Checking <BOOT Primitive str> against Type
+FIELD: name, str
+THIS.Type: str
+FIELD: schema, <BOOT Schema SchemaSchema>
+THIS.Type: Schema
 THIS.Type: Type
 FIELD: optional, false
 THIS.Type: bool
@@ -27,6 +31,7 @@ THIS.Type: bool
 FIELD: key, true
 THIS.Type: bool
 FIELD: inverse, 
+FIELD: computed, 
 KLASS: Checking <BOOT Field classes> against Field
 FIELD: name, classes
 THIS.Type: str
@@ -34,6 +39,52 @@ FIELD: owner, <BOOT Klass Schema>
 THIS.Type: Klass
 FIELD: type, <BOOT Klass Klass>
 KLASS: Checking <BOOT Klass Klass> against Type
+FIELD: name, Klass
+THIS.Type: str
+FIELD: schema, <BOOT Schema SchemaSchema>
+THIS.Type: Schema
+THIS.Type: Type
+FIELD: optional, true
+THIS.Type: bool
+FIELD: many, true
+THIS.Type: bool
+FIELD: key, false
+THIS.Type: bool
+FIELD: inverse, 
+FIELD: computed, @types.select(&:Klass?)
+THIS.Type: str
+KLASS: Checking <BOOT Field primitives> against Field
+FIELD: name, primitives
+THIS.Type: str
+FIELD: owner, <BOOT Klass Schema>
+THIS.Type: Klass
+FIELD: type, <BOOT Klass Primitive>
+KLASS: Checking <BOOT Klass Primitive> against Type
+FIELD: name, Primitive
+THIS.Type: str
+FIELD: schema, <BOOT Schema SchemaSchema>
+THIS.Type: Schema
+THIS.Type: Type
+FIELD: optional, true
+THIS.Type: bool
+FIELD: many, true
+THIS.Type: bool
+FIELD: key, false
+THIS.Type: bool
+FIELD: inverse, 
+FIELD: computed, @types.select(&:Primitive?)
+THIS.Type: str
+KLASS: Checking <BOOT Field types> against Field
+FIELD: name, types
+THIS.Type: str
+FIELD: owner, <BOOT Klass Schema>
+THIS.Type: Klass
+FIELD: type, <BOOT Klass Type>
+KLASS: Checking <BOOT Klass Type> against Type
+FIELD: name, Type
+THIS.Type: str
+FIELD: schema, <BOOT Schema SchemaSchema>
+THIS.Type: Schema
 THIS.Type: Type
 FIELD: optional, true
 THIS.Type: bool
@@ -45,34 +96,22 @@ FIELD: inverse, <BOOT Field schema>
 KLASS: Checking <BOOT Field schema> against Field
 FIELD: name, schema
 THIS.Type: str
-FIELD: owner, <BOOT Klass Klass>
-KLASS: Checking <BOOT Klass Klass> against Klass
-FIELD: name, Klass
-THIS.Type: str
-FIELD: schema, <BOOT Schema SchemaSchema>
-THIS.Type: Schema
-FIELD: super, <BOOT Klass Type>
+FIELD: owner, <BOOT Klass Type>
 KLASS: Checking <BOOT Klass Type> against Klass
-FIELD: name, Type
-THIS.Type: str
-FIELD: schema, <BOOT Schema SchemaSchema>
-THIS.Type: Schema
 FIELD: super, 
 FIELD: subtypes, {"Primitive"=><BOOT Klass Primitive>, "Klass"=><BOOT Klass Klass>}
 KLASS: Checking <BOOT Klass Primitive> against Klass
-FIELD: name, Primitive
-THIS.Type: str
-FIELD: schema, <BOOT Schema SchemaSchema>
-THIS.Type: Schema
 FIELD: super, <BOOT Klass Type>
 THIS.Type: Klass
 FIELD: subtypes, {}
 THIS.Type: Klass
-FIELD: fields, {"name"=><BOOT Field name>}
+FIELD: defined_fields, {}
+THIS.Type: Field
+FIELD: fields, {"name"=><BOOT Field name>, "schema"=><BOOT Field schema>}
 KLASS: Checking <BOOT Field name> against Field
 FIELD: name, name
 THIS.Type: str
-FIELD: owner, <BOOT Klass Primitive>
+FIELD: owner, <BOOT Klass Type>
 THIS.Type: Klass
 FIELD: type, <BOOT Primitive str>
 THIS.Type: Type
@@ -83,28 +122,14 @@ THIS.Type: bool
 FIELD: key, true
 THIS.Type: bool
 FIELD: inverse, 
+FIELD: computed, 
 THIS.Type: Field
-THIS.Type: Klass
-FIELD: fields, {}
-THIS.Type: Field
+KLASS: Checking <BOOT Klass Klass> against Klass
+FIELD: super, <BOOT Klass Type>
 THIS.Type: Klass
 FIELD: subtypes, {}
 THIS.Type: Klass
-FIELD: fields, {"name"=><BOOT Field name>, "schema"=><BOOT Field schema>, "super"=><BOOT Field super>, "subtypes"=><BOOT Field subtypes>, "fields"=><BOOT Field fields>}
-KLASS: Checking <BOOT Field name> against Field
-FIELD: name, name
-THIS.Type: str
-FIELD: owner, <BOOT Klass Klass>
-THIS.Type: Klass
-FIELD: type, <BOOT Primitive str>
-THIS.Type: Type
-FIELD: optional, false
-THIS.Type: bool
-FIELD: many, false
-THIS.Type: bool
-FIELD: key, true
-THIS.Type: bool
-FIELD: inverse, 
+FIELD: defined_fields, {"super"=><BOOT Field super>, "subtypes"=><BOOT Field subtypes>, "defined_fields"=><BOOT Field defined_fields>, "fields"=><BOOT Field fields>}
 KLASS: Checking <BOOT Field super> against Field
 FIELD: name, super
 THIS.Type: str
@@ -134,14 +159,20 @@ FIELD: key, false
 THIS.Type: bool
 FIELD: inverse, <BOOT Field super>
 THIS.Type: Field
+FIELD: computed, 
 THIS.Type: Field
-KLASS: Checking <BOOT Field fields> against Field
-FIELD: name, fields
+FIELD: computed, 
+KLASS: Checking <BOOT Field defined_fields> against Field
+FIELD: name, defined_fields
 THIS.Type: str
 FIELD: owner, <BOOT Klass Klass>
 THIS.Type: Klass
 FIELD: type, <BOOT Klass Field>
 KLASS: Checking <BOOT Klass Field> against Type
+FIELD: name, Field
+THIS.Type: str
+FIELD: schema, <BOOT Schema SchemaSchema>
+THIS.Type: Schema
 THIS.Type: Type
 FIELD: optional, true
 THIS.Type: bool
@@ -155,14 +186,10 @@ FIELD: name, owner
 THIS.Type: str
 FIELD: owner, <BOOT Klass Field>
 KLASS: Checking <BOOT Klass Field> against Klass
-FIELD: name, Field
-THIS.Type: str
-FIELD: schema, <BOOT Schema SchemaSchema>
-THIS.Type: Schema
 FIELD: super, 
 FIELD: subtypes, {}
 THIS.Type: Klass
-FIELD: fields, {"name"=><BOOT Field name>, "owner"=><BOOT Field owner>, "type"=><BOOT Field type>, "optional"=><BOOT Field optional>, "many"=><BOOT Field many>, "key"=><BOOT Field key>, "inverse"=><BOOT Field inverse>}
+FIELD: defined_fields, {"name"=><BOOT Field name>, "owner"=><BOOT Field owner>, "type"=><BOOT Field type>, "optional"=><BOOT Field optional>, "many"=><BOOT Field many>, "key"=><BOOT Field key>, "inverse"=><BOOT Field inverse>, "computed"=><BOOT Field computed>}
 KLASS: Checking <BOOT Field name> against Field
 FIELD: name, name
 THIS.Type: str
@@ -177,13 +204,13 @@ THIS.Type: bool
 FIELD: key, true
 THIS.Type: bool
 FIELD: inverse, 
+FIELD: computed, 
 KLASS: Checking <BOOT Field type> against Field
 FIELD: name, type
 THIS.Type: str
 FIELD: owner, <BOOT Klass Field>
 THIS.Type: Klass
 FIELD: type, <BOOT Klass Type>
-KLASS: Checking <BOOT Klass Type> against Type
 THIS.Type: Type
 FIELD: optional, false
 THIS.Type: bool
@@ -192,6 +219,7 @@ THIS.Type: bool
 FIELD: key, false
 THIS.Type: bool
 FIELD: inverse, 
+FIELD: computed, 
 KLASS: Checking <BOOT Field optional> against Field
 FIELD: name, optional
 THIS.Type: str
@@ -199,6 +227,10 @@ FIELD: owner, <BOOT Klass Field>
 THIS.Type: Klass
 FIELD: type, <BOOT Primitive bool>
 KLASS: Checking <BOOT Primitive bool> against Type
+FIELD: name, bool
+THIS.Type: str
+FIELD: schema, <BOOT Schema SchemaSchema>
+THIS.Type: Schema
 THIS.Type: Type
 FIELD: optional, false
 THIS.Type: bool
@@ -207,6 +239,7 @@ THIS.Type: bool
 FIELD: key, false
 THIS.Type: bool
 FIELD: inverse, 
+FIELD: computed, 
 KLASS: Checking <BOOT Field many> against Field
 FIELD: name, many
 THIS.Type: str
@@ -221,6 +254,7 @@ THIS.Type: bool
 FIELD: key, false
 THIS.Type: bool
 FIELD: inverse, 
+FIELD: computed, 
 KLASS: Checking <BOOT Field key> against Field
 FIELD: name, key
 THIS.Type: str
@@ -235,6 +269,7 @@ THIS.Type: bool
 FIELD: key, false
 THIS.Type: bool
 FIELD: inverse, 
+FIELD: computed, 
 KLASS: Checking <BOOT Field inverse> against Field
 FIELD: name, inverse
 THIS.Type: str
@@ -250,6 +285,24 @@ FIELD: key, false
 THIS.Type: bool
 FIELD: inverse, <BOOT Field inverse>
 THIS.Type: Field
+FIELD: computed, 
+KLASS: Checking <BOOT Field computed> against Field
+FIELD: name, computed
+THIS.Type: str
+FIELD: owner, <BOOT Klass Field>
+THIS.Type: Klass
+FIELD: type, <BOOT Primitive str>
+THIS.Type: Type
+FIELD: optional, true
+THIS.Type: bool
+FIELD: many, false
+THIS.Type: bool
+FIELD: key, false
+THIS.Type: bool
+FIELD: inverse, 
+FIELD: computed, 
+THIS.Type: Field
+FIELD: fields, {"name"=><BOOT Field name>, "owner"=><BOOT Field owner>, "type"=><BOOT Field type>, "optional"=><BOOT Field optional>, "many"=><BOOT Field many>, "key"=><BOOT Field key>, "inverse"=><BOOT Field inverse>, "computed"=><BOOT Field computed>}
 THIS.Type: Field
 THIS.Type: Klass
 FIELD: type, <BOOT Klass Klass>
@@ -260,9 +313,34 @@ FIELD: many, false
 THIS.Type: bool
 FIELD: key, true
 THIS.Type: bool
-FIELD: inverse, <BOOT Field fields>
+FIELD: inverse, <BOOT Field defined_fields>
 THIS.Type: Field
+FIELD: computed, 
 THIS.Type: Field
+FIELD: computed, 
+KLASS: Checking <BOOT Field fields> against Field
+FIELD: name, fields
+THIS.Type: str
+FIELD: owner, <BOOT Klass Klass>
+THIS.Type: Klass
+FIELD: type, <BOOT Klass Field>
+THIS.Type: Type
+FIELD: optional, true
+THIS.Type: bool
+FIELD: many, true
+THIS.Type: bool
+FIELD: key, false
+THIS.Type: bool
+FIELD: inverse, 
+FIELD: computed, @super ? @defined_fields + @super.fields : @defined_fields
+THIS.Type: str
+THIS.Type: Field
+FIELD: fields, {"name"=><BOOT Field name>, "schema"=><BOOT Field schema>, "super"=><BOOT Field super>, "subtypes"=><BOOT Field subtypes>, "defined_fields"=><BOOT Field defined_fields>, "fields"=><BOOT Field fields>}
+THIS.Type: Field
+THIS.Type: Klass
+FIELD: defined_fields, {"name"=><BOOT Field name>, "schema"=><BOOT Field schema>}
+THIS.Type: Field
+FIELD: fields, {"name"=><BOOT Field name>, "schema"=><BOOT Field schema>}
 THIS.Type: Field
 THIS.Type: Klass
 FIELD: type, <BOOT Klass Schema>
@@ -274,37 +352,30 @@ FIELD: many, false
 THIS.Type: bool
 FIELD: key, false
 THIS.Type: bool
-FIELD: inverse, <BOOT Field classes>
+FIELD: inverse, <BOOT Field types>
 THIS.Type: Field
+FIELD: computed, 
 THIS.Type: Field
-KLASS: Checking <BOOT Field primitives> against Field
-FIELD: name, primitives
-THIS.Type: str
-FIELD: owner, <BOOT Klass Schema>
-THIS.Type: Klass
-FIELD: type, <BOOT Klass Primitive>
-KLASS: Checking <BOOT Klass Primitive> against Type
-THIS.Type: Type
-FIELD: optional, true
-THIS.Type: bool
-FIELD: many, true
-THIS.Type: bool
-FIELD: key, false
-THIS.Type: bool
-FIELD: inverse, 
+FIELD: computed, 
+THIS.Type: Field
+FIELD: fields, {"name"=><BOOT Field name>, "classes"=><BOOT Field classes>, "primitives"=><BOOT Field primitives>, "types"=><BOOT Field types>}
 THIS.Type: Field
 THIS.Type: Klass
 FIELD: primitives, {"str"=><BOOT Primitive str>, "int"=><BOOT Primitive int>, "bool"=><BOOT Primitive bool>, "real"=><BOOT Primitive real>}
 KLASS: Checking <BOOT Primitive str> against Primitive
-FIELD: name, str
-THIS.Type: str
 KLASS: Checking <BOOT Primitive int> against Primitive
 FIELD: name, int
 THIS.Type: str
+FIELD: schema, <BOOT Schema SchemaSchema>
+THIS.Type: Schema
 KLASS: Checking <BOOT Primitive bool> against Primitive
-FIELD: name, bool
-THIS.Type: str
 KLASS: Checking <BOOT Primitive real> against Primitive
 FIELD: name, real
 THIS.Type: str
+FIELD: schema, <BOOT Schema SchemaSchema>
+THIS.Type: Schema
 THIS.Type: Primitive
+FIELD: types, {"str"=><BOOT Primitive str>, "int"=><BOOT Primitive int>, "bool"=><BOOT Primitive bool>, "real"=><BOOT Primitive real>, "Schema"=><BOOT Klass Schema>, "Klass"=><BOOT Klass Klass>, "Primitive"=><BOOT Klass Primitive>, "Type"=><BOOT Klass Type>, "Field"=><BOOT Klass Field>}
+KLASS: Checking <BOOT Primitive int> against Type
+KLASS: Checking <BOOT Primitive real> against Type
+THIS.Type: Type

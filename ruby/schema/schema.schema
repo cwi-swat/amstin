@@ -7,32 +7,34 @@ schema SchemaSchema
 
   class Schema
     #name: str
-    classes: Klass*
-    primitives: Primitive*
+    classes: Klass* = "@types.select(&:Klass?)"
+    primitives: Primitive* = "@types.select(&:Primitive?)"
+    types: Type*
   end
 
   class Type
+    #name: str
+    \schema: Schema / Schema.types
   end
   
   class Primitive < Type
-    #name: str
   end
   
   class Klass < Type
-    #name: str
-    \schema: Schema / Schema.classes
-    super: Klass? 
+    super: Klass?
     subtypes: Klass* / Klass.super
-    fields: Field* 
+    defined_fields: Field*
+    fields: Field* = "@super ? @defined_fields + @super.fields : @defined_fields"
   end
   
   class Field
     #name: str
-    #owner: Klass / Klass.fields
+    #owner: Klass / Klass.defined_fields
     type: Type
     optional: bool
     many: bool
     key: bool
     inverse: Field? / Field.inverse 
+    computed: str?
   end
 end

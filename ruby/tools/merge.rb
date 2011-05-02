@@ -24,7 +24,8 @@ class Identify < MemoBase
   end
 
   def Field(field, obj)
-    if field.type.schema_class.name == "Primitive"
+    return if f.computed
+    if field.type.Primitive?
       if field.key
         if obj[field.name][0] == Identify.placeholder_char
           analog = lookup_object(obj)
@@ -109,7 +110,7 @@ class Merge < DiffBase
 
   def different_single(target, field, old, new)
     return if new.nil?
-    if field.type.schema_class.name == "Primitive"
+    if field.type.Primitive?
       return if field.key && new[0] == Identify.placeholder_char
       target[field.name] = new
       #puts "SET #{target}.#{field.name} = #{new}"

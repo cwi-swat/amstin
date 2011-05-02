@@ -5,18 +5,22 @@ class SchemaModel #< BasicObject
   attr_accessor :schema_class
 	
   def initialize()
-    @fields = {}
+    @data = {}
     @id = @@ids += 1
   end
 
-  def [](k)
-    raise "undefined internal field #{k}" if k[0] == "_"
-    @fields[k]
+  def [](field_name)
+    raise "undefined internal field #{field_name}" if field_name[0] == "_"
+    if field_name[-1] == "?"
+      return self.schema_class.name == field_name[0..-2]
+    else
+      @data[field_name]
+    end
   end
 
-  def []=(k, v)
-    raise "undefined internal field #{k}" if k[0] == "_"
-    @fields[k] = v
+  def []=(field_name, v)
+    raise "undefined internal field #{field_name}" if field_name[0] == "_"
+    @data[field_name] = v
   end
 
   def method_missing(name, *args, &block)
@@ -56,11 +60,18 @@ end
 
 class ValueHash < Hash
   include Enumerable
+  def initialize(key = "name")
+    @key = key
+  end
   def each(&block)
     values.each &block
   end
   def <<(x)
-    self[x.name] = x
+    raise "cannot modify a computed collection" if @key.nil?
+    self[x[@key]] = x
+  end
+  def _lock()
+    @key = nil
   end
 end
 
@@ -90,6 +101,7 @@ class SchemaGenerator
     schema.name = subclass.to_s
     schema.classes = ValueHash.new
     schema.primitives = ValueHash.new
+    schema.types = ValueHash.new
     schema.sym_primitives = ValueHash.new
   end
 
@@ -106,14 +118,21 @@ class SchemaGenerator
     def primitive(name)
       m = SchemaModel.new
       m.name = name.to_s
+      m.schema = schema
       schema.primitives[name.to_s] = m
+      schema.types[name.to_s] = m
       schema.sym_primitives[name] = m
     end
       
     def klass(wrapped, opts = {}, &block)
       m = wrapped.klass
-      m.super = opts[:super] ? opts[:super].klass : nil
-      m.super.subtypes << m if m.super
+      if opts[:super]
+        m.super = opts[:super].klass
+        m.super.subtypes << m
+        m.super.fields.each do |f|
+          m.fields << f
+        end
+      end
       m.schema = schema
       @@current = m
       yield
@@ -128,6 +147,7 @@ class SchemaGenerator
       f.key = opts[:key] || false
       f.inverse = opts[:inverse]
       f.inverse.inverse = f if f.inverse
+      f.computed = opts[:computed]
     end
 
     def const_missing(name)
@@ -135,12 +155,13 @@ class SchemaGenerator
     end
 
     def get_field(klass, name)
-      klass.fields.each do |f|
+      klass.defined_fields.each do |f|
         return f if f.name == name
       end
       f = SchemaModel.new
       #puts "Creating field #{name} (#{f._id})"
       f.name = name
+      klass.defined_fields[name] = f
       klass.fields[name] = f
       f.owner = klass
       return f
@@ -151,9 +172,11 @@ class SchemaGenerator
       return m if m
       m = SchemaModel.new
       schema.classes[name] = m
+      schema.types[name] = m
       #puts "Getting class #{name} (#{m._id})"
       m.name = name
       m.fields = ValueHash.new
+      m.defined_fields = ValueHash.new
       m.subtypes = ValueHash.new
       return m
     end
@@ -165,7 +188,7 @@ class SchemaGenerator
       end
       schema.classes.each do |c|
         c.schema_class = SchemaSchema::Klass.klass
-        c.fields.each do |f|
+        c.defined_fields.each do |f|
           f.schema_class = SchemaSchema::Field.klass
         end
       end

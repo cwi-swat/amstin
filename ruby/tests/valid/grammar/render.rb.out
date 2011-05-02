@@ -97,8 +97,6 @@ Sequence
                                                           value: "
                                                         #3 Text
                                                           value:  
-                                                    #1 Sequence
-                                                      elements
                                             #2 Break
                                               indent: 
                                               sep: 
@@ -141,8 +139,6 @@ Sequence
                                                           value: "
                                                         #3 Text
                                                           value:  
-                                                    #1 Sequence
-                                                      elements
                                             #6 Break
                                               indent: 
                                               sep: 
@@ -285,7 +281,7 @@ Sequence
                                                     #0 Sequence
                                                       elements
                                                         #0 Text
-                                                          value: key
+                                                          value: int
                                                         #1 Text
                                                           value:  
                                             #2 Break
@@ -305,8 +301,6 @@ Sequence
                                                           value: "
                                                         #3 Text
                                                           value:  
-                                                    #1 Sequence
-                                                      elements
                                             #4 Break
                                               indent: 
                                               sep: 
@@ -514,8 +508,6 @@ Sequence
                                                           value: "
                                                         #3 Text
                                                           value:  
-                                                    #1 Sequence
-                                                      elements
                                             #2 Break
                                               indent: 
                                               sep: 
@@ -558,8 +550,6 @@ Sequence
                                                           value: "
                                                         #3 Text
                                                           value:  
-                                                    #1 Sequence
-                                                      elements
                                             #6 Break
                                               indent: 
                                               sep: 
@@ -797,8 +787,6 @@ Sequence
                                                           value: "
                                                         #3 Text
                                                           value:  
-                                                    #1 Sequence
-                                                      elements
                                             #4 Break
                                               indent: 
                                               sep: 
@@ -934,8 +922,6 @@ Sequence
                                                           value: "
                                                         #3 Text
                                                           value:  
-                                                    #1 Sequence
-                                                      elements
                                         indent: 4
                             #2 Text
                               value: |
@@ -997,8 +983,6 @@ Sequence
                                                           value: "
                                                         #3 Text
                                                           value:  
-                                                    #1 Sequence
-                                                      elements
                                         indent: 4
                             #5 Text
                               value: |
@@ -1055,13 +1039,11 @@ Sequence
                                                         #0 Text
                                                           value: "
                                                         #1 Text
-                                                          value: sqstr
+                                                          value: real
                                                         #2 Text
                                                           value: "
                                                         #3 Text
                                                           value:  
-                                                    #1 Sequence
-                                                      elements
                                         indent: 4
                             #8 Text
                               value: |
@@ -1118,13 +1100,11 @@ Sequence
                                                         #0 Text
                                                           value: "
                                                         #1 Text
-                                                          value: real
+                                                          value: bool
                                                         #2 Text
                                                           value: "
                                                         #3 Text
                                                           value:  
-                                                    #1 Sequence
-                                                      elements
                                         indent: 4
                             #11 Text
                               value: |
@@ -1181,13 +1161,11 @@ Sequence
                                                         #0 Text
                                                           value: "
                                                         #1 Text
-                                                          value: bool
+                                                          value: sym
                                                         #2 Text
                                                           value: "
                                                         #3 Text
                                                           value:  
-                                                    #1 Sequence
-                                                      elements
                                         indent: 4
                             #14 Text
                               value: |
@@ -1195,69 +1173,6 @@ Sequence
                               indent: 
                               sep: 
                             #16 Sequence
-                              elements
-                                #0 Sequence
-                                  elements
-                                    #0 Text
-                                      value: [
-                                    #1 Text
-                                      value:  
-                                #1 Sequence
-                                  elements
-                                    #0 Text
-                                      value: Value
-                                    #1 Text
-                                      value:  
-                                #2 Sequence
-                                  elements
-                                    #0 Text
-                                      value: ]
-                                    #1 Text
-                                      value:  
-                                #3 Sequence
-                                  elements
-                                    #0 Group
-                                      arg: Nest
-                                        arg: Sequence
-                                          elements
-                                            #0 Break
-                                              indent: 
-                                              sep: 
-                                            #1 Sequence
-                                              elements
-                                                #0 Sequence
-                                                  elements
-                                                    #0 Text
-                                                      value: kind
-                                                    #1 Text
-                                                      value:  
-                                                #1 Sequence
-                                                  elements
-                                                    #0 Text
-                                                      value: :
-                                                    #1 Text
-                                                      value:  
-                                                #2 Sequence
-                                                  elements
-                                                    #0 Sequence
-                                                      elements
-                                                        #0 Text
-                                                          value: "
-                                                        #1 Text
-                                                          value: sym
-                                                        #2 Text
-                                                          value: "
-                                                        #3 Text
-                                                          value:  
-                                                    #1 Sequence
-                                                      elements
-                                        indent: 4
-                            #17 Text
-                              value: |
-                            #18 Break
-                              indent: 
-                              sep: 
-                            #19 Sequence
                               elements
                                 #0 Sequence
                                   elements
@@ -1300,8 +1215,6 @@ Sequence
                                                           value: "
                                                         #3 Text
                                                           value:  
-                                                    #1 Sequence
-                                                      elements
                                             #2 Break
                                               indent: 
                                               sep: 
@@ -1328,63 +1241,12 @@ Sequence
                                                         #1 Text
                                                           value:  
                                         indent: 4
-                            #20 Text
+                            #17 Text
                               value: |
-                            #21 Break
+                            #18 Break
                               indent: 
                               sep: 
-                            #22 Sequence
-                              elements
-                                #0 Sequence
-                                  elements
-                                    #0 Text
-                                      value: [
-                                    #1 Text
-                                      value:  
-                                #1 Sequence
-                                  elements
-                                    #0 Text
-                                      value: Key
-                                    #1 Text
-                                      value:  
-                                #2 Sequence
-                                  elements
-                                    #0 Text
-                                      value: ]
-                                    #1 Text
-                                      value:  
-                                #3 Sequence
-                                  elements
-                                    #0 Group
-                                      arg: Nest
-                                        arg: Sequence
-                                          elements
-                                            #0 Break
-                                              indent: 
-                                              sep: 
-                                            #1 Sequence
-                                              elements
-                                                #0 Sequence
-                                                  elements
-                                                    #0 Sequence
-                                                      elements
-                                                        #0 Text
-                                                          value: "
-                                                        #1 Text
-                                                          value: key
-                                                        #2 Text
-                                                          value: "
-                                                        #3 Text
-                                                          value:  
-                                                    #1 Sequence
-                                                      elements
-                                        indent: 4
-                            #23 Text
-                              value: |
-                            #24 Break
-                              indent: 
-                              sep: 
-                            #25 Sequence
+                            #19 Sequence
                               elements
                                 #0 Sequence
                                   elements
@@ -1452,15 +1314,13 @@ Sequence
                                                           value: "
                                                         #3 Text
                                                           value:  
-                                                    #1 Sequence
-                                                      elements
                                         indent: 4
-                            #26 Text
+                            #20 Text
                               value: |
-                            #27 Break
+                            #21 Break
                               indent: 
                               sep: 
-                            #28 Sequence
+                            #22 Sequence
                               elements
                                 #0 Sequence
                                   elements
@@ -1511,116 +1371,13 @@ Sequence
                                                           value: int
                                                         #1 Text
                                                           value:  
-                                            #2 Break
-                                              indent: 
-                                              sep: 
-                                            #3 Sequence
-                                              elements
-                                                #0 Sequence
-                                                  elements
-                                                    #0 Sequence
-                                                      elements
-                                                        #0 Text
-                                                          value: @
-                                                        #1 Text
-                                                          value:  
-                                                    #1 Sequence
-                                                      elements
-                                                        #0 Text
-                                                          value: "
-                                                        #1 Text
-                                                          value: self.case_sensitive = true
-                                                        #2 Text
-                                                          value: "
-                                                        #3 Text
-                                                          value:  
                                         indent: 4
-                            #29 Text
+                            #23 Text
                               value: |
-                            #30 Break
+                            #24 Break
                               indent: 
                               sep: 
-                            #31 Sequence
-                              elements
-                                #0 Sequence
-                                  elements
-                                    #0 Text
-                                      value: [
-                                    #1 Text
-                                      value:  
-                                #1 Sequence
-                                  elements
-                                    #0 Text
-                                      value: Lit
-                                    #1 Text
-                                      value:  
-                                #2 Sequence
-                                  elements
-                                    #0 Text
-                                      value: ]
-                                    #1 Text
-                                      value:  
-                                #3 Sequence
-                                  elements
-                                    #0 Group
-                                      arg: Nest
-                                        arg: Sequence
-                                          elements
-                                            #0 Break
-                                              indent: 
-                                              sep: 
-                                            #1 Sequence
-                                              elements
-                                                #0 Sequence
-                                                  elements
-                                                    #0 Text
-                                                      value: value
-                                                    #1 Text
-                                                      value:  
-                                                #1 Sequence
-                                                  elements
-                                                    #0 Text
-                                                      value: :
-                                                    #1 Text
-                                                      value:  
-                                                #2 Sequence
-                                                  elements
-                                                    #0 Sequence
-                                                      elements
-                                                        #0 Text
-                                                          value: int
-                                                        #1 Text
-                                                          value:  
-                                            #2 Break
-                                              indent: 
-                                              sep: 
-                                            #3 Sequence
-                                              elements
-                                                #0 Sequence
-                                                  elements
-                                                    #0 Sequence
-                                                      elements
-                                                        #0 Text
-                                                          value: @
-                                                        #1 Text
-                                                          value:  
-                                                    #1 Sequence
-                                                      elements
-                                                        #0 Text
-                                                          value: "
-                                                        #1 Text
-                                                          value: self.case_sensitive = false
-                                                        #2 Text
-                                                          value: "
-                                                        #3 Text
-                                                          value:  
-                                        indent: 4
-                            #32 Text
-                              value: |
-                            #33 Break
-                              indent: 
-                              sep: 
-                            #34 Sequence
+                            #25 Sequence
                               elements
                                 #0 Sequence
                                   elements
@@ -1678,12 +1435,12 @@ Sequence
                                                         #1 Text
                                                           value:  
                                         indent: 4
-                            #35 Text
+                            #26 Text
                               value: |
-                            #36 Break
+                            #27 Break
                               indent: 
                               sep: 
-                            #37 Sequence
+                            #28 Sequence
                               elements
                                 #0 Sequence
                                   elements
@@ -1751,8 +1508,6 @@ Sequence
                                                           value: "
                                                         #3 Text
                                                           value:  
-                                                    #1 Sequence
-                                                      elements
                                             #4 Break
                                               indent: 
                                               sep: 
@@ -1772,6 +1527,356 @@ Sequence
                                                           value: "
                                                         #1 Text
                                                           value: self.optional = true; self.many = false; self.sep = nil
+                                                        #2 Text
+                                                          value: "
+                                                        #3 Text
+                                                          value:  
+                                        indent: 4
+                            #29 Text
+                              value: |
+                            #30 Break
+                              indent: 
+                              sep: 
+                            #31 Sequence
+                              elements
+                                #0 Sequence
+                                  elements
+                                    #0 Text
+                                      value: [
+                                    #1 Text
+                                      value:  
+                                #1 Sequence
+                                  elements
+                                    #0 Text
+                                      value: Regular
+                                    #1 Text
+                                      value:  
+                                #2 Sequence
+                                  elements
+                                    #0 Text
+                                      value: ]
+                                    #1 Text
+                                      value:  
+                                #3 Sequence
+                                  elements
+                                    #0 Group
+                                      arg: Nest
+                                        arg: Sequence
+                                          elements
+                                            #0 Break
+                                              indent: 
+                                              sep: 
+                                            #1 Sequence
+                                              elements
+                                                #0 Sequence
+                                                  elements
+                                                    #0 Text
+                                                      value: arg
+                                                    #1 Text
+                                                      value:  
+                                                #1 Sequence
+                                                  elements
+                                                    #0 Text
+                                                      value: :
+                                                    #1 Text
+                                                      value:  
+                                                #2 Sequence
+                                                  elements
+                                                    #0 Sequence
+                                                      elements
+                                                        #0 Text
+                                                          value: Pattern
+                                                        #1 Text
+                                                          value:  
+                                            #2 Break
+                                              indent: 
+                                              sep: 
+                                            #3 Sequence
+                                              elements
+                                                #0 Sequence
+                                                  elements
+                                                    #0 Sequence
+                                                      elements
+                                                        #0 Text
+                                                          value: "
+                                                        #1 Text
+                                                          value: +
+                                                        #2 Text
+                                                          value: "
+                                                        #3 Text
+                                                          value:  
+                                            #4 Break
+                                              indent: 
+                                              sep: 
+                                            #5 Sequence
+                                              elements
+                                                #0 Sequence
+                                                  elements
+                                                    #0 Sequence
+                                                      elements
+                                                        #0 Text
+                                                          value: @
+                                                        #1 Text
+                                                          value:  
+                                                    #1 Sequence
+                                                      elements
+                                                        #0 Text
+                                                          value: "
+                                                        #1 Text
+                                                          value: self.optional = false; self.many = true; self.sep = nil
+                                                        #2 Text
+                                                          value: "
+                                                        #3 Text
+                                                          value:  
+                                        indent: 4
+                            #32 Text
+                              value: |
+                            #33 Break
+                              indent: 
+                              sep: 
+                            #34 Sequence
+                              elements
+                                #0 Sequence
+                                  elements
+                                    #0 Text
+                                      value: [
+                                    #1 Text
+                                      value:  
+                                #1 Sequence
+                                  elements
+                                    #0 Text
+                                      value: Regular
+                                    #1 Text
+                                      value:  
+                                #2 Sequence
+                                  elements
+                                    #0 Text
+                                      value: ]
+                                    #1 Text
+                                      value:  
+                                #3 Sequence
+                                  elements
+                                    #0 Group
+                                      arg: Nest
+                                        arg: Sequence
+                                          elements
+                                            #0 Break
+                                              indent: 
+                                              sep: 
+                                            #1 Sequence
+                                              elements
+                                                #0 Sequence
+                                                  elements
+                                                    #0 Text
+                                                      value: arg
+                                                    #1 Text
+                                                      value:  
+                                                #1 Sequence
+                                                  elements
+                                                    #0 Text
+                                                      value: :
+                                                    #1 Text
+                                                      value:  
+                                                #2 Sequence
+                                                  elements
+                                                    #0 Sequence
+                                                      elements
+                                                        #0 Text
+                                                          value: Pattern
+                                                        #1 Text
+                                                          value:  
+                                            #2 Break
+                                              indent: 
+                                              sep: 
+                                            #3 Sequence
+                                              elements
+                                                #0 Sequence
+                                                  elements
+                                                    #0 Sequence
+                                                      elements
+                                                        #0 Text
+                                                          value: "
+                                                        #1 Text
+                                                          value: *
+                                                        #2 Text
+                                                          value: "
+                                                        #3 Text
+                                                          value:  
+                                            #4 Break
+                                              indent: 
+                                              sep: 
+                                            #5 Sequence
+                                              elements
+                                                #0 Sequence
+                                                  elements
+                                                    #0 Sequence
+                                                      elements
+                                                        #0 Text
+                                                          value: @
+                                                        #1 Text
+                                                          value:  
+                                                    #1 Sequence
+                                                      elements
+                                                        #0 Text
+                                                          value: "
+                                                        #1 Text
+                                                          value: self.optional = true; self.many = true; self.sep = nil
+                                                        #2 Text
+                                                          value: "
+                                                        #3 Text
+                                                          value:  
+                                        indent: 4
+                            #35 Text
+                              value: |
+                            #36 Break
+                              indent: 
+                              sep: 
+                            #37 Sequence
+                              elements
+                                #0 Sequence
+                                  elements
+                                    #0 Text
+                                      value: [
+                                    #1 Text
+                                      value:  
+                                #1 Sequence
+                                  elements
+                                    #0 Text
+                                      value: Regular
+                                    #1 Text
+                                      value:  
+                                #2 Sequence
+                                  elements
+                                    #0 Text
+                                      value: ]
+                                    #1 Text
+                                      value:  
+                                #3 Sequence
+                                  elements
+                                    #0 Group
+                                      arg: Nest
+                                        arg: Sequence
+                                          elements
+                                            #0 Break
+                                              indent: 
+                                              sep: 
+                                            #1 Sequence
+                                              elements
+                                                #0 Sequence
+                                                  elements
+                                                    #0 Sequence
+                                                      elements
+                                                        #0 Text
+                                                          value: "
+                                                        #1 Text
+                                                          value: {
+                                                        #2 Text
+                                                          value: "
+                                                        #3 Text
+                                                          value:  
+                                            #2 Break
+                                              indent: 
+                                              sep: 
+                                            #3 Sequence
+                                              elements
+                                                #0 Sequence
+                                                  elements
+                                                    #0 Text
+                                                      value: arg
+                                                    #1 Text
+                                                      value:  
+                                                #1 Sequence
+                                                  elements
+                                                    #0 Text
+                                                      value: :
+                                                    #1 Text
+                                                      value:  
+                                                #2 Sequence
+                                                  elements
+                                                    #0 Sequence
+                                                      elements
+                                                        #0 Text
+                                                          value: Pattern
+                                                        #1 Text
+                                                          value:  
+                                            #4 Break
+                                              indent: 
+                                              sep: 
+                                            #5 Sequence
+                                              elements
+                                                #0 Sequence
+                                                  elements
+                                                    #0 Text
+                                                      value: sep
+                                                    #1 Text
+                                                      value:  
+                                                #1 Sequence
+                                                  elements
+                                                    #0 Text
+                                                      value: :
+                                                    #1 Text
+                                                      value:  
+                                                #2 Sequence
+                                                  elements
+                                                    #0 Sequence
+                                                      elements
+                                                        #0 Text
+                                                          value: int
+                                                        #1 Text
+                                                          value:  
+                                            #6 Break
+                                              indent: 
+                                              sep: 
+                                            #7 Sequence
+                                              elements
+                                                #0 Sequence
+                                                  elements
+                                                    #0 Sequence
+                                                      elements
+                                                        #0 Text
+                                                          value: "
+                                                        #1 Text
+                                                          value: }
+                                                        #2 Text
+                                                          value: "
+                                                        #3 Text
+                                                          value:  
+                                            #8 Break
+                                              indent: 
+                                              sep: 
+                                            #9 Sequence
+                                              elements
+                                                #0 Sequence
+                                                  elements
+                                                    #0 Sequence
+                                                      elements
+                                                        #0 Text
+                                                          value: "
+                                                        #1 Text
+                                                          value: +
+                                                        #2 Text
+                                                          value: "
+                                                        #3 Text
+                                                          value:  
+                                            #10 Break
+                                              indent: 
+                                              sep: 
+                                            #11 Sequence
+                                              elements
+                                                #0 Sequence
+                                                  elements
+                                                    #0 Sequence
+                                                      elements
+                                                        #0 Text
+                                                          value: @
+                                                        #1 Text
+                                                          value:  
+                                                    #1 Sequence
+                                                      elements
+                                                        #0 Text
+                                                          value: "
+                                                        #1 Text
+                                                          value: self.optional = false; self.many = true
                                                         #2 Text
                                                           value: "
                                                         #3 Text
@@ -1815,204 +1920,6 @@ Sequence
                                               elements
                                                 #0 Sequence
                                                   elements
-                                                    #0 Text
-                                                      value: arg
-                                                    #1 Text
-                                                      value:  
-                                                #1 Sequence
-                                                  elements
-                                                    #0 Text
-                                                      value: :
-                                                    #1 Text
-                                                      value:  
-                                                #2 Sequence
-                                                  elements
-                                                    #0 Sequence
-                                                      elements
-                                                        #0 Text
-                                                          value: Pattern
-                                                        #1 Text
-                                                          value:  
-                                            #2 Break
-                                              indent: 
-                                              sep: 
-                                            #3 Sequence
-                                              elements
-                                                #0 Sequence
-                                                  elements
-                                                    #0 Sequence
-                                                      elements
-                                                        #0 Text
-                                                          value: "
-                                                        #1 Text
-                                                          value: +
-                                                        #2 Text
-                                                          value: "
-                                                        #3 Text
-                                                          value:  
-                                                    #1 Sequence
-                                                      elements
-                                            #4 Break
-                                              indent: 
-                                              sep: 
-                                            #5 Sequence
-                                              elements
-                                                #0 Sequence
-                                                  elements
-                                                    #0 Sequence
-                                                      elements
-                                                        #0 Text
-                                                          value: @
-                                                        #1 Text
-                                                          value:  
-                                                    #1 Sequence
-                                                      elements
-                                                        #0 Text
-                                                          value: "
-                                                        #1 Text
-                                                          value: self.optional = false; self.many = true; self.sep = nil
-                                                        #2 Text
-                                                          value: "
-                                                        #3 Text
-                                                          value:  
-                                        indent: 4
-                            #41 Text
-                              value: |
-                            #42 Break
-                              indent: 
-                              sep: 
-                            #43 Sequence
-                              elements
-                                #0 Sequence
-                                  elements
-                                    #0 Text
-                                      value: [
-                                    #1 Text
-                                      value:  
-                                #1 Sequence
-                                  elements
-                                    #0 Text
-                                      value: Regular
-                                    #1 Text
-                                      value:  
-                                #2 Sequence
-                                  elements
-                                    #0 Text
-                                      value: ]
-                                    #1 Text
-                                      value:  
-                                #3 Sequence
-                                  elements
-                                    #0 Group
-                                      arg: Nest
-                                        arg: Sequence
-                                          elements
-                                            #0 Break
-                                              indent: 
-                                              sep: 
-                                            #1 Sequence
-                                              elements
-                                                #0 Sequence
-                                                  elements
-                                                    #0 Text
-                                                      value: arg
-                                                    #1 Text
-                                                      value:  
-                                                #1 Sequence
-                                                  elements
-                                                    #0 Text
-                                                      value: :
-                                                    #1 Text
-                                                      value:  
-                                                #2 Sequence
-                                                  elements
-                                                    #0 Sequence
-                                                      elements
-                                                        #0 Text
-                                                          value: Pattern
-                                                        #1 Text
-                                                          value:  
-                                            #2 Break
-                                              indent: 
-                                              sep: 
-                                            #3 Sequence
-                                              elements
-                                                #0 Sequence
-                                                  elements
-                                                    #0 Sequence
-                                                      elements
-                                                        #0 Text
-                                                          value: "
-                                                        #1 Text
-                                                          value: *
-                                                        #2 Text
-                                                          value: "
-                                                        #3 Text
-                                                          value:  
-                                                    #1 Sequence
-                                                      elements
-                                            #4 Break
-                                              indent: 
-                                              sep: 
-                                            #5 Sequence
-                                              elements
-                                                #0 Sequence
-                                                  elements
-                                                    #0 Sequence
-                                                      elements
-                                                        #0 Text
-                                                          value: @
-                                                        #1 Text
-                                                          value:  
-                                                    #1 Sequence
-                                                      elements
-                                                        #0 Text
-                                                          value: "
-                                                        #1 Text
-                                                          value: self.optional = true; self.many = true; self.sep = nil
-                                                        #2 Text
-                                                          value: "
-                                                        #3 Text
-                                                          value:  
-                                        indent: 4
-                            #44 Text
-                              value: |
-                            #45 Break
-                              indent: 
-                              sep: 
-                            #46 Sequence
-                              elements
-                                #0 Sequence
-                                  elements
-                                    #0 Text
-                                      value: [
-                                    #1 Text
-                                      value:  
-                                #1 Sequence
-                                  elements
-                                    #0 Text
-                                      value: Regular
-                                    #1 Text
-                                      value:  
-                                #2 Sequence
-                                  elements
-                                    #0 Text
-                                      value: ]
-                                    #1 Text
-                                      value:  
-                                #3 Sequence
-                                  elements
-                                    #0 Group
-                                      arg: Nest
-                                        arg: Sequence
-                                          elements
-                                            #0 Break
-                                              indent: 
-                                              sep: 
-                                            #1 Sequence
-                                              elements
-                                                #0 Sequence
-                                                  elements
                                                     #0 Sequence
                                                       elements
                                                         #0 Text
@@ -2023,8 +1930,6 @@ Sequence
                                                           value: "
                                                         #3 Text
                                                           value:  
-                                                    #1 Sequence
-                                                      elements
                                             #2 Break
                                               indent: 
                                               sep: 
@@ -2092,170 +1997,6 @@ Sequence
                                                           value: "
                                                         #3 Text
                                                           value:  
-                                                    #1 Sequence
-                                                      elements
-                                            #8 Break
-                                              indent: 
-                                              sep: 
-                                            #9 Sequence
-                                              elements
-                                                #0 Sequence
-                                                  elements
-                                                    #0 Sequence
-                                                      elements
-                                                        #0 Text
-                                                          value: "
-                                                        #1 Text
-                                                          value: +
-                                                        #2 Text
-                                                          value: "
-                                                        #3 Text
-                                                          value:  
-                                                    #1 Sequence
-                                                      elements
-                                            #10 Break
-                                              indent: 
-                                              sep: 
-                                            #11 Sequence
-                                              elements
-                                                #0 Sequence
-                                                  elements
-                                                    #0 Sequence
-                                                      elements
-                                                        #0 Text
-                                                          value: @
-                                                        #1 Text
-                                                          value:  
-                                                    #1 Sequence
-                                                      elements
-                                                        #0 Text
-                                                          value: "
-                                                        #1 Text
-                                                          value: self.optional = false; self.many = true
-                                                        #2 Text
-                                                          value: "
-                                                        #3 Text
-                                                          value:  
-                                        indent: 4
-                            #47 Text
-                              value: |
-                            #48 Break
-                              indent: 
-                              sep: 
-                            #49 Sequence
-                              elements
-                                #0 Sequence
-                                  elements
-                                    #0 Text
-                                      value: [
-                                    #1 Text
-                                      value:  
-                                #1 Sequence
-                                  elements
-                                    #0 Text
-                                      value: Regular
-                                    #1 Text
-                                      value:  
-                                #2 Sequence
-                                  elements
-                                    #0 Text
-                                      value: ]
-                                    #1 Text
-                                      value:  
-                                #3 Sequence
-                                  elements
-                                    #0 Group
-                                      arg: Nest
-                                        arg: Sequence
-                                          elements
-                                            #0 Break
-                                              indent: 
-                                              sep: 
-                                            #1 Sequence
-                                              elements
-                                                #0 Sequence
-                                                  elements
-                                                    #0 Sequence
-                                                      elements
-                                                        #0 Text
-                                                          value: "
-                                                        #1 Text
-                                                          value: {
-                                                        #2 Text
-                                                          value: "
-                                                        #3 Text
-                                                          value:  
-                                                    #1 Sequence
-                                                      elements
-                                            #2 Break
-                                              indent: 
-                                              sep: 
-                                            #3 Sequence
-                                              elements
-                                                #0 Sequence
-                                                  elements
-                                                    #0 Text
-                                                      value: arg
-                                                    #1 Text
-                                                      value:  
-                                                #1 Sequence
-                                                  elements
-                                                    #0 Text
-                                                      value: :
-                                                    #1 Text
-                                                      value:  
-                                                #2 Sequence
-                                                  elements
-                                                    #0 Sequence
-                                                      elements
-                                                        #0 Text
-                                                          value: Pattern
-                                                        #1 Text
-                                                          value:  
-                                            #4 Break
-                                              indent: 
-                                              sep: 
-                                            #5 Sequence
-                                              elements
-                                                #0 Sequence
-                                                  elements
-                                                    #0 Text
-                                                      value: sep
-                                                    #1 Text
-                                                      value:  
-                                                #1 Sequence
-                                                  elements
-                                                    #0 Text
-                                                      value: :
-                                                    #1 Text
-                                                      value:  
-                                                #2 Sequence
-                                                  elements
-                                                    #0 Sequence
-                                                      elements
-                                                        #0 Text
-                                                          value: int
-                                                        #1 Text
-                                                          value:  
-                                            #6 Break
-                                              indent: 
-                                              sep: 
-                                            #7 Sequence
-                                              elements
-                                                #0 Sequence
-                                                  elements
-                                                    #0 Sequence
-                                                      elements
-                                                        #0 Text
-                                                          value: "
-                                                        #1 Text
-                                                          value: }
-                                                        #2 Text
-                                                          value: "
-                                                        #3 Text
-                                                          value:  
-                                                    #1 Sequence
-                                                      elements
                                             #8 Break
                                               indent: 
                                               sep: 
@@ -2273,8 +2014,6 @@ Sequence
                                                           value: "
                                                         #3 Text
                                                           value:  
-                                                    #1 Sequence
-                                                      elements
                                             #10 Break
                                               indent: 
                                               sep: 
@@ -2299,12 +2038,12 @@ Sequence
                                                         #3 Text
                                                           value:  
                                         indent: 4
-                            #50 Text
+                            #41 Text
                               value: |
-                            #51 Break
+                            #42 Break
                               indent: 
                               sep: 
-                            #52 Sequence
+                            #43 Sequence
                               elements
                                 #0 Sequence
                                   elements
@@ -2329,8 +2068,6 @@ Sequence
                                                           value: "
                                                         #3 Text
                                                           value:  
-                                                    #1 Sequence
-                                                      elements
                                             #2 Break
                                               indent: 
                                               sep: 
@@ -2361,8 +2098,6 @@ Sequence
                                                           value: "
                                                         #3 Text
                                                           value:  
-                                                    #1 Sequence
-                                                      elements
                                         indent: 4
                         indent: 4
         indent: 4

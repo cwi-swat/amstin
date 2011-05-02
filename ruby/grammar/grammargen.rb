@@ -85,7 +85,7 @@ class GrammarGenerator
         raise "Unrecognized grammar symbol #{e}" unless r
         return r
       end
-      if e.schema_class.name == "Rule" then
+      if e.Rule? then
         return THE_FACTORY.Call(e)
       end
       return e

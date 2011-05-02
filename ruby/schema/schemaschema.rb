@@ -15,46 +15,52 @@ class SchemaSchema < SchemaGenerator
     { :classes => { :fields => {} } }
   end
 
-  def self.key(klass)
-    klass.fields.find { |f| f.key && f.type.schema_class.name == "Primitive" }
-  end
-
-  def self.keyRel(klass)
-    klass.fields.find { |f| f.key && f.type.schema_class.name != "Primitive" }
-  end
-
   klass Schema do
     field :name, :type => :str, :key => true
-    field :classes, :type => Klass, :optional => true, :many => true
-    field :primitives, :type => Primitive, :optional => true, :many => true
+    field :classes, :type => Klass, :optional => true, :many => true, \
+      :computed => "@types.select(&:Klass?)"
+    field :primitives, :type => Primitive, :optional => true, :many => true, \
+      :computed => "@types.select(&:Primitive?)"
+    field :types, :type => Type, :optional => true, :many => true
   end
     
   klass Type do
+    field :name, :type => :str, :key => true
+    field :schema, :type => Schema, :inverse => Schema.types
   end
 
   klass Primitive, :super => Type do
-    field :name, :type => :str, :key => true
   end
 
   klass Klass, :super => Type do
-    field :name, :type => :str, :key => true
-    field :schema, :type => Schema, :inverse => Schema.classes
     field :super, :type => Klass, :optional => true
     field :subtypes, :type => Klass, :optional => true, :many => true, :inverse => Klass.super
-    field :fields, :type => Field, :optional => true, :many => true
+    field :defined_fields, :type => Field, :optional => true, :many => true
+    field :fields, :type => Field, :optional => true, :many => true, \
+      :computed => "@super ? @defined_fields + @super.fields : @defined_fields"
   end
 
   klass Field do
     field :name, :type => :str, :key => true
-    field :owner, :type => Klass, :inverse => Klass.fields, :inverse => Klass.fields, :key => true
+    field :owner, :type => Klass, :inverse => Klass.defined_fields, :key => true
     field :type, :type => Type
     field :optional, :type => :bool
     field :many, :type => :bool
     field :key, :type => :bool
     field :inverse, :type => Field, :optional => true, :inverse => Field.inverse
+    field :computed, :type => :str, :optional => true
   end
 
   SchemaSchema.finalize(schema)
+
+  def self.key(klass)
+    klass.fields.find { |f| f.key && f.type.Primitive? }
+  end
+
+  def self.keyRel(klass)
+    klass.fields.find { |f| f.key && !f.type.Primitive? }
+  end
+
 end
 
 # make a copy so it uses checked objects (but its not quite right, because

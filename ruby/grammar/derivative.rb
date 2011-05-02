@@ -93,7 +93,7 @@ class RuleCopy < Copy
     @indent += 1
     #puts "#{' '*@indent}COPY #{source.to_s}"
     rule = super(source)
-    if source.schema_class.name == "Rule"
+    if source.Rule?
       @grammar.rules << rule
     end
     @indent -= 1
@@ -151,7 +151,7 @@ class Derivative < CyclicMapNew
       first = recurse(from.elements[i])
       if first
         p = @factory.Sequence()
-        p.elements << first unless first.schema_class.name == "Epsilon"
+        p.elements << first unless first.Epsilon?
         for j in i+1...n
           p.elements << @copier.copy(from.elements[j])
         end

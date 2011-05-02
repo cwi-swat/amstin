@@ -38,10 +38,12 @@ class Render < Dispatch
   end
 
   def Field(this, obj)
+    #puts "FIELD #{this.name} #{obj} #{obj[this.name]}"
     recurse(this.arg, obj[this.name])
   end
   
   def Value(this, obj)
+    throw :fail if obj.nil?
     s = @factory.Sequence()
     case this.kind
     when /str/ 

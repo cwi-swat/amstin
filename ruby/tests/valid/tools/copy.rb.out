@@ -12,13 +12,15 @@ Schema
           many: false
           key: true
           inverse: nil
+          computed: 
         #1 Field
           name: classes
           type: Klass
           optional: true
           many: true
           key: false
-          inverse: schema
+          inverse: nil
+          computed: @types.select(&:Klass?)
         #2 Field
           name: primitives
           type: Primitive
@@ -26,9 +28,56 @@ Schema
           many: true
           key: false
           inverse: nil
+          computed: @types.select(&:Primitive?)
+        #3 Field
+          name: types
+          type: Type
+          optional: true
+          many: true
+          key: false
+          inverse: schema
+          computed: 
     #1 Klass
       name: Klass
       super: Type
+      fields
+        #0 Field
+          name: super
+          optional: true
+          many: false
+          key: false
+          inverse: subtypes
+          computed: 
+        #1 Field
+          name: subtypes
+          optional: true
+          many: true
+          key: false
+          inverse: super
+          computed: 
+        #2 Field
+          name: defined_fields
+          type: Field
+          optional: true
+          many: true
+          key: false
+          inverse: owner
+          computed: 
+        #3 Field
+          name: fields
+          type: Field
+          optional: true
+          many: true
+          key: false
+          inverse: nil
+          computed: @super ? @defined_fields + @super.fields : @defined_fields
+    #2 Klass
+      name: Primitive
+      super: Type
+      fields
+    #3 Klass
+      name: Type
+      super: nil
       fields
         #0 Field
           name: name
@@ -37,47 +86,15 @@ Schema
           many: false
           key: true
           inverse: nil
+          computed: 
         #1 Field
           name: schema
           type: Schema
           optional: false
           many: false
           key: false
-          inverse: classes
-        #2 Field
-          name: super
-          optional: true
-          many: false
-          key: false
-          inverse: subtypes
-        #3 Field
-          name: subtypes
-          optional: true
-          many: true
-          key: false
-          inverse: super
-        #4 Field
-          name: fields
-          type: Field
-          optional: true
-          many: true
-          key: false
-          inverse: owner
-    #2 Klass
-      name: Primitive
-      super: Type
-      fields
-        #0 Field
-          name: name
-          type: str
-          optional: false
-          many: false
-          key: true
-          inverse: nil
-    #3 Klass
-      name: Type
-      super: nil
-      fields
+          inverse: types
+          computed: 
     #4 Klass
       name: Field
       super: nil
@@ -89,13 +106,15 @@ Schema
           many: false
           key: true
           inverse: nil
+          computed: 
         #1 Field
           name: owner
           type: Klass
           optional: false
           many: false
           key: true
-          inverse: fields
+          inverse: defined_fields
+          computed: 
         #2 Field
           name: type
           type: Type
@@ -103,6 +122,7 @@ Schema
           many: false
           key: false
           inverse: nil
+          computed: 
         #3 Field
           name: optional
           type: bool
@@ -110,6 +130,7 @@ Schema
           many: false
           key: false
           inverse: nil
+          computed: 
         #4 Field
           name: many
           type: bool
@@ -117,6 +138,7 @@ Schema
           many: false
           key: false
           inverse: nil
+          computed: 
         #5 Field
           name: key
           type: bool
@@ -124,15 +146,26 @@ Schema
           many: false
           key: false
           inverse: nil
+          computed: 
         #6 Field
           name: inverse
           optional: true
           many: false
           key: false
           inverse: inverse
+          computed: 
+        #7 Field
+          name: computed
+          type: str
+          optional: true
+          many: false
+          key: false
+          inverse: nil
+          computed: 
   primitives
     #0 str
     #1 int
     #2 bool
     #3 real
+ValueHash
 WOA: SchemaSchema

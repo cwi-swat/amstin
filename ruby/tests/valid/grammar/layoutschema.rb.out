@@ -1,8 +1,10 @@
-BREAKING
-schema LayoutSchema primitive str primitive int primitive bool 
+schema LayoutSchema 
+    primitive str 
+    primitive int 
+    primitive bool 
     class Format end 
     class Sequence elements : Format * end 
     class Group arg : Format end 
     class Nest arg : Format indent : int end 
-    class Break indent : int sep : int end 
-    class Text value : int end end 
+    class Break indent : int sep : str end 
+    class Text value : str end end 

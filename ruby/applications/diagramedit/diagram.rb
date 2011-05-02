@@ -6,14 +6,6 @@ require 'tools/print'
 require 'wx'
 include Wx
 
-
-def DiagramEdit()
-
-  frame = Frame.new(nil, :title => 'So far, so good...')
-  frame.show
-
-end
-
 class DiagramFrame < Wx::Frame
    def initialize(shape)
      super(nil, :title => 'Diagram')
@@ -22,7 +14,9 @@ class DiagramFrame < Wx::Frame
      evt_motion :on_move
      evt_left_up :on_mouse_up
      @shape = shape
+
      @down = false
+     @selection = nil
    end
 
    def on_mouse_down(e)
@@ -41,6 +35,10 @@ class DiagramFrame < Wx::Frame
      @shape.position.y += e.y - @down_y
      on_mouse_down(e)
      refresh()
+   end
+
+   def find(shape)
+
    end
 
    # Writes the gruff graph to a file then reads it back to draw it
@@ -67,7 +65,6 @@ class DiagramFrame < Wx::Frame
      ShapeFormat(dc, shape.format)
      r = shape.position
      dc.draw_rectangle(r.x, r.y, r.w, r.h)
-     #content
    end
    
    
@@ -85,8 +82,6 @@ black = f.Color(0, 0, 0)
 white = f.Color(100, 100, 100)
 text = f.Text("Hello World", "Helvetica", 18, true, true, black)
 shape = f.Shape(f.Rect(10, 10, 100, 100), text, f.ShapeFormat(f.LineFormat(5, "", red), white))
-  
-shape.finalize
 
 Print.print(shape)
 

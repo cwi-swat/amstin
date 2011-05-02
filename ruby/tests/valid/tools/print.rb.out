@@ -12,13 +12,15 @@ Schema
           many: false
           key: true
           inverse: nil
+          computed: 
         #1 Field
           name: classes
           type: Klass
           optional: true
           many: true
           key: false
-          inverse: schema
+          inverse: nil
+          computed: @types.select(&:Klass?)
         #2 Field
           name: primitives
           type: Primitive
@@ -26,46 +28,92 @@ Schema
           many: true
           key: false
           inverse: nil
+          computed: @types.select(&:Primitive?)
+        #3 Field
+          name: types
+          type: Type
+          optional: true
+          many: true
+          key: false
+          inverse: schema
+          computed: 
     #1 Klass
       name: Klass
       super: Type
       fields
         #0 Field
           name: name
+          owner: Type
           type: str
           optional: false
           many: false
           key: true
           inverse: nil
+          computed: 
         #1 Field
           name: schema
+          owner: Type
           type: Schema
           optional: false
           many: false
           key: false
-          inverse: classes
+          inverse: types
+          computed: 
         #2 Field
           name: super
           optional: true
           many: false
           key: false
           inverse: subtypes
+          computed: 
         #3 Field
           name: subtypes
           optional: true
           many: true
           key: false
           inverse: super
+          computed: 
         #4 Field
-          name: fields
+          name: defined_fields
           type: Field
           optional: true
           many: true
           key: false
           inverse: owner
+          computed: 
+        #5 Field
+          name: fields
+          type: Field
+          optional: true
+          many: true
+          key: false
+          inverse: nil
+          computed: @super ? @defined_fields + @super.fields : @defined_fields
     #2 Klass
       name: Primitive
       super: Type
+      fields
+        #0 Field
+          name: name
+          owner: Type
+          type: str
+          optional: false
+          many: false
+          key: true
+          inverse: nil
+          computed: 
+        #1 Field
+          name: schema
+          owner: Type
+          type: Schema
+          optional: false
+          many: false
+          key: false
+          inverse: types
+          computed: 
+    #3 Klass
+      name: Type
+      super: nil
       fields
         #0 Field
           name: name
@@ -74,10 +122,15 @@ Schema
           many: false
           key: true
           inverse: nil
-    #3 Klass
-      name: Type
-      super: nil
-      fields
+          computed: 
+        #1 Field
+          name: schema
+          type: Schema
+          optional: false
+          many: false
+          key: false
+          inverse: types
+          computed: 
     #4 Klass
       name: Field
       super: nil
@@ -89,13 +142,15 @@ Schema
           many: false
           key: true
           inverse: nil
+          computed: 
         #1 Field
           name: owner
           type: Klass
           optional: false
           many: false
           key: true
-          inverse: fields
+          inverse: defined_fields
+          computed: 
         #2 Field
           name: type
           type: Type
@@ -103,6 +158,7 @@ Schema
           many: false
           key: false
           inverse: nil
+          computed: 
         #3 Field
           name: optional
           type: bool
@@ -110,6 +166,7 @@ Schema
           many: false
           key: false
           inverse: nil
+          computed: 
         #4 Field
           name: many
           type: bool
@@ -117,6 +174,7 @@ Schema
           many: false
           key: false
           inverse: nil
+          computed: 
         #5 Field
           name: key
           type: bool
@@ -124,12 +182,22 @@ Schema
           many: false
           key: false
           inverse: nil
+          computed: 
         #6 Field
           name: inverse
           optional: true
           many: false
           key: false
           inverse: inverse
+          computed: 
+        #7 Field
+          name: computed
+          type: str
+          optional: true
+          many: false
+          key: false
+          inverse: nil
+          computed: 
   primitives
     #0 str
     #1 int
@@ -149,6 +217,7 @@ Schema
           many: false
           key: false
           inverse: nil
+          computed: 
         #1 Field
           name: start
           type: Rule
@@ -156,6 +225,7 @@ Schema
           many: false
           key: false
           inverse: nil
+          computed: 
         #2 Field
           name: rules
           type: Rule
@@ -163,6 +233,7 @@ Schema
           many: true
           key: false
           inverse: grammar
+          computed: 
     #1 Klass
       name: Rule
       super: nil
@@ -174,6 +245,7 @@ Schema
           many: false
           key: true
           inverse: nil
+          computed: 
         #1 Field
           name: grammar
           type: Grammar
@@ -181,6 +253,7 @@ Schema
           many: false
           key: true
           inverse: rules
+          computed: 
         #2 Field
           name: arg
           type: Expression
@@ -188,6 +261,7 @@ Schema
           many: false
           key: false
           inverse: nil
+          computed: 
     #2 Klass
       name: Expression
       super: nil
@@ -207,6 +281,7 @@ Schema
           many: true
           key: false
           inverse: nil
+          computed: 
     #5 Klass
       name: Sequence
       super: Expression
@@ -218,6 +293,7 @@ Schema
           many: true
           key: false
           inverse: nil
+          computed: 
     #6 Klass
       name: Create
       super: Expression
@@ -229,6 +305,7 @@ Schema
           many: false
           key: false
           inverse: nil
+          computed: 
         #1 Field
           name: arg
           type: Expression
@@ -236,6 +313,7 @@ Schema
           many: false
           key: false
           inverse: nil
+          computed: 
     #7 Klass
       name: Field
       super: Expression
@@ -247,6 +325,7 @@ Schema
           many: false
           key: false
           inverse: nil
+          computed: 
         #1 Field
           name: arg
           type: Expression
@@ -254,6 +333,7 @@ Schema
           many: false
           key: false
           inverse: nil
+          computed: 
     #8 Klass
       name: Code
       super: Expression
@@ -265,6 +345,7 @@ Schema
           many: false
           key: false
           inverse: nil
+          computed: 
     #9 Klass
       name: Value
       super: Expression
@@ -276,11 +357,8 @@ Schema
           many: false
           key: false
           inverse: nil
+          computed: 
     #10 Klass
-      name: Key
-      super: Expression
-      fields
-    #11 Klass
       name: Ref
       super: Expression
       fields
@@ -291,7 +369,8 @@ Schema
           many: false
           key: false
           inverse: nil
-    #12 Klass
+          computed: 
+    #11 Klass
       name: Lit
       super: Expression
       fields
@@ -302,14 +381,8 @@ Schema
           many: false
           key: false
           inverse: nil
-        #1 Field
-          name: case_sensitive
-          type: bool
-          optional: false
-          many: false
-          key: false
-          inverse: nil
-    #13 Klass
+          computed: 
+    #12 Klass
       name: Call
       super: Expression
       fields
@@ -320,7 +393,8 @@ Schema
           many: false
           key: false
           inverse: nil
-    #14 Klass
+          computed: 
+    #13 Klass
       name: Regular
       super: Expression
       fields
@@ -331,6 +405,7 @@ Schema
           many: false
           key: false
           inverse: nil
+          computed: 
         #1 Field
           name: optional
           type: bool
@@ -338,6 +413,7 @@ Schema
           many: false
           key: false
           inverse: nil
+          computed: 
         #2 Field
           name: many
           type: bool
@@ -345,6 +421,7 @@ Schema
           many: false
           key: false
           inverse: nil
+          computed: 
         #3 Field
           name: sep
           type: str
@@ -352,6 +429,7 @@ Schema
           many: false
           key: false
           inverse: nil
+          computed: 
   primitives
     #0 str
     #1 int

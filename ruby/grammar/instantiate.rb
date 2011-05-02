@@ -30,6 +30,7 @@ class Instantiate
 
   def update(owner, field, pos, x)
     if field && field.many then
+      #puts "UPDATE #{owner} #{field.name} #{x} #{owner.class} #{owner[field.name].class}"
       owner[field.name] << x
       return pos + 1
     elsif field then

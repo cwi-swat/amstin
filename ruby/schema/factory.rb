@@ -17,7 +17,15 @@ class Factory
     obj = self[class_name.to_s]
     obj.schema_class.fields.each_with_index do |field, i|
       break if i >= args.length
-      obj[field.name] = args[i]
+      next if field.computed
+      if field.many
+        col = obj[field.name]
+        args[i].each do |x|
+          col << x
+        end
+      else
+        obj[field.name] = args[i]
+      end
     end
     return obj
   end
@@ -26,16 +34,20 @@ end
 class CheckedObject
 
   attr_reader :schema_class
-  attr_reader :_graph_id
   attr_reader :_id
   @@_id = 0
   
-  def initialize(schema_class, graph_id) #, many_index, many, int, str, b1, b2)
+  def _graph_id
+    @factory
+  end
+  
+  def initialize(schema_class, factory) #, many_index, many, int, str, b1, b2)
     @_id = @@_id += 1
     @hash = {}
     @schema_class = schema_class
-    @_graph_id = graph_id
+    @factory = factory
     schema_class.fields.each do |field|
+      next if field.computed
       if field.many
         # TODO: check for primitive many-valued???
         key = SchemaSchema.key(field.type)
@@ -44,8 +56,6 @@ class CheckedObject
         else
           @hash[field.name] = ManyField.new(self, field)
         end
-      #else if field.expression && !field.computed
-      #  @hash[field.name] = eval(field.expression)
       end
     end
   end
@@ -66,21 +76,26 @@ class CheckedObject
   
   def [](field_name)
     field = @schema_class.fields[field_name]; 
+    if field_name[-1] == "?"
+      return self.schema_class.name == field_name[0..-2]
+    end
     raise "Accessing non-existant field '#{field_name}' of #{schema_class.name} in #{schema_class.schema.name}" unless field
-    return @hash[field_name]
+    if field.computed
+      r = self.instance_eval(field.computed.gsub(/@/, "self."))
+      #puts "EVAL #{self}.#{field.name} = #{r}"
+      return r
+    else
+      return @hash[field_name]
+    end
   end
 
   def []=(field_name, new)
     #puts "Setting #{field_name} to #{new}"
     field = @schema_class.fields[field_name]
     raise "Assign to invalid field '#{field_name}'" unless field
-    if field.many
-      col = self[field.name]
-      new.each do |x|
-        col << x
-      end
-      return new
-    elsif new.nil?
+    raise "Can't set computed field #{field_name}" if field.computed
+    raise "Can't assign a many-valued field" if field.many
+    if new.nil?
       raise "Can't assign nil to required field '#{field_name}'" if !field.optional
     else
       case field.type.name
@@ -94,6 +109,7 @@ class CheckedObject
           end
       end
     end
+
     old = @hash[field_name]
     return new if old == new
     @hash[field_name] = new
@@ -116,7 +132,7 @@ class CheckedObject
 
   def to_s
     k = SchemaSchema.key(schema_class)
-    "<#{schema_class.name} #{k ? self[k.name] + " " : ""}#{@_id}>"
+    "<#{schema_class.name} #{k && self[k.name]? self[k.name] + " " : ""}#{@_id}>"
   end
 
   def inspect
@@ -124,37 +140,37 @@ class CheckedObject
   end
   
   def notify_update(field, old, new)
-    if field.inverse
-      inverse = field.inverse
-      # remove the old one
-      if old
-        if !inverse.many
-          old[inverse.name] = nil
-        else
-          old[inverse.name].delete(self)
-        end
+    inverse = field.inverse
+    #puts "NOTIFY #{self}.#{field.name}/#{inverse} FROM #{old} to #{new}" if field.name=="defined_fields"
+    return if inverse.nil?
+    # remove the old one
+    if old
+      if !inverse.many
+        old[inverse.name] = nil
+      else
+        old[inverse.name].delete(self)
       end
-      # add the new one
-      if new
-        if !inverse.many
-          new[inverse.name] = self
-        else
-          # don't do this now... it will get done during finalize
-        end
+    end
+    # add the new one
+    if new
+      if !inverse.many
+        new[inverse.name] = self
+      else
+        # don't do this now... it will get done during finalize
       end
     end
   end
   
   def finalize()
-    Finalize.new.finalize(self)
-    #@graph_id.locked = true
+    UpdateInverses.new("INVERT").finalize(self)
+    CheckRequired.new("REQUIRED").finalize(self)
   end  
 end
 
 
 class BaseManyField 
   include Enumerable
-
+  
   def initialize(realself, field)
     @realself = realself
     @field = field
@@ -164,6 +180,23 @@ class BaseManyField
     "[" + map(&:to_s).join(", ") + "]"
   end
 
+  def find_all(&block)
+    return select(&block)
+  end
+  
+  def reject(&block)
+    r = ValueHash.new(@key.name)
+    super.reject do |x| r << x end
+    r._lock
+    return r
+  end
+  
+  def select(&block)
+    r = ValueHash.new(@key.name)
+    super.select do |x| r << x end
+    r._lock
+    return r
+  end
 end
 
 # eg. "classes" field on Schema
@@ -222,11 +255,18 @@ class ManyIndexedField < BaseManyField
   def each(&block) 
     @hash.each_value &block
   end
+
+  def +(other)
+    r = ValueHash.new(@key.name)
+    self.each do |x| r << x end
+    self.each do |x| r << x end
+    r._lock
+    return r
+  end
 end  
 
 # eg. "classes" field on Schema
 class ManyField < BaseManyField
-  include Enumerable
   
   def initialize(realself, field)
     super(realself, field)
@@ -270,6 +310,13 @@ class ManyField < BaseManyField
   def each(&block) 
     @list.each &block
   end
+
+  def +(other)
+    r = []
+    self.each do |x| r << x end
+    self.each do |x| r << x end
+    return r
+  end
   
   # sligthly nonstandard zip, includes all elements of this and other
   def zip(other)
@@ -277,3 +324,4 @@ class ManyField < BaseManyField
     return (@list + extra).zip(other)
   end
 end  
+
