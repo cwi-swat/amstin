@@ -74,10 +74,6 @@ class NullTest < CyclicMapNew
     false
   end 
   
-  def Key(from)
-    false
-  end
-
   def Lit(from)
     false
   end
@@ -209,14 +205,6 @@ class Derivative < CyclicMapNew
 
   def Value(from)
     if (@token.class.name == from.kind)
-      return @factory.Epsilon()
-    else
-      return nil
-    end
-  end
-
-  def Key(from)
-    if (@token.class.name == "id")
       return @factory.Epsilon()
     else
       return nil

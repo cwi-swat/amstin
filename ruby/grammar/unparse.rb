@@ -67,12 +67,6 @@ class Unparse < CyclicCollect
     @output << this.layout
   end
 
-  def Key(this)
-    # todo: escaping for sym
-    @output << this.name
-    @output << this.layout
-  end
-
   def Regular(this)
     this.args.each do |arg|
       recurse(arg)

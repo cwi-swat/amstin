@@ -215,9 +215,9 @@ Grammar
                   arg: Call
                     rule: Pattern
                 #1 Lit
-                  value: ?
+                  value: *
                 #2 Code
-                  code: self.optional = true; self.many = false; self.sep = nil
+                  code: self.optional = true; self.many = true; self.sep = nil
           #10 Create
             name: Regular
             arg: Sequence
@@ -227,9 +227,9 @@ Grammar
                   arg: Call
                     rule: Pattern
                 #1 Lit
-                  value: +
+                  value: ?
                 #2 Code
-                  code: self.optional = false; self.many = true; self.sep = nil
+                  code: self.optional = true; self.sep = nil
           #11 Create
             name: Regular
             arg: Sequence
@@ -239,30 +239,10 @@ Grammar
                   arg: Call
                     rule: Pattern
                 #1 Lit
-                  value: *
-                #2 Code
-                  code: self.optional = true; self.many = true; self.sep = nil
-          #12 Create
-            name: Regular
-            arg: Sequence
-              elements
-                #0 Lit
-                  value: {
-                #1 Field
-                  name: arg
-                  arg: Call
-                    rule: Pattern
-                #2 Field
-                  name: sep
-                  arg: Value
-                    kind: str
-                #3 Lit
-                  value: }
-                #4 Lit
                   value: +
-                #5 Code
-                  code: self.optional = false; self.many = true
-          #13 Create
+                #2 Code
+                  code: self.many = true; self.sep = nil
+          #12 Create
             name: Regular
             arg: Sequence
               elements
@@ -282,6 +262,26 @@ Grammar
                   value: *
                 #5 Code
                   code: self.optional = true; self.many = true
+          #13 Create
+            name: Regular
+            arg: Sequence
+              elements
+                #0 Lit
+                  value: {
+                #1 Field
+                  name: arg
+                  arg: Call
+                    rule: Pattern
+                #2 Field
+                  name: sep
+                  arg: Value
+                    kind: str
+                #3 Lit
+                  value: }
+                #4 Lit
+                  value: +
+                #5 Code
+                  code: self.many = true
           #14 Sequence
             elements
               #0 Lit
@@ -507,9 +507,9 @@ Grammar
                   arg: Call
                     rule: Pattern
                 #1 Lit
-                  value: ?
+                  value: *
                 #2 Code
-                  code: self.optional = true; self.many = false; self.sep = nil
+                  code: self.optional = true; self.many = true; self.sep = nil
           #10 Create
             name: Regular
             arg: Sequence
@@ -519,9 +519,9 @@ Grammar
                   arg: Call
                     rule: Pattern
                 #1 Lit
-                  value: +
+                  value: ?
                 #2 Code
-                  code: self.optional = false; self.many = true; self.sep = nil
+                  code: self.optional = true; self.sep = nil
           #11 Create
             name: Regular
             arg: Sequence
@@ -531,30 +531,10 @@ Grammar
                   arg: Call
                     rule: Pattern
                 #1 Lit
-                  value: *
-                #2 Code
-                  code: self.optional = true; self.many = true; self.sep = nil
-          #12 Create
-            name: Regular
-            arg: Sequence
-              elements
-                #0 Lit
-                  value: {
-                #1 Field
-                  name: arg
-                  arg: Call
-                    rule: Pattern
-                #2 Field
-                  name: sep
-                  arg: Value
-                    kind: str
-                #3 Lit
-                  value: }
-                #4 Lit
                   value: +
-                #5 Code
-                  code: self.optional = false; self.many = true
-          #13 Create
+                #2 Code
+                  code: self.many = true; self.sep = nil
+          #12 Create
             name: Regular
             arg: Sequence
               elements
@@ -574,6 +554,26 @@ Grammar
                   value: *
                 #5 Code
                   code: self.optional = true; self.many = true
+          #13 Create
+            name: Regular
+            arg: Sequence
+              elements
+                #0 Lit
+                  value: {
+                #1 Field
+                  name: arg
+                  arg: Call
+                    rule: Pattern
+                #2 Field
+                  name: sep
+                  arg: Value
+                    kind: str
+                #3 Lit
+                  value: }
+                #4 Lit
+                  value: +
+                #5 Code
+                  code: self.many = true
           #14 Sequence
             elements
               #0 Lit

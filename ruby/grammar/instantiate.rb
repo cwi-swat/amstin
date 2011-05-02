@@ -104,14 +104,6 @@ class Instantiate
     update(owner, field, pos, convert(this))
   end
 
-#   def Key(this, owner, field, pos)
-#     #puts "--------> Defining key #{this.name} to #{owner}"
-#     owner[field.name] = this.name
-#     @defs[this.name] = owner
-#     # todo: assert field is never many
-#     update(owner, field, pos, this.name)
-#   end
-
   def Lit(this, owner, field, pos)
     if field && !field.many then
       # don't add literals to lists
