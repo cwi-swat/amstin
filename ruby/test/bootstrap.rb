@@ -19,8 +19,8 @@ class BootstrapTests < Test::Unit::TestCase
 
     assert_equal([], Diff.diff(grammar, grammar2),
            "parsed grammar.grammar != bootstrap grammargrammar")
-    #assert_not_equal([], Diff.diff(GrammarSchema.schema, SchemaSchema.schema),
-    #       "parsed grammar.grammar != bootstrap grammargrammar")
+    assert_not_equal([], Diff.diff(GrammarSchema.schema, SchemaSchema.schema),
+           "parsed grammar.grammar != bootstrap grammargrammar")
 
     tree2 = CPSParser.parse(grammargrammar, grammar2)
     grammar3 = inst.run(tree2)
@@ -69,5 +69,14 @@ class BootstrapTests < Test::Unit::TestCase
     assert_equal([], Diff.diff(schema_schema, schema_schema),
            "Parsed schema != Parsed schema")
   end
+
+  def test_parsetree_schema
+    grammar = GrammarGrammar.grammar
+    grammar2 = CPSParser.load('schema/schema.grammar', grammar, GrammarSchema.schema)
+    pt_schema = CPSParser.load('grammar/parsetree.schema', grammar2, SchemaSchema.schema)
+    p pt_schema
+    assert_not_nil(pt_schema)
+  end
+    
 
 end
