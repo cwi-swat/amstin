@@ -1,8 +1,7 @@
 
 
 require 'cyclicmap'
-require 'grammar/tokenize'
-
+require 'grammar/cpsparser'
 
 # TODO: refactor not to use instance var @output
 
@@ -11,12 +10,11 @@ class Unparse < CyclicCollect
 
   def initialize(grammar, output)
     super()
-    lits = CollectLiterals.run(grammar).join("|")
-    @literals = Regexp.new("^(#{lits})")
+    @literals = CPSParser::CollectKeywords.run(grammar)
     @output = output
   end
 
-  def self.run(grammar, pt, output = '')
+  def self.unparse(grammar, pt, output = '')
     unp = self.new(grammar, output)
     unp.recurse(pt)
     return unp.output
@@ -24,7 +22,7 @@ class Unparse < CyclicCollect
 
   def escape(this)
     # TODO: for sym a.b.c check only on a
-    if this.kind == "sym" && @literals.match(this.value) then
+    if this.kind == "sym" && @literals.include?(this.value) then
       "\\#{this.value}"
     else
       this.value

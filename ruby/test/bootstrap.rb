@@ -3,7 +3,6 @@
 require 'test/unit'
 
 require 'grammar/cpsparser'
-require 'grammar/tokenize'
 require 'grammar/parsetree'
 require 'grammar/grammargrammar'
 require 'grammar/instantiate'
