@@ -25,9 +25,9 @@ grammar GrammarGrammar
     | [Ref] name:sym "^"
     | [Lit] value:str
     | [Call] rule:Rule^
-    | [Regular] arg:Pattern "?"			@"self.optional = true; self.many = false; self.sep = nil"
-    | [Regular] arg:Pattern "+"  			@"self.optional = false; self.many = true; self.sep = nil"
-    | [Regular] arg:Pattern "*"  			@"self.optional = true; self.many = true; self.sep = nil"
-    | [Regular] "{" arg:Pattern sep:str "}" "+" 	@"self.optional = false; self.many = true"
+    | [Regular] arg:Pattern "*"       @"self.optional = true; self.many = true; self.sep = nil"
+    | [Regular] arg:Pattern "?"			@"self.optional = true; self.sep = nil"
+    | [Regular] arg:Pattern "+"  			@"self.many = true; self.sep = nil"
     | [Regular] "{" arg:Pattern sep:str "}" "*" 	@"self.optional = true; self.many = true"
+    | [Regular] "{" arg:Pattern sep:str "}" "+"   @"self.many = true"
     | "(" Alt ")"

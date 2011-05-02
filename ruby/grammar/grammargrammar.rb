@@ -51,16 +51,16 @@ class GrammarGrammar < GrammarGenerator
 
     alt [:Call], {rule: ref(Rule)}
 
-    alt [:Regular], {arg: Pattern}, "?", code("self.optional = true; self.many = false; self.sep = nil")
-
-    alt [:Regular], {arg: Pattern}, "+", code("self.optional = false; self.many = true; self.sep = nil")
-
     alt [:Regular], {arg: Pattern}, "*", code("self.optional = true; self.many = true; self.sep = nil")
 
-    alt [:Regular], "{", {arg: Pattern}, {sep: :str}, "}", "+", code("self.optional = false; self.many = true") 
+    alt [:Regular], {arg: Pattern}, "?", code("self.optional = true; self.sep = nil")
+
+    alt [:Regular], {arg: Pattern}, "+", code("self.many = true; self.sep = nil")
 
     alt [:Regular], "{", {arg: Pattern}, {sep: :str}, "}", "*", code("self.optional = true; self.many = true")
     
+    alt [:Regular], "{", {arg: Pattern}, {sep: :str}, "}", "+", code("self.many = true") 
+
     alt "(", Alt, ")"
   end
 end

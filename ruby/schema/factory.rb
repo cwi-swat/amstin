@@ -16,15 +16,22 @@ class Factory
   def method_missing(class_name, *args)
     obj = self[class_name.to_s]
     obj.schema_class.fields.each_with_index do |field, i|
-      break if i >= args.length
       next if field.computed
-      if field.many
-        col = obj[field.name]
-        args[i].each do |x|
-          col << x
+      if i < args.length
+        if field.many
+          col = obj[field.name]
+          args[i].each do |x|
+            col << x
+          end
+        else
+          obj[field.name] = args[i]
         end
-      else
-        obj[field.name] = args[i]
+      elsif !field.key && !field.optional && field.type.Primitive?
+        obj[field.name] = case field.type.name
+          when "str" then ""
+          when "int" then 0
+          when "bool" then false
+        end
       end
     end
     return obj
