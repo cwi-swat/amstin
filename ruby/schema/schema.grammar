@@ -15,10 +15,7 @@ Field ::= [Field] Key name:sym ":" type:Type Multiplicity Inverse?
 Key ::= "#" @"self.key = true"
       | @"self.key = false"
 
-Type ::=  [Primitive] name:"int"
-	| [Primitive] name:"bool"
-	| [Primitive] name:"real"
-	| [Primitive] name:"str"
+Type ::=  Primitive^
 	| Klass^
 
 Multiplicity ::= "*" @"self.many = true; self.optional = true"
