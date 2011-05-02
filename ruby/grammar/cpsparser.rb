@@ -87,7 +87,7 @@ class CPSParser
   def with_literal(pos, lit)
     @scanner.pos = pos
     litre = Regexp.escape(lit)
-    if @keywords.include?(lit) then
+    if @keywords.include?(lit) || lit == '\\' then
       re = Regexp.new(litre + "(?![a-zA-Z_$0-9])")
     else
       re = Regexp.new(litre)
