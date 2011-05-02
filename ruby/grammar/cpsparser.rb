@@ -2,14 +2,15 @@
 require 'grammar/grammarschema'
 require 'grammar/parsetree'
 require 'schema/factory'
-require 'grammar/tokenize'
+require 'grammar/grammargrammar'
 require 'grammar/instantiate'
+
+require 'strscan'
+
 
 class CPSParser
   def self.parse(path, grammar)
-    tokenizer = Tokenize.new
-    input = tokenizer.tokenize(grammar, path, File.read(path)) 
-    parse = CPSParser.new(input, Factory.new(ParseTreeSchema.schema))
+    parse = CPSParser.new(File.read(path), Factory.new(ParseTreeSchema.schema), path)
     parse.run(grammar)
   end
   
@@ -26,19 +27,49 @@ class CPSParser
     return data
   end
 
-  def initialize(input, factory, gf = Factory.new(GrammarSchema.schema))
+  IDPATTERN = "[\\\\]?[a-zA-Z_$][a-zA-Z_$0-9]*"
+
+
+  class CollectKeywords < CyclicCollectShy
+    def Lit(this, accu)
+      if this.value.match(IDPATTERN) then
+        accu << this.value
+      end
+    end
+
+    def Regular(this, accu)
+      if this.sep then
+        accu << this.sep if this.sep.match(IDPATTERN)
+      end
+    end
+  end
+
+  def initialize(input, factory, path = '-')
     @input = input
     @table = Table.new
     @factory = factory
-    @grammar_factory = gf 
+    @grammar_factory = Factory.new(GrammarSchema.schema)
+    @scanner = StringScanner.new(@input)
+    @path = path
+    @tokens =  {
+      bool: /^(true|false)/,
+      sym: Regexp.new("^(#{IDPATTERN})(\\.#{IDPATTERN})*"),
+      int: /^[0-9]+/,
+      str: /^"(\\\\.|[^"])*"/,
+      real: /^[-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?/ 
+    }
+    @layout = /^\s*/
   end
 
   def run(grammar)
-    recurse(grammar, 0) do |pos, tree|
-      if pos == @input.tokens.length then
-        return @factory.ParseTree(@input.path, tree, @input.layout)
+    @keywords = CollectKeywords.run(grammar) 
+    ws = @scanner.scan(@layout)
+    recurse(grammar, @scanner.pos) do |pos, tree|
+      if eos?(pos) then
+        return @factory.ParseTree(@path, tree, ws)
       end
     end
+    return nil
   end
 
   # todo: move to generic visit/dispatch class
@@ -46,18 +77,27 @@ class CPSParser
     send(obj.schema_class.name, obj, *args, &block)
   end
 
-  def token(pos)
-    @input.tokens[pos]
-  end
-
-  def eof?(pos)
-    pos == @input.tokens.length
-  end
-
   def with_token(pos, kind)
-    return if eof?(pos)
-    tk = token(pos)
-    yield tk if tk.kind == kind
+    @scanner.pos = pos
+    tk = @scanner.scan(@tokens[kind.to_sym])
+    if tk then
+      return if @keywords.include?(tk)
+      ws = @scanner.scan(@layout)
+      yield tk, ws, @scanner.pos
+    end
+  end
+
+  def with_literal(pos, lit)
+    @scanner.pos = pos
+    val = @scanner.scan(Regexp.new(Regexp.escape(lit)))
+    if val then
+      ws = @scanner.scan(@layout)
+      yield ws, @scanner.pos
+    end
+  end
+
+  def eos?(pos)
+    pos == @input.length
   end
 
 
@@ -85,18 +125,12 @@ class CPSParser
     end
   end
   
-  class Success < Exception
-    attr_reader :tree
-    def initialize(tree)
-      @tree = tree
-    end
-  end
-	
   def Grammar(obj, pos, &block)
     recurse(obj.start, pos, &block)
   end
 
   def Rule(this, pos, &block)
+    #puts "Parsing rule: #{this} #{pos}"
     entry = @table[this, pos]
     if entry.conts.empty? then
       entry.conts << block
@@ -117,6 +151,7 @@ class CPSParser
   end
 
   def Sequence(this, pos, &block)
+    #puts "Parsing sequence: #{this} at #{pos}"
     f = lambda do |i, pos, lst| 
       if i == this.elements.length then
         s = @factory.Sequence
@@ -140,20 +175,24 @@ class CPSParser
   end
 
   def Create(this, pos, &block)
+    #puts "Parsing create #{this}"
     recurse(this.arg, pos) do |pos1, tree|
       block.call(pos1, @factory.Create(this.name, tree))
     end
   end
 
   def Field(this, pos, &block)
+    #puts "Parsing field #{this}"
     recurse(this.arg, pos) do |pos1, tree|
       block.call(pos1, @factory.Field(this.name, tree))
     end
   end
 
   def Value(this, pos, &block)
-    with_token(pos, this.kind) do |tk|
-      block.call(pos + 1, @factory.Value(this.kind, tk.value, tk.layout))
+    #puts "Parsing value: #{this.kind} at #{pos}"
+    with_token(pos, this.kind) do |tk, ws, pos1|
+      #puts "Sucess: #{tk} ws = '#{ws}'"
+      block.call(pos1, @factory.Value(this.kind, tk, ws))
     end
   end
 
@@ -161,16 +200,9 @@ class CPSParser
     block.call(pos, @factory.Code(this.code))
   end
 
-
-#   def Key(this, pos, &block)
-#     with_token(pos, 'sym') do |tk|
-#       block.call(pos + 1, @factory.Key(tk.value, tk.layout))
-#     end
-#   end
-
   def Ref(this, pos, &block)
-    with_token(pos, 'sym') do |tk|
-      block.call(pos + 1, @factory.Ref(tk.value, tk.layout))
+    with_token(pos, 'sym') do |tk, ws, pos1|
+      block.call(pos1, @factory.Ref(tk, ws))
     end
   end
 
@@ -179,13 +211,10 @@ class CPSParser
   end
 
   def Lit(this, pos, &block)
-    with_token(pos, 'lit') do |tk|
-      if this.case_sensitive then
-        return unless tk.value == this.value
-      else 
-        return unless tk.value.downcase == this.value.downcase 
-      end
-      block.call(pos + 1, @factory.Lit(tk.value, this.case_sensitive, tk.layout)) 
+    #puts "Parsing literal: #{this.value}"
+    with_literal(pos, this.value) do |ws, pos1|
+      #puts "Success: #{pos1}, ws = '#{ws}'"
+      block.call(pos1, @factory.Lit(this.value, ws)) 
     end
   end
 
@@ -235,7 +264,7 @@ class CPSParser
     elsif !this.optional && this.many && this.sep then
       # {X ","}+
       recurse(this.arg, pos) do |pos1, tree1|
-        lit = @grammar_factory.Lit(this.sep, true)
+        lit = @grammar_factory.Lit(this.sep)
         recurse(lit, pos1) do |pos2, sep|
           regular(this, pos2) do |pos3, trees|
             block.call(pos3, [tree1, sep, *trees])
@@ -258,6 +287,13 @@ class CPSParser
     end
   end
 
+end
+
+
+if __FILE__ == $0 then
+  grammar = GrammarGrammar.grammar
+  bla = CPSParser.parse('grammar/grammar.grammar', grammar)
+  p bla
 end
 
 

@@ -59,7 +59,7 @@ class GrammarGenerator
       elts.each do |e|
         if e.is_a?(String) then
           l = THE_FACTORY.Lit(e)
-          l.case_sensitive = true
+          #l.case_sensitive = true
           s.elements << l
         elsif e.is_a?(Hash) then
           e.each do |k, v|
@@ -78,7 +78,7 @@ class GrammarGenerator
       end
       if e.is_a?(String) then
         l = THE_FACTORY.Lit(e)
-        l.case_sensitive = true
+        #l.case_sensitive = true
         return l
       elsif e.is_a?(Symbol)
         r = VALUES[e]
@@ -146,11 +146,11 @@ class GrammarGenerator
       return reg
     end
 
-    def cilit(s)
-      cl = THE_FACTORY.Lit(s)
-      cl.case_sensitive = false
-      return cl
-    end
+#     def cilit(s)
+#       cl = THE_FACTORY.Lit(s)
+#       cl.case_sensitive = false
+#       return cl
+#     end
       
     def const_missing(name)
       get_rule(name.to_s)

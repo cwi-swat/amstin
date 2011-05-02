@@ -64,7 +64,7 @@ class GrammarSchema < SchemaGenerator
 
   klass Lit, :super => Expression do
     field :value, :type => :str
-    field :case_sensitive, :type => :bool
+    #field :case_sensitive, :type => :bool
   end
 
   klass Call, :super => Expression do 

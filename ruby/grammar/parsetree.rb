@@ -51,7 +51,7 @@ class ParseTreeSchema < SchemaGenerator
 
   klass Lit, :super => Tree do
     field :value, :type => :str
-    field :case_sensitive, :type => :bool
+    #field :case_sensitive, :type => :bool
     field :layout, :type => :str
   end
 

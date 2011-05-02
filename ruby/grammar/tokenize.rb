@@ -38,8 +38,6 @@ end
 class Tokenize
   IDPATTERN = "[\\\\]?[a-zA-Z_$][a-zA-Z_$0-9]*"
 
-  # TODO: make literals firstclass part of grammar?
-
   def initialize(factory = Factory.new(TokenSchema.schema))
     @factory = factory
     @id = Regexp.new("^(#{IDPATTERN})(\\.#{IDPATTERN})*")

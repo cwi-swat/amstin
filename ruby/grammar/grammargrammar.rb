@@ -34,7 +34,7 @@ class GrammarGrammar < GrammarGenerator
   rule Pattern do
     alt [:Value], {kind: "int"}
     alt [:Value], {kind: "str"}
-    alt [:Value], {kind: "sqstr"}
+    #alt [:Value], {kind: "sqstr"}
     alt [:Value], {kind: "real"}
     alt [:Value], {kind: "bool"}
     alt [:Value], {kind: "sym"}
@@ -45,9 +45,9 @@ class GrammarGrammar < GrammarGenerator
 
     alt [:Ref], {name: :sym}, "^"
 
-    alt [:Lit], {value: :str}, code("self.case_sensitive = true")
+    alt [:Lit], {value: :str} #, code("self.case_sensitive = true")
 
-    alt [:Lit], {value: :sqstr}, code("self.case_sensitive = false")
+    #alt [:Lit], {value: :sqstr}, code("self.case_sensitive = false")
 
     alt [:Call], {rule: ref(Rule)}
 

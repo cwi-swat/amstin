@@ -1,4 +1,4 @@
-  grammar GrammarGrammar
+grammar GrammarGrammar
   start Grammar
   
   Grammar ::= [Grammar] "grammar" name:sym "start" \start:Rule^ rules:Rule*
@@ -18,14 +18,12 @@
   Pattern ::= 
       [Value] kind:"int"
     | [Value] kind:"str"
-    | [Value] kind:"sqstr"
     | [Value] kind:"real"
     | [Value] kind:"bool"
     | [Value] kind:"sym"
     | [Code] "@" code:str
     | [Ref] name:sym "^"
-    | [Lit] value:str				@"self.case_sensitive = true"
-    | [Lit] value:sqstr				@"self.case_sensitive = false"
+    | [Lit] value:str
     | [Call] rule:Rule^
     | [Regular] arg:Pattern "?"			@"self.optional = true; self.many = false; self.sep = nil"
     | [Regular] arg:Pattern "+"  			@"self.optional = false; self.many = true; self.sep = nil"
