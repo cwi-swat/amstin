@@ -26,42 +26,39 @@ class CPSParser
     return data
   end
 
-  IDPATTERN = "[\\\\]?[a-zA-Z_$][a-zA-Z_$0-9]*"
-
+  SYMBOL = "[\\\\]?([a-zA-Z_$][a-zA-Z_$0-9]*)(\\.[a-zA-Z_$][a-zA-Z_$0-9]*)*"
+  
+  TOKENS =  {
+    bool: /true|false/,
+    sym: Regexp.new(SYMBOL),
+    int: /[0-9]+/,
+    str: /"(\\\\.|[^"])*"/,
+    real: /[-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?/ 
+  }
+  
+  LAYOUT = /\s*/
 
   class CollectKeywords < CyclicCollectShy
     def Lit(this, accu)
-      if this.value.match(IDPATTERN) then
-        accu << this.value
-      end
+      accu << this.value if this.value.match(SYMBOL)
     end
 
     def Regular(this, accu)
-      if this.sep then
-        accu << this.sep if this.sep.match(IDPATTERN)
-      end
+      accu << this.sep if this.sep && this.sep.match(SYMBOL)
     end
   end
 
-  def initialize(input, factory, path = '-')
-    @input = input
+  def initialize(source, factory, path = '-')
+    @source = source
     @table = Table.new
     @factory = factory
-    @scanner = StringScanner.new(@input)
+    @scanner = StringScanner.new(@source)
     @path = path
-    @tokens =  {
-      bool: /true|false/,
-      sym: Regexp.new("(#{IDPATTERN})(\\.#{IDPATTERN})*"),
-      int: /[0-9]+/,
-      str: /"(\\\\.|[^"])*"/,
-      real: /[-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?/ 
-    }
-    @layout = /\s*/
   end
 
   def run(grammar)
     @keywords = CollectKeywords.run(grammar) 
-    ws = @scanner.scan(@layout)
+    ws = @scanner.scan(LAYOUT)
     recurse(grammar, @scanner.pos) do |pos, tree|
       if eos?(pos) then
         return @factory.ParseTree(@path, tree, ws)
@@ -77,10 +74,10 @@ class CPSParser
 
   def with_token(pos, kind)
     @scanner.pos = pos
-    tk = @scanner.scan(@tokens[kind.to_sym])
+    tk = @scanner.scan(TOKENS[kind.to_sym])
     if tk then
       return if @keywords.include?(tk)
-      ws = @scanner.scan(@layout)
+      ws = @scanner.scan(LAYOUT)
       yield @scanner.pos, tk, ws
     end
   end
@@ -95,13 +92,13 @@ class CPSParser
     end
     val = @scanner.scan(re)
     if val then
-      ws = @scanner.scan(@layout)
+      ws = @scanner.scan(LAYOUT)
       yield @scanner.pos, ws
     end
   end
 
   def eos?(pos)
-    pos == @input.length
+    pos == @source.length
   end
 
 
