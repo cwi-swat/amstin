@@ -9,29 +9,57 @@ require 'grammar/instantiate'
 
 require 'tools/equals'
 require 'tools/diff'
-
+require 'tools/print'
 
 class BootstrapTests < Test::Unit::TestCase
 
   def test_grammar_grammar
     grammar = GrammarGrammar.grammar
-    grammar2 = CPSParser.load('grammar/grammar.grammar', grammar, GrammarSchema.schema)
 
-    assert_equal([], Diff.diff(grammar, grammar2),
-           "parsed grammar.grammar != bootstrap grammargrammar")
-    assert_not_equal([], Diff.diff(GrammarSchema.schema, SchemaSchema.schema),
-           "parsed grammar.grammar != bootstrap grammargrammar")
+    assert(Equals.equals(GrammarSchema.schema, grammar, grammar))
+    assert_equal([], Diff.diff(grammar, grammar))
 
-    tree2 = CPSParser.parse(grammargrammar, grammar2)
-    grammar3 = inst.run(tree2)
-    assert_equal([], Diff.diff(grammar, grammar3),
-           "parsed grammar.grammar using itself != bootstrap grammar")
+    grammargrammar = 'grammar/grammar.grammar'
+    grammar2 = CPSParser.load(grammargrammar, grammar, GrammarSchema.schema)
 
-    tree3 = CPSParser.parse(grammargrammar, grammar3)
-    grammar4 = inst.run(tree3)
+    assert(Equals.equals(GrammarSchema.schema, grammar2, grammar2))
+    assert(Equals.equals(GrammarSchema.schema, grammar, grammar2))
+    assert(Equals.equals(GrammarSchema.schema, grammar2, grammar))
 
-    assert_equal([], Diff.diff(grammar, grammar4),
-           "parsed grammar.grammar using itself from itself != bootstrap grammar")
+    assert_equal([], Diff.diff(grammar2, grammar2))
+    assert_equal([], Diff.diff(grammar, grammar2))
+    assert_equal([], Diff.diff(grammar2, grammar))
+    
+    grammar3 = CPSParser.load(grammargrammar, grammar2, GrammarSchema.schema)
+
+    assert(Equals.equals(GrammarSchema.schema, grammar3, grammar3))
+    assert(Equals.equals(GrammarSchema.schema, grammar2, grammar3))
+    assert(Equals.equals(GrammarSchema.schema, grammar3, grammar2))
+    assert(Equals.equals(GrammarSchema.schema, grammar3, grammar))
+    assert(Equals.equals(GrammarSchema.schema, grammar, grammar3))
+
+    assert_equal([], Diff.diff(grammar3, grammar3))
+    assert_equal([], Diff.diff(grammar2, grammar3))
+    assert_equal([], Diff.diff(grammar3, grammar2))
+    assert_equal([], Diff.diff(grammar3, grammar))
+    assert_equal([], Diff.diff(grammar, grammar3))
+
+    grammar4 = CPSParser.load(grammargrammar, grammar3, GrammarSchema.schema)
+
+    assert(Equals.equals(GrammarSchema.schema, grammar4, grammar4))
+    assert(Equals.equals(GrammarSchema.schema, grammar4, grammar3))
+    assert(Equals.equals(GrammarSchema.schema, grammar3, grammar4))
+    assert(Equals.equals(GrammarSchema.schema, grammar4, grammar2))
+    assert(Equals.equals(GrammarSchema.schema, grammar2, grammar4))
+    assert(Equals.equals(GrammarSchema.schema, grammar4, grammar))
+    assert(Equals.equals(GrammarSchema.schema, grammar, grammar4))
+
+    assert_equal([], Diff.diff(grammar4, grammar4))
+    assert_equal([], Diff.diff(grammar4, grammar3))
+    assert_equal([], Diff.diff(grammar3, grammar4))
+    assert_equal([], Diff.diff(grammar4, grammar2))
+    assert_equal([], Diff.diff(grammar4, grammar))
+    assert_equal([], Diff.diff(grammar, grammar4))
   end
   
   def test_schema_grammar1
@@ -74,7 +102,6 @@ class BootstrapTests < Test::Unit::TestCase
     grammar = GrammarGrammar.grammar
     grammar2 = CPSParser.load('schema/schema.grammar', grammar, GrammarSchema.schema)
     pt_schema = CPSParser.load('grammar/parsetree.schema', grammar2, SchemaSchema.schema)
-    p pt_schema
     assert_not_nil(pt_schema)
   end
     
