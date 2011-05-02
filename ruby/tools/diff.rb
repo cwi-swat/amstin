@@ -17,19 +17,20 @@ class DiffBase < MemoBase
   end
 
   def Primitive(o1, o2)
-    return o1 == o2
+    o1 == o2
   end
 
   def Klass(o1, o2)
     if o1.nil? || o2.nil?
       return o1.nil? == o2.nil?
     end
+    #puts "#{o1.schema_class.name} ==? #{o2.schema_class.name}"
     return false if o1.schema_class.name != o2.schema_class.name
-
     #puts "DIFF #{o1} #{o2}"
 
     existing = @memo[o1]
-    return existing == o2 if existing
+    #puts "Memoized: #{existing} " if existing
+    return true if existing && existing.equal?(o2)
     @memo[o1] = o2
     
     o1.schema_class.fields.each do |f|
@@ -40,7 +41,6 @@ class DiffBase < MemoBase
 
   def Field(field, o1, o2)
     # o1 and o2 are the owners
-    #puts " FIELD #{field} #{o1[field.name]} #{o2[field.name]}"
     if field.many then
       many(field, o1, o2)
     else
@@ -50,6 +50,9 @@ class DiffBase < MemoBase
 
   def single(field, o1, o2)
     if !Type(field.type, o1[field.name], o2[field.name])
+      #puts "SINGLE #{field.type}. #{o1[field.name]} <-> #{o2[field.name]}"
+      #puts "#{o1[field.name].schema_class.name}"
+      #puts "#{o2[field.name].schema_class.name}"
       different_single(o2, field, o2[field.name], o1[field.name])
     end
   end
