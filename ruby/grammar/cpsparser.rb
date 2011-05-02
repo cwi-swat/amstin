@@ -8,23 +8,25 @@ require 'strscan'
 
 
 class CPSParser
-  def self.parse(path, grammar)
-    parse = CPSParser.new(File.read(path), Factory.new(ParseTreeSchema.schema), path)
-    parse.run(grammar)
-  end
-  
-  def self.load_raw(path, grammar, schema)
-    tree = CPSParser.parse(path, grammar)
-    inst2 = Instantiate.new(Factory.new(schema))
-    data = inst2.run(tree)
-    return data
-  end
 
   def self.load(path, grammar, schema)
     data = load_raw(path, grammar, schema)
     data.finalize
     return data
   end
+  
+  def self.load_raw(path, grammar, schema)
+    tree = CPSParser.parse(path, grammar)
+    inst2 = Instantiate.new(Factory.new(schema))
+    inst2.run(tree)
+  end
+
+  def self.parse(path, grammar)
+    parse = CPSParser.new(File.read(path), Factory.new(ParseTreeSchema.schema), path)
+    parse.run(grammar)
+  end
+
+
 
   SYMBOL = "[\\\\]?([a-zA-Z_$][a-zA-Z_$0-9]*)(\\.[a-zA-Z_$][a-zA-Z_$0-9]*)*"
   
@@ -258,7 +260,6 @@ class CPSParser
   ## otherwise they become (hidden) left-recursive as well.
 
   def iter(this, pos, &block)
-    # X+
     recurse(this.arg, pos) do |pos1, tree1|
       iter(this, pos) do |pos2, trees|
         block.call(pos2, [tree1, *trees])
