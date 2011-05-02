@@ -1,5 +1,4 @@
 
-require 'grammar/grammarschema'
 require 'grammar/parsetree'
 require 'schema/factory'
 require 'grammar/grammargrammar'
@@ -48,7 +47,6 @@ class CPSParser
     @input = input
     @table = Table.new
     @factory = factory
-    @grammar_factory = Factory.new(GrammarSchema.schema)
     @scanner = StringScanner.new(@input)
     @path = path
     @tokens =  {
@@ -83,7 +81,7 @@ class CPSParser
     if tk then
       return if @keywords.include?(tk)
       ws = @scanner.scan(@layout)
-      yield tk, ws, @scanner.pos
+      yield @scanner.pos, tk, ws
     end
   end
 
@@ -98,7 +96,7 @@ class CPSParser
     val = @scanner.scan(re)
     if val then
       ws = @scanner.scan(@layout)
-      yield ws, @scanner.pos
+      yield @scanner.pos, ws
     end
   end
 
@@ -196,7 +194,7 @@ class CPSParser
 
   def Value(this, pos, &block)
     #puts "Parsing value: #{this.kind} at #{pos}"
-    with_token(pos, this.kind) do |tk, ws, pos1|
+    with_token(pos, this.kind) do |pos1, tk, ws|
       #puts "Sucess: #{tk} ws = '#{ws}'"
       block.call(pos1, @factory.Value(this.kind, tk, ws))
     end
@@ -207,7 +205,7 @@ class CPSParser
   end
 
   def Ref(this, pos, &block)
-    with_token(pos, 'sym') do |tk, ws, pos1|
+    with_token(pos, 'sym') do |pos1, tk, ws|
       block.call(pos1, @factory.Ref(tk, ws))
     end
   end
@@ -218,15 +216,11 @@ class CPSParser
 
   def Lit(this, pos, &block)
     #puts "Parsing literal: #{this.value}"
-    with_literal(pos, this.value) do |ws, pos1|
+    with_literal(pos, this.value) do |pos1, ws|
       #puts "Success: #{pos1}, ws = '#{ws}'"
       block.call(pos1, @factory.Lit(this.value, ws)) 
     end
   end
-
-  ## NB: iters are right-recursive (otherwise we have to memoize them)
-  ## This also means that iter'ed symbols should not be nullable
-  ## otherwise they become (hidden) left-recursive as well.
 
   def Regular(this, pos, &block)
     regular(this, pos) do |pos1, trees|
@@ -241,56 +235,69 @@ class CPSParser
   # a helper function that produces normal lists of trees
   def regular(this, pos, &block)
     if this.optional && !this.many && !this.sep then
-      # X?
-      recurse(this.arg, pos) do |pos1, tree|
-        block.call(pos1, [tree])
-      end
-      block.call(pos, [])
-
+      optional(this, pos, &block)
     elsif !this.optional && this.many && !this.sep then
-      # X+
-      recurse(this.arg, pos) do |pos1, tree1|
-        regular(this, pos) do |pos2, trees|
-          block.call(pos2, [tree1, *trees])
-        end
-      end
-      recurse(this.arg, pos) do |pos1, tree|
-        block.call(pos1, [tree])
-      end
-
+      iter(this, pos, &block)
     elsif this.optional && this.many && !this.sep then
-      # X*
-      recurse(this.arg, pos) do |pos1, tree1|
-        regular(this, pos1) do |pos2, trees|
-          block.call(pos2, [tree1, *trees])
-        end
-      end
-      block.call(pos, [])
-
+      iter_star(this, pos, &block)
     elsif !this.optional && this.many && this.sep then
-      # {X ","}+
-      recurse(this.arg, pos) do |pos1, tree1|
-        lit = @grammar_factory.Lit(this.sep)
-        recurse(lit, pos1) do |pos2, sep|
-          regular(this, pos2) do |pos3, trees|
-            block.call(pos3, [tree1, sep, *trees])
-          end
-        end
-      end
-      recurse(this.arg, pos) do |pos1, tree|
-        block.call(pos1, [tree])
-      end
-
+      iter_sep(this, pos, &block)
     elsif this.optional && this.many && this.sep then
-      # pretend it's an IterSep
-      iter = this.clone
-      iter.optional = false
-      recurse(iter, pos, &block)
-      # and add empty alternative
-      block.call(pos, [])
+      iter_star_sep(this, pos, &block)
     else
       raise "Inconsistent Regular: #{this}"
     end
+  end
+
+  def optional(this, pos, &block)
+    recurse(this.arg, pos) do |pos1, tree|
+      block.call(pos1, [tree])
+    end
+    block.call(pos, [])
+  end
+
+  ## NB: iters are right-recursive (otherwise we have to memoize them)
+  ## This also means that iter'ed symbols should not be nullable
+  ## otherwise they become (hidden) left-recursive as well.
+
+  def iter(this, pos, &block)
+    # X+
+    recurse(this.arg, pos) do |pos1, tree1|
+      iter(this, pos) do |pos2, trees|
+        block.call(pos2, [tree1, *trees])
+      end
+    end
+    recurse(this.arg, pos) do |pos1, tree|
+      block.call(pos1, [tree])
+    end
+  end
+
+
+  def iter_star(this, pos, &block)
+    recurse(this.arg, pos) do |pos1, tree1|
+      iter_star(this, pos1) do |pos2, trees|
+        block.call(pos2, [tree1, *trees])
+      end
+    end
+    block.call(pos, [])
+  end
+
+  def iter_sep(this, pos, &block)
+    recurse(this.arg, pos) do |pos1, tree1|
+      with_literal(pos1, this.sep) do |pos2, ws|
+        iter_sep(this, pos2) do |pos3, trees|
+          block.call(pos3, [tree1, @factory.Lit(this.sep, ws), *trees])
+        end
+      end
+    end
+    recurse(this.arg, pos) do |pos1, tree|
+      block.call(pos1, [tree])
+    end
+  end
+
+  def iter_star_sep(this, pos, &block)
+    iter_sep(this, pos, &block)
+    block.call(pos, [])
   end
 
 end
