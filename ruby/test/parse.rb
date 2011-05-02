@@ -18,6 +18,5 @@ class ParseTest < Test::Unit::TestCase
     s = Unparse.unparse(grammar, tree)
     assert_equal(src, s, "unparse not the same as input source")
   end
-
  
 end

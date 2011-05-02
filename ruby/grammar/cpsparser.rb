@@ -52,13 +52,13 @@ class CPSParser
     @scanner = StringScanner.new(@input)
     @path = path
     @tokens =  {
-      bool: /^(true|false)/,
-      sym: Regexp.new("^(#{IDPATTERN})(\\.#{IDPATTERN})*"),
-      int: /^[0-9]+/,
-      str: /^"(\\\\.|[^"])*"/,
-      real: /^[-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?/ 
+      bool: /true|false/,
+      sym: Regexp.new("(#{IDPATTERN})(\\.#{IDPATTERN})*"),
+      int: /[0-9]+/,
+      str: /"(\\\\.|[^"])*"/,
+      real: /[-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?/ 
     }
-    @layout = /^\s*/
+    @layout = /\s*/
   end
 
   def run(grammar)
@@ -89,7 +89,13 @@ class CPSParser
 
   def with_literal(pos, lit)
     @scanner.pos = pos
-    val = @scanner.scan(Regexp.new(Regexp.escape(lit)))
+    litre = Regexp.escape(lit)
+    if @keywords.include?(lit) then
+      re = Regexp.new(litre + "(?![a-zA-Z_$0-9])")
+    else
+      re = Regexp.new(litre)
+    end
+    val = @scanner.scan(re)
     if val then
       ws = @scanner.scan(@layout)
       yield ws, @scanner.pos
