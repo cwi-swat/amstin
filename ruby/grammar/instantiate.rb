@@ -88,7 +88,7 @@ class Instantiate
 
   def Code(this, owner, field, pos)
     #puts "EXECUTINGC CODE #{this.code} on #{owner}"
-    owner.instance_eval(this.code)
+    owner.instance_eval(this.code.gsub(/@/, "self."))
   end
 
   def Value(this, owner, field, pos)

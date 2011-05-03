@@ -14,14 +14,14 @@ Parent ::= "<" super:Klass^
 
 Field ::= [Field] Key? name:sym ":" type:Type Multiplicity Annot?
 
-Key ::= "#" @"self.key = true"
+Key ::= "#" @"@key = true"
 
 Type ::=  Primitive^
 	| Klass^
 
-Multiplicity ::= "*" @"self.many = true; self.optional = true"
-	       | "?" @"self.optional = true" 
-	       | "+" @"self.many = true"
+Multiplicity ::= "*" @"@many = true; @optional = true"
+	       | "?" @"@optional = true" 
+	       | "+" @"@many = true"
 	       | @"true"
 
 Annot ::= "/" inverse:Field^

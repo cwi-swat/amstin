@@ -79,7 +79,7 @@ class Render < Dispatch
   end
   
   def Code(this, obj)
-    code = this.code.gsub(/=/, "==").gsub(/;/, "&&");
+    code = this.code.gsub(/=/, "==").gsub(/;/, "&&").gsub(/@/, "self.");
     throw :fail unless obj.instance_eval(code)
     @factory.Sequence()
   end

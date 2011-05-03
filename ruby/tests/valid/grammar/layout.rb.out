@@ -19,15 +19,15 @@ grammar GrammarGrammar start Grammar
         [ Regular ] 
             arg : Pattern 
             "*" 
-            @ "self.optional = true; self.many = true; self.sep = nil" |
-        [ Regular ] arg : Pattern "?" @ "self.optional = true; self.sep = nil" |
-        [ Regular ] arg : Pattern "+" @ "self.many = true; self.sep = nil" |
+            @ "@optional = true; @many = true; @sep = nil" |
+        [ Regular ] arg : Pattern "?" @ "@optional = true; @sep = nil" |
+        [ Regular ] arg : Pattern "+" @ "@many = true; @sep = nil" |
         [ Regular ] 
             "{" 
             arg : Pattern 
             sep : str 
             "}" 
             "*" 
-            @ "self.optional = true; self.many = true" |
-        [ Regular ] "{" arg : Pattern sep : str "}" "+" @ "self.many = true" |
+            @ "@optional = true; @many = true" |
+        [ Regular ] "{" arg : Pattern sep : str "}" "+" @ "@many = true" |
         "(" Alt ")" 

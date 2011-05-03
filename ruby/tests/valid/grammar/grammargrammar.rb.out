@@ -217,7 +217,7 @@ Grammar
                 #1 Lit
                   value: *
                 #2 Code
-                  code: self.optional = true; self.many = true; self.sep = nil
+                  code: @optional = true; @many = true; @sep = nil
           #10 Create
             name: Regular
             arg: Sequence
@@ -229,7 +229,7 @@ Grammar
                 #1 Lit
                   value: ?
                 #2 Code
-                  code: self.optional = true; self.sep = nil
+                  code: @optional = true; @sep = nil
           #11 Create
             name: Regular
             arg: Sequence
@@ -241,7 +241,7 @@ Grammar
                 #1 Lit
                   value: +
                 #2 Code
-                  code: self.many = true; self.sep = nil
+                  code: @many = true; @sep = nil
           #12 Create
             name: Regular
             arg: Sequence
@@ -261,7 +261,7 @@ Grammar
                 #4 Lit
                   value: *
                 #5 Code
-                  code: self.optional = true; self.many = true
+                  code: @optional = true; @many = true
           #13 Create
             name: Regular
             arg: Sequence
@@ -281,7 +281,7 @@ Grammar
                 #4 Lit
                   value: +
                 #5 Code
-                  code: self.many = true
+                  code: @many = true
           #14 Sequence
             elements
               #0 Lit
@@ -509,7 +509,7 @@ Grammar
                 #1 Lit
                   value: *
                 #2 Code
-                  code: self.optional = true; self.many = true; self.sep = nil
+                  code: @optional = true; @many = true; @sep = nil
           #10 Create
             name: Regular
             arg: Sequence
@@ -521,7 +521,7 @@ Grammar
                 #1 Lit
                   value: ?
                 #2 Code
-                  code: self.optional = true; self.sep = nil
+                  code: @optional = true; @sep = nil
           #11 Create
             name: Regular
             arg: Sequence
@@ -533,7 +533,7 @@ Grammar
                 #1 Lit
                   value: +
                 #2 Code
-                  code: self.many = true; self.sep = nil
+                  code: @many = true; @sep = nil
           #12 Create
             name: Regular
             arg: Sequence
@@ -553,7 +553,7 @@ Grammar
                 #4 Lit
                   value: *
                 #5 Code
-                  code: self.optional = true; self.many = true
+                  code: @optional = true; @many = true
           #13 Create
             name: Regular
             arg: Sequence
@@ -573,7 +573,7 @@ Grammar
                 #4 Lit
                   value: +
                 #5 Code
-                  code: self.many = true
+                  code: @many = true
           #14 Sequence
             elements
               #0 Lit

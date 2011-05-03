@@ -45,21 +45,21 @@ class GrammarGrammar < GrammarGenerator
 
     alt [:Ref], {name: :sym}, "^"
 
-    alt [:Lit], {value: :str} #, code("self.case_sensitive = true")
+    alt [:Lit], {value: :str} #, code("@case_sensitive = true")
 
-    #alt [:Lit], {value: :sqstr}, code("self.case_sensitive = false")
+    #alt [:Lit], {value: :sqstr}, code("@case_sensitive = false")
 
     alt [:Call], {rule: ref(Rule)}
 
-    alt [:Regular], {arg: Pattern}, "*", code("self.optional = true; self.many = true; self.sep = nil")
+    alt [:Regular], {arg: Pattern}, "*", code("@optional = true; @many = true; @sep = nil")
 
-    alt [:Regular], {arg: Pattern}, "?", code("self.optional = true; self.sep = nil")
+    alt [:Regular], {arg: Pattern}, "?", code("@optional = true; @sep = nil")
 
-    alt [:Regular], {arg: Pattern}, "+", code("self.many = true; self.sep = nil")
+    alt [:Regular], {arg: Pattern}, "+", code("@many = true; @sep = nil")
 
-    alt [:Regular], "{", {arg: Pattern}, {sep: :str}, "}", "*", code("self.optional = true; self.many = true")
+    alt [:Regular], "{", {arg: Pattern}, {sep: :str}, "}", "*", code("@optional = true; @many = true")
     
-    alt [:Regular], "{", {arg: Pattern}, {sep: :str}, "}", "+", code("self.many = true") 
+    alt [:Regular], "{", {arg: Pattern}, {sep: :str}, "}", "+", code("@many = true") 
 
     alt "(", Alt, ")"
   end

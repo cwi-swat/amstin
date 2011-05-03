@@ -1526,7 +1526,7 @@ Sequence
                                                         #0 Text
                                                           value: "
                                                         #1 Text
-                                                          value: self.optional = true; self.many = true; self.sep = nil
+                                                          value: @optional = true; @many = true; @sep = nil
                                                         #2 Text
                                                           value: "
                                                         #3 Text
@@ -1623,7 +1623,7 @@ Sequence
                                                         #0 Text
                                                           value: "
                                                         #1 Text
-                                                          value: self.optional = true; self.sep = nil
+                                                          value: @optional = true; @sep = nil
                                                         #2 Text
                                                           value: "
                                                         #3 Text
@@ -1720,7 +1720,7 @@ Sequence
                                                         #0 Text
                                                           value: "
                                                         #1 Text
-                                                          value: self.many = true; self.sep = nil
+                                                          value: @many = true; @sep = nil
                                                         #2 Text
                                                           value: "
                                                         #3 Text
@@ -1876,7 +1876,7 @@ Sequence
                                                         #0 Text
                                                           value: "
                                                         #1 Text
-                                                          value: self.optional = true; self.many = true
+                                                          value: @optional = true; @many = true
                                                         #2 Text
                                                           value: "
                                                         #3 Text
@@ -2032,7 +2032,7 @@ Sequence
                                                         #0 Text
                                                           value: "
                                                         #1 Text
-                                                          value: self.many = true
+                                                          value: @many = true
                                                         #2 Text
                                                           value: "
                                                         #3 Text
