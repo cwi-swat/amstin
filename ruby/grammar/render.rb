@@ -1,5 +1,6 @@
 
 require 'cyclicmap'
+require 'grammar/cpsparser'
 
 # render an object into a grammar, to create a parse tree
 class Render < Dispatch
@@ -8,6 +9,8 @@ class Render < Dispatch
   end
 
   def Grammar(this, obj)
+    # ugly, should be higher up
+    @literals = CPSParser::CollectKeywords.run(this)
     recurse(this.start, obj)
   end
   
@@ -55,6 +58,11 @@ class Render < Dispatch
       s.elements << @factory.Text("\"")
       s.elements << @factory.Text(obj)
       s.elements << @factory.Text("\"")
+    when /sym/
+      if @literals.include?(obj) then
+        s.elements << @factory.Text('\\')
+      end
+      s.elements << @factory.Text(obj)
     else
       s.elements << @factory.Text(obj)
     end
@@ -68,6 +76,14 @@ class Render < Dispatch
   end
 
   def Lit(this, obj)
+    #puts "Rendering #{this.value} (#{this.value.class}) (obj = #{obj}, #{obj.class})"
+    if obj.is_a?(String) then
+      if this.value == obj then
+        space(this.value)
+      else
+        throw :fail
+      end
+    end
     space(this.value)
   end
 

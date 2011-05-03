@@ -27,7 +27,7 @@ class DiffBase < MemoBase
     #puts "#{o1.schema_class.name} ==? #{o2.schema_class.name}"
     return false if o1.schema_class.name != o2.schema_class.name
     #puts "DIFF #{o1} #{o2}"
-
+ 
     return true if @memo[[o1, o2]]
     @memo[[o1, o2]] = true
     
@@ -38,6 +38,7 @@ class DiffBase < MemoBase
   end
 
   def Field(field, o1, o2)
+    #puts "FIELD: #{field}"
     return if field.computed
     # o1 and o2 are the owners
     if field.many then
@@ -50,8 +51,6 @@ class DiffBase < MemoBase
   def single(field, o1, o2)
     if !Type(field.type, o1[field.name], o2[field.name])
       #puts "SINGLE #{field.type}. #{o1[field.name]} <-> #{o2[field.name]}"
-      #puts "#{o1[field.name].schema_class.name}"
-      #puts "#{o2[field.name].schema_class.name}"
       different_single(o2, field, o2[field.name], o1[field.name])
     end
   end

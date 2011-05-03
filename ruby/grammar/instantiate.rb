@@ -34,7 +34,7 @@ class Instantiate
       owner[field.name] << x
       return pos + 1
     elsif field then
-      #puts "FIELD: #{field.name}"
+      #put "FIELD: #{field.name}"
       owner[field.name] = x
     end
 
@@ -72,7 +72,7 @@ class Instantiate
   end
   
   def Create(this, owner, field, pos)
-    #puts "Creating #{this.name}"
+    #put "Creating #{this.name}"
     current = @factory.send(this.name)
     # ugly
     @root = current unless owner
@@ -87,13 +87,13 @@ class Instantiate
   end
 
   def Code(this, owner, field, pos)
-    #puts "EXECUTINGC CODE #{this.code} on #{owner}"
+    #put "EXECUTINGC CODE #{this.code} on #{owner}"
     owner.instance_eval(this.code.gsub(/@/, "self."))
   end
 
   def Value(this, owner, field, pos)
     return pos unless field # values without field????
-    #puts "Value: #{this} for #{field}"
+    #put "Value: #{this} for #{field}"
 
     if field.key then
       #puts "--------> Defining key #{this} to #{owner}"
@@ -139,11 +139,11 @@ class Instantiate
     end
 
     def apply(defs)
-      #puts "FIXING: #{@name} in #{@this}.#{@field.name}"
+      #put "FIXING: #{@name} in #{@this}.#{@field.name}"
       old = @this[@field.name]
       #copy_old_to_actual(old, defs[@name])
 
-      #puts "DEFS[@name] = #{defs[@name]}"
+      #put "DEFS[@name] = #{defs[@name]}"
       names = @name.split(/\./)
       while !names.empty? do
         n = names.shift

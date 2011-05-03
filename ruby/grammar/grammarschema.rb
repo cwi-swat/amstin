@@ -14,7 +14,7 @@ class GrammarSchema < SchemaGenerator
   klass Grammar do
     field :name, :type => :str
     field :start, :type => Rule
-    field :rules, :type => Rule, :many => true
+    field :rules, :type => Rule, :optional => true, :many => true
   end
 
   klass Rule do
@@ -26,9 +26,6 @@ class GrammarSchema < SchemaGenerator
   klass Expression do
   end
     
-  klass Epsilon, :super => Expression do
-  end
-
   klass Alt, :super => Expression do
     field :alts, :type => Expression, :many => true
   end
@@ -55,16 +52,12 @@ class GrammarSchema < SchemaGenerator
     field :kind, :type => :str
   end
 
-#   klass Key, :super => Expression do 
-#   end
-
   klass Ref, :super => Expression do
     field :name, :type => :str
   end
 
   klass Lit, :super => Expression do
     field :value, :type => :str
-    #field :case_sensitive, :type => :bool
   end
 
   klass Call, :super => Expression do 

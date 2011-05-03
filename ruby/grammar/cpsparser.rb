@@ -21,8 +21,8 @@ class CPSParser
     inst2.run(tree)
   end
 
-  def self.parse(path, grammar)
-    parse = CPSParser.new(File.read(path), Factory.new(ParseTreeSchema.schema), path)
+  def self.parse(path, grammar, ptf = Factory.new(ParseTreeSchema.schema))
+    parse = CPSParser.new(File.read(path), ptf, path)
     parse.run(grammar)
   end
 

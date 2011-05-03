@@ -26,7 +26,7 @@ class SchemaSchema < SchemaGenerator
     
   klass Type do
     field :name, :type => :str, :key => true
-    field :schema, :type => Schema, :inverse => Schema.types
+    field :schema, :type => Schema, :inverse => Schema.types, :key => true
   end
 
   klass Primitive, :super => Type do
