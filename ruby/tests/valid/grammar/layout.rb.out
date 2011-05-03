@@ -1,20 +1,20 @@
 grammar GrammarGrammar start Grammar 
     Grammar ::= 
-        [ Grammar ] "grammar" name : int "start" start : Rule ^ rules : Rule * 
-    Rule ::= [ Rule ] name : int "::=" arg : Alt 
+        [ Grammar ] "grammar" name : sym "start" start : Rule ^ rules : Rule * 
+    Rule ::= [ Rule ] name : sym "::=" arg : Alt 
     Alt ::= [ Alt ] alts : { Create "|" } + 
-    Create ::= [ Create ] "[" name : int "]" arg : Sequence |Sequence 
+    Create ::= [ Create ] "[" name : sym "]" arg : Sequence |Sequence 
     Sequence ::= [ Sequence ] elements : Field * 
-    Field ::= [ Field ] name : int ":" arg : Pattern |Pattern 
+    Field ::= [ Field ] name : sym ":" arg : Pattern |Pattern 
     Pattern ::= 
         [ Value ] kind : "int" |
         [ Value ] kind : "str" |
         [ Value ] kind : "real" |
         [ Value ] kind : "bool" |
         [ Value ] kind : "sym" |
-        [ Code ] "@" code : int |
-        [ Ref ] name : int "^" |
-        [ Lit ] value : int |
+        [ Code ] "@" code : str |
+        [ Ref ] name : sym "^" |
+        [ Lit ] value : str |
         [ Call ] rule : Rule ^ |
         [ Regular ] 
             arg : Pattern 
@@ -25,9 +25,9 @@ grammar GrammarGrammar start Grammar
         [ Regular ] 
             "{" 
             arg : Pattern 
-            sep : int 
+            sep : str 
             "}" 
             "*" 
             @ "self.optional = true; self.many = true" |
-        [ Regular ] "{" arg : Pattern sep : int "}" "+" @ "self.many = true" |
+        [ Regular ] "{" arg : Pattern sep : str "}" "+" @ "self.many = true" |
         "(" Alt ")" 

@@ -119,7 +119,7 @@ Sequence
                                                     #0 Sequence
                                                       elements
                                                         #0 Text
-                                                          value: int
+                                                          value: sym
                                                         #1 Text
                                                           value:  
                                             #4 Break
@@ -281,7 +281,7 @@ Sequence
                                                     #0 Sequence
                                                       elements
                                                         #0 Text
-                                                          value: int
+                                                          value: sym
                                                         #1 Text
                                                           value:  
                                             #2 Break
@@ -530,7 +530,7 @@ Sequence
                                                     #0 Sequence
                                                       elements
                                                         #0 Text
-                                                          value: int
+                                                          value: sym
                                                         #1 Text
                                                           value:  
                                             #4 Break
@@ -767,7 +767,7 @@ Sequence
                                                     #0 Sequence
                                                       elements
                                                         #0 Text
-                                                          value: int
+                                                          value: sym
                                                         #1 Text
                                                           value:  
                                             #2 Break
@@ -1237,7 +1237,7 @@ Sequence
                                                     #0 Sequence
                                                       elements
                                                         #0 Text
-                                                          value: int
+                                                          value: str
                                                         #1 Text
                                                           value:  
                                         indent: 4
@@ -1294,7 +1294,7 @@ Sequence
                                                     #0 Sequence
                                                       elements
                                                         #0 Text
-                                                          value: int
+                                                          value: sym
                                                         #1 Text
                                                           value:  
                                             #2 Break
@@ -1368,7 +1368,7 @@ Sequence
                                                     #0 Sequence
                                                       elements
                                                         #0 Text
-                                                          value: int
+                                                          value: str
                                                         #1 Text
                                                           value:  
                                         indent: 4
@@ -1821,7 +1821,7 @@ Sequence
                                                     #0 Sequence
                                                       elements
                                                         #0 Text
-                                                          value: int
+                                                          value: str
                                                         #1 Text
                                                           value:  
                                             #6 Break
@@ -1977,7 +1977,7 @@ Sequence
                                                     #0 Sequence
                                                       elements
                                                         #0 Text
-                                                          value: int
+                                                          value: str
                                                         #1 Text
                                                           value:  
                                             #6 Break

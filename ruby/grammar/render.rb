@@ -38,8 +38,13 @@ class Render < Dispatch
   end
 
   def Field(this, obj)
-    #puts "FIELD #{this.name} #{obj} #{obj[this.name]}"
-    recurse(this.arg, obj[this.name])
+    data = obj[this.name]
+    #puts "FIELD #{this.name} #{obj} #{data}"
+    
+    # handle special case of [[ field:"text" ]] in a grammar 
+    throw :fail if this.arg.Lit? && this.arg.value != data
+
+    recurse(this.arg, data)
   end
   
   def Value(this, obj)
