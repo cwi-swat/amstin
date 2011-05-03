@@ -46,6 +46,8 @@ class Identify < MemoBase
   end
 
   # find an object with an equivalent name  
+  # this scans the source during the recursive calls, 
+  # then follows the same path in the target on the way out
   def lookup_object(obj)
     raise "Keys cannot be null" if obj.nil?
     rel_key_field = SchemaSchema.keyRel(obj.schema_class)
