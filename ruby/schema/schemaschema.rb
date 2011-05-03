@@ -37,7 +37,7 @@ class SchemaSchema < SchemaGenerator
     field :subtypes, :type => Klass, :optional => true, :many => true, :inverse => Klass.super
     field :defined_fields, :type => Field, :optional => true, :many => true
     field :fields, :type => Field, :optional => true, :many => true, \
-      :computed => "@super ? @defined_fields + @super.fields : @defined_fields"
+      :computed => "@super ? @super.fields + @defined_fields : @defined_fields"
   end
 
   klass Field do

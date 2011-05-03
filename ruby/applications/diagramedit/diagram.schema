@@ -1,6 +1,8 @@
 schema Diagram
   
-  class Part end
+  class Part 
+    boundary: Rect?
+  end
       
   class Container < Part
     direction: int
@@ -17,10 +19,13 @@ schema Diagram
   end
   
   class Shape < Part
-    position: Rect
-    content: Part
     format: ShapeFormat
+    content: Part?
     links: LinkEnd* 
+  end
+  
+  class Graph < Part
+    nodes: Part*
   end
   
   class ShapeFormat
@@ -32,10 +37,6 @@ schema Diagram
     width: int
     style: str
     color: Color
-  end
-  
-  class Graph < Part
-    nodes: Shape*
   end
   
   class LinkEnd
@@ -69,4 +70,9 @@ schema Diagram
     g: int
     b: int
   end
+
+
+  primitive \int
+  primitive \str
+  primitive \bool
 end

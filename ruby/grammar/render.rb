@@ -93,7 +93,7 @@ class Render < Dispatch
     else
       s = @factory.Sequence()
       obj.each_with_index do |x, i|
-        s.elements << @factory.Text(this.sep, nil) if i > 0 && this.sep
+        s.elements << @factory.Text(this.sep) if i > 0 && this.sep
         s.elements << @factory.Break()
         s.elements << recurse(this.arg, x)
       end

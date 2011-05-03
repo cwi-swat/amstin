@@ -15,8 +15,11 @@ class Factory
   
   def method_missing(class_name, *args)
     obj = self[class_name.to_s]
+    n = 0
+    #puts "#{obj.schema_class.fields.keys}"
     obj.schema_class.fields.each_with_index do |field, i|
       next if field.computed
+      n += 1
       if i < args.length
         if field.many
           col = obj[field.name]
@@ -34,6 +37,7 @@ class Factory
         end
       end
     end
+    raise "too many constructor arguments supplied for '#{class_name}" if n < args.length
     return obj
   end
 end
@@ -266,7 +270,7 @@ class ManyIndexedField < BaseManyField
   def +(other)
     r = ValueHash.new(@key.name)
     self.each do |x| r << x end
-    self.each do |x| r << x end
+    other.each do |x| r << x end
     r._lock
     return r
   end
@@ -321,7 +325,7 @@ class ManyField < BaseManyField
   def +(other)
     r = []
     self.each do |x| r << x end
-    self.each do |x| r << x end
+    other.each do |x| r << x end
     return r
   end
   

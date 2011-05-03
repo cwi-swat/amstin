@@ -24,7 +24,7 @@ schema SchemaSchema
     super: Klass?
     subtypes: Klass* / Klass.super
     defined_fields: Field*
-    fields: Field* = "@super ? @defined_fields + @super.fields : @defined_fields"
+    fields: Field* = "@super ? @super.fields + @defined_fields : @defined_fields"
   end
   
   class Field
