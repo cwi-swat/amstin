@@ -68,7 +68,7 @@ class DiagramFrame < Wx::Frame
    # Writes the gruff graph to a file then reads it back to draw it
    def on_paint
      paint do | dc |
-        drawPart(dc, @part)
+        drawPart(dc, @part, 0, 0)
      end
    end
    
@@ -85,22 +85,35 @@ class DiagramFrame < Wx::Frame
       dc.set_brush(Wx::Brush.new(Color(sf.fill_color)))
    end
 
-   def drawPart(dc, part)
+   def drawPart(dc, part, x, y)
+     return if part.nil?
      if part.Shape?
-       drawShape(dc, part)
+       drawShape(dc, part, x, y)
+     elsif part.Text?
+       drawText(dc, part, x, y)
      else
        (part.items.length-1).downto(0).each do |i|
-         drawPart(dc, part.items[i])
+         drawPart(dc, part.items[i], x, y)
        end
      end
    end
    
-   def drawShape(dc, shape)
+   def drawShape(dc, shape, x, y)
      ShapeFormat(dc, shape.format)
      r = shape.boundary
      dc.draw_rectangle(r.x, r.y, r.w, r.h)
+     drawPart(dc, shape.content, r.x, r.y)
    end
-   
+
+   def drawText(dc, text, x, y)
+     weight = text.bold ? Wx::FONTWEIGHT_BOLD : Wx::FONTWEIGHT_NORMAL
+     style = text.italic ? Wx::FONTSTYLE_ITALIC : Wx::FONTSTYLE_NORMAL
+     font = Font.new(text.size, Wx::FONTFAMILY_MODERN, style, weight)
+     
+     dc.set_text_foreground(Color(text.color))
+     dc.set_font(font)
+     dc.draw_text(text.string,  x,  y)
+   end
    
 end
 
