@@ -1,6 +1,6 @@
 grammar GrammarGrammar start Grammar 
     Grammar ::= 
-        [ Grammar ] "grammar" name : sym "start" start : Rule ^ rules : Rule * 
+        [ Grammar ] "grammar" name : sym "start" \start : Rule ^ rules : Rule * 
     Rule ::= [ Rule ] name : sym "::=" arg : Alt 
     Alt ::= [ Alt ] alts : { Create "|" } + 
     Create ::= [ Create ] "[" name : sym "]" arg : Sequence |Sequence 

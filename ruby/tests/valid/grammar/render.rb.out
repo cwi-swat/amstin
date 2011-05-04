@@ -147,8 +147,10 @@ Sequence
                                                 #0 Sequence
                                                   elements
                                                     #0 Text
-                                                      value: start
+                                                      value: \
                                                     #1 Text
+                                                      value: start
+                                                    #2 Text
                                                       value:  
                                                 #1 Sequence
                                                   elements

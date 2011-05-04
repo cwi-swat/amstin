@@ -2,27 +2,65 @@ Checking SchemaSchema
 KLASS: Checking <BOOT Schema SchemaSchema> against Schema
 FIELD: name, SchemaSchema
 THIS.Type: str
-FIELD: classes, {"Schema"=><BOOT Klass Schema>, "Klass"=><BOOT Klass Klass>, "Primitive"=><BOOT Klass Primitive>, "Type"=><BOOT Klass Type>, "Field"=><BOOT Klass Field>}
-KLASS: Checking <BOOT Klass Schema> against Klass
+FIELD: types, {"str"=><BOOT Primitive str>, "int"=><BOOT Primitive int>, "bool"=><BOOT Primitive bool>, "real"=><BOOT Primitive real>, "Schema"=><BOOT Klass Schema>, "Type"=><BOOT Klass Type>, "Klass"=><BOOT Klass Klass>, "Primitive"=><BOOT Klass Primitive>, "Field"=><BOOT Klass Field>}
+KLASS: Checking <BOOT Primitive str> against Type
+FIELD: name, str
+THIS.Type: str
+FIELD: schema, <BOOT Schema SchemaSchema>
+THIS.Type: Schema
+KLASS: Checking <BOOT Primitive int> against Type
+FIELD: name, int
+THIS.Type: str
+FIELD: schema, <BOOT Schema SchemaSchema>
+THIS.Type: Schema
+KLASS: Checking <BOOT Primitive bool> against Type
+FIELD: name, bool
+THIS.Type: str
+FIELD: schema, <BOOT Schema SchemaSchema>
+THIS.Type: Schema
+KLASS: Checking <BOOT Primitive real> against Type
+FIELD: name, real
+THIS.Type: str
+FIELD: schema, <BOOT Schema SchemaSchema>
+THIS.Type: Schema
+KLASS: Checking <BOOT Klass Schema> against Type
 FIELD: name, Schema
 THIS.Type: str
 FIELD: schema, <BOOT Schema SchemaSchema>
 THIS.Type: Schema
+KLASS: Checking <BOOT Klass Type> against Type
+FIELD: name, Type
+THIS.Type: str
+FIELD: schema, <BOOT Schema SchemaSchema>
+THIS.Type: Schema
+KLASS: Checking <BOOT Klass Klass> against Type
+FIELD: name, Klass
+THIS.Type: str
+FIELD: schema, <BOOT Schema SchemaSchema>
+THIS.Type: Schema
+KLASS: Checking <BOOT Klass Primitive> against Type
+FIELD: name, Primitive
+THIS.Type: str
+FIELD: schema, <BOOT Schema SchemaSchema>
+THIS.Type: Schema
+KLASS: Checking <BOOT Klass Field> against Type
+FIELD: name, Field
+THIS.Type: str
+FIELD: schema, <BOOT Schema SchemaSchema>
+THIS.Type: Schema
+THIS.Type: Type
+FIELD: classes, {"Schema"=><BOOT Klass Schema>, "Type"=><BOOT Klass Type>, "Klass"=><BOOT Klass Klass>, "Primitive"=><BOOT Klass Primitive>, "Field"=><BOOT Klass Field>}
+KLASS: Checking <BOOT Klass Schema> against Klass
 FIELD: super, 
 FIELD: subtypes, {}
 THIS.Type: Klass
-FIELD: defined_fields, {"name"=><BOOT Field name>, "classes"=><BOOT Field classes>, "primitives"=><BOOT Field primitives>, "types"=><BOOT Field types>}
+FIELD: defined_fields, {"name"=><BOOT Field name>, "types"=><BOOT Field types>, "classes"=><BOOT Field classes>, "primitives"=><BOOT Field primitives>}
 KLASS: Checking <BOOT Field name> against Field
 FIELD: name, name
 THIS.Type: str
 FIELD: owner, <BOOT Klass Schema>
 THIS.Type: Klass
 FIELD: type, <BOOT Primitive str>
-KLASS: Checking <BOOT Primitive str> against Type
-FIELD: name, str
-THIS.Type: str
-FIELD: schema, <BOOT Schema SchemaSchema>
-THIS.Type: Schema
 THIS.Type: Type
 FIELD: optional, false
 THIS.Type: bool
@@ -32,59 +70,12 @@ FIELD: key, true
 THIS.Type: bool
 FIELD: inverse, 
 FIELD: computed, 
-KLASS: Checking <BOOT Field classes> against Field
-FIELD: name, classes
-THIS.Type: str
-FIELD: owner, <BOOT Klass Schema>
-THIS.Type: Klass
-FIELD: type, <BOOT Klass Klass>
-KLASS: Checking <BOOT Klass Klass> against Type
-FIELD: name, Klass
-THIS.Type: str
-FIELD: schema, <BOOT Schema SchemaSchema>
-THIS.Type: Schema
-THIS.Type: Type
-FIELD: optional, true
-THIS.Type: bool
-FIELD: many, true
-THIS.Type: bool
-FIELD: key, false
-THIS.Type: bool
-FIELD: inverse, 
-FIELD: computed, @types.select(&:Klass?)
-THIS.Type: str
-KLASS: Checking <BOOT Field primitives> against Field
-FIELD: name, primitives
-THIS.Type: str
-FIELD: owner, <BOOT Klass Schema>
-THIS.Type: Klass
-FIELD: type, <BOOT Klass Primitive>
-KLASS: Checking <BOOT Klass Primitive> against Type
-FIELD: name, Primitive
-THIS.Type: str
-FIELD: schema, <BOOT Schema SchemaSchema>
-THIS.Type: Schema
-THIS.Type: Type
-FIELD: optional, true
-THIS.Type: bool
-FIELD: many, true
-THIS.Type: bool
-FIELD: key, false
-THIS.Type: bool
-FIELD: inverse, 
-FIELD: computed, @types.select(&:Primitive?)
-THIS.Type: str
 KLASS: Checking <BOOT Field types> against Field
 FIELD: name, types
 THIS.Type: str
 FIELD: owner, <BOOT Klass Schema>
 THIS.Type: Klass
 FIELD: type, <BOOT Klass Type>
-KLASS: Checking <BOOT Klass Type> against Type
-FIELD: name, Type
-THIS.Type: str
-FIELD: schema, <BOOT Schema SchemaSchema>
-THIS.Type: Schema
 THIS.Type: Type
 FIELD: optional, true
 THIS.Type: bool
@@ -168,11 +159,6 @@ THIS.Type: str
 FIELD: owner, <BOOT Klass Klass>
 THIS.Type: Klass
 FIELD: type, <BOOT Klass Field>
-KLASS: Checking <BOOT Klass Field> against Type
-FIELD: name, Field
-THIS.Type: str
-FIELD: schema, <BOOT Schema SchemaSchema>
-THIS.Type: Schema
 THIS.Type: Type
 FIELD: optional, true
 THIS.Type: bool
@@ -226,11 +212,6 @@ THIS.Type: str
 FIELD: owner, <BOOT Klass Field>
 THIS.Type: Klass
 FIELD: type, <BOOT Primitive bool>
-KLASS: Checking <BOOT Primitive bool> against Type
-FIELD: name, bool
-THIS.Type: str
-FIELD: schema, <BOOT Schema SchemaSchema>
-THIS.Type: Schema
 THIS.Type: Type
 FIELD: optional, false
 THIS.Type: bool
@@ -332,7 +313,7 @@ THIS.Type: bool
 FIELD: key, false
 THIS.Type: bool
 FIELD: inverse, 
-FIELD: computed, @super ? @defined_fields + @super.fields : @defined_fields
+FIELD: computed, @super ? @super.fields + @defined_fields : @defined_fields
 THIS.Type: str
 THIS.Type: Field
 FIELD: fields, {"name"=><BOOT Field name>, "schema"=><BOOT Field schema>, "super"=><BOOT Field super>, "subtypes"=><BOOT Field subtypes>, "defined_fields"=><BOOT Field defined_fields>, "fields"=><BOOT Field fields>}
@@ -344,38 +325,57 @@ FIELD: fields, {"name"=><BOOT Field name>, "schema"=><BOOT Field schema>}
 THIS.Type: Field
 THIS.Type: Klass
 FIELD: type, <BOOT Klass Schema>
-KLASS: Checking <BOOT Klass Schema> against Type
 THIS.Type: Type
 FIELD: optional, false
 THIS.Type: bool
 FIELD: many, false
 THIS.Type: bool
-FIELD: key, false
+FIELD: key, true
 THIS.Type: bool
 FIELD: inverse, <BOOT Field types>
 THIS.Type: Field
 FIELD: computed, 
 THIS.Type: Field
 FIELD: computed, 
+KLASS: Checking <BOOT Field classes> against Field
+FIELD: name, classes
+THIS.Type: str
+FIELD: owner, <BOOT Klass Schema>
+THIS.Type: Klass
+FIELD: type, <BOOT Klass Klass>
+THIS.Type: Type
+FIELD: optional, true
+THIS.Type: bool
+FIELD: many, true
+THIS.Type: bool
+FIELD: key, false
+THIS.Type: bool
+FIELD: inverse, 
+FIELD: computed, @types.select(&:Klass?)
+THIS.Type: str
+KLASS: Checking <BOOT Field primitives> against Field
+FIELD: name, primitives
+THIS.Type: str
+FIELD: owner, <BOOT Klass Schema>
+THIS.Type: Klass
+FIELD: type, <BOOT Klass Primitive>
+THIS.Type: Type
+FIELD: optional, true
+THIS.Type: bool
+FIELD: many, true
+THIS.Type: bool
+FIELD: key, false
+THIS.Type: bool
+FIELD: inverse, 
+FIELD: computed, @types.select(&:Primitive?)
+THIS.Type: str
 THIS.Type: Field
-FIELD: fields, {"name"=><BOOT Field name>, "classes"=><BOOT Field classes>, "primitives"=><BOOT Field primitives>, "types"=><BOOT Field types>}
+FIELD: fields, {"name"=><BOOT Field name>, "types"=><BOOT Field types>, "classes"=><BOOT Field classes>, "primitives"=><BOOT Field primitives>}
 THIS.Type: Field
 THIS.Type: Klass
 FIELD: primitives, {"str"=><BOOT Primitive str>, "int"=><BOOT Primitive int>, "bool"=><BOOT Primitive bool>, "real"=><BOOT Primitive real>}
 KLASS: Checking <BOOT Primitive str> against Primitive
 KLASS: Checking <BOOT Primitive int> against Primitive
-FIELD: name, int
-THIS.Type: str
-FIELD: schema, <BOOT Schema SchemaSchema>
-THIS.Type: Schema
 KLASS: Checking <BOOT Primitive bool> against Primitive
 KLASS: Checking <BOOT Primitive real> against Primitive
-FIELD: name, real
-THIS.Type: str
-FIELD: schema, <BOOT Schema SchemaSchema>
-THIS.Type: Schema
 THIS.Type: Primitive
-FIELD: types, {"str"=><BOOT Primitive str>, "int"=><BOOT Primitive int>, "bool"=><BOOT Primitive bool>, "real"=><BOOT Primitive real>, "Schema"=><BOOT Klass Schema>, "Klass"=><BOOT Klass Klass>, "Primitive"=><BOOT Klass Primitive>, "Type"=><BOOT Klass Type>, "Field"=><BOOT Klass Field>}
-KLASS: Checking <BOOT Primitive int> against Type
-KLASS: Checking <BOOT Primitive real> against Type
-THIS.Type: Type

@@ -17,17 +17,16 @@ class Factory
     obj = self[class_name.to_s]
     n = 0
     #puts "#{obj.schema_class.fields.keys}"
-    obj.schema_class.fields.each_with_index do |field, i|
+    obj.schema_class.fields.each_with_index do |field|
       next if field.computed
-      n += 1
-      if i < args.length
+      if n < args.length
         if field.many
           col = obj[field.name]
-          args[i].each do |x|
+          args[n].each do |x|
             col << x
           end
         else
-          obj[field.name] = args[i]
+          obj[field.name] = args[n]
         end
       elsif !field.key && !field.optional && field.type.Primitive?
         obj[field.name] = case field.type.name
@@ -36,6 +35,7 @@ class Factory
           when "bool" then false
         end
       end
+      n += 1
     end
     raise "too many constructor arguments supplied for '#{class_name}" if n < args.length
     return obj
@@ -103,9 +103,9 @@ class CheckedObject
   def []=(field_name, new)
     #puts "Setting #{field_name} to #{new}"
     field = @schema_class.fields[field_name]
-    raise "Assign to invalid field '#{field_name}'" unless field
-    raise "Can't set computed field #{field_name}" if field.computed
-    raise "Can't assign a many-valued field" if field.many
+    raise "Assign to invalid field '#{field_name}' of #{@schema_class.name}" unless field
+    raise "Can't set computed field '#{field_name}' of #{@schema_class.name}" if field.computed
+    raise "Can't assign a many-valued field '#{field_name}' of #{@schema_class.name}" if field.many
     if new.nil?
       raise "Can't assign nil to required field '#{field_name}'" if !field.optional
     else
@@ -152,7 +152,7 @@ class CheckedObject
   
   def notify_update(field, old, new)
     inverse = field.inverse
-    #puts "NOTIFY #{self}.#{field.name}/#{inverse} FROM #{old} to #{new}" if field.name=="defined_fields"
+    #puts "NOTIFY #{self}.#{field}/#{inverse} FROM '#{old}' to '#{new}'" if field.name=="types"
     return if inverse.nil?
     # remove the old one
     if old
@@ -165,6 +165,7 @@ class CheckedObject
     # add the new one
     if new
       if !inverse.many
+        #puts "ASSIGN INVERSE #{new}[#{inverse.name}] = #{self}" if field.name=="types"
         new[inverse.name] = self
       else
         # don't do this now... it will get done during finalize
@@ -198,14 +199,14 @@ class BaseManyField
   def reject(&block)
     r = ValueHash.new(@key.name)
     super.reject do |x| r << x end
-    r._lock
+    r._lock()
     return r
   end
   
   def select(&block)
     r = ValueHash.new(@key.name)
     super.select do |x| r << x end
-    r._lock
+    r._lock()
     return r
   end
 end
@@ -251,6 +252,10 @@ class ManyIndexedField < BaseManyField
   # public main insertion function
   def []=(k, v)
     raise "Key cannot be nil for field #{v}" if !k
+    
+    # can't raise this error, for some reason
+    # TODO:    raise "Item named '#{k}' already exists in '#{@field.name}'" if @hash[k]
+
     if @hash[k] != v
       @realself.notify_update(@field, @hash[k], v)
       @hash[k] = v
@@ -271,7 +276,7 @@ class ManyIndexedField < BaseManyField
     r = ValueHash.new(@key.name)
     self.each do |x| r << x end
     other.each do |x| r << x end
-    r._lock
+    r._lock()
     return r
   end
 end  

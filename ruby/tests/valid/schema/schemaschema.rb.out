@@ -14,22 +14,6 @@ Schema
           inverse: nil
           computed: 
         #1 Field
-          name: classes
-          type: Klass
-          optional: true
-          many: true
-          key: false
-          inverse: nil
-          computed: @types.select(&:Klass?)
-        #2 Field
-          name: primitives
-          type: Primitive
-          optional: true
-          many: true
-          key: false
-          inverse: nil
-          computed: @types.select(&:Primitive?)
-        #3 Field
           name: types
           type: Type
           optional: true
@@ -37,7 +21,43 @@ Schema
           key: false
           inverse: schema
           computed: 
+        #2 Field
+          name: classes
+          type: Klass
+          optional: true
+          many: true
+          key: false
+          inverse: nil
+          computed: @types.select(&:Klass?)
+        #3 Field
+          name: primitives
+          type: Primitive
+          optional: true
+          many: true
+          key: false
+          inverse: nil
+          computed: @types.select(&:Primitive?)
     #1 Klass
+      name: Type
+      super: nil
+      fields
+        #0 Field
+          name: name
+          type: str
+          optional: false
+          many: false
+          key: true
+          inverse: nil
+          computed: 
+        #1 Field
+          name: schema
+          type: Schema
+          optional: false
+          many: false
+          key: true
+          inverse: types
+          computed: 
+    #2 Klass
       name: Klass
       super: Type
       fields
@@ -56,7 +76,7 @@ Schema
           type: Schema
           optional: false
           many: false
-          key: false
+          key: true
           inverse: types
           computed: 
         #2 Field
@@ -88,8 +108,8 @@ Schema
           many: true
           key: false
           inverse: nil
-          computed: @super ? @defined_fields + @super.fields : @defined_fields
-    #2 Klass
+          computed: @super ? @super.fields + @defined_fields : @defined_fields
+    #3 Klass
       name: Primitive
       super: Type
       fields
@@ -108,27 +128,7 @@ Schema
           type: Schema
           optional: false
           many: false
-          key: false
-          inverse: types
-          computed: 
-    #3 Klass
-      name: Type
-      super: nil
-      fields
-        #0 Field
-          name: name
-          type: str
-          optional: false
-          many: false
           key: true
-          inverse: nil
-          computed: 
-        #1 Field
-          name: schema
-          type: Schema
-          optional: false
-          many: false
-          key: false
           inverse: types
           computed: 
     #4 Klass

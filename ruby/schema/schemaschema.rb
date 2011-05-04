@@ -17,11 +17,11 @@ class SchemaSchema < SchemaGenerator
 
   klass Schema do
     field :name, :type => :str, :key => true
+    field :types, :type => Type, :optional => true, :many => true
     field :classes, :type => Klass, :optional => true, :many => true, \
       :computed => "@types.select(&:Klass?)"
     field :primitives, :type => Primitive, :optional => true, :many => true, \
       :computed => "@types.select(&:Primitive?)"
-    field :types, :type => Type, :optional => true, :many => true
   end
     
   klass Type do

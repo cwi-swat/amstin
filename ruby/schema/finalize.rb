@@ -47,7 +47,7 @@ end
 class CheckRequired < VisitFields
   def visitField(field, obj, val)
     if !field.optional && (!field.many ? val.nil? : val.empty?)
-      raise "Field #{field.name} is required for #{obj}" 
+      raise "Field '#{obj}.#{field.name}' is required" 
     end
   end
 end
@@ -58,7 +58,7 @@ class UpdateInverses < VisitFields
     return if val.nil? || field.type.Primitive?
     # update delayed inverses
     if field.inverse && field.inverse.many
-      #puts " "*@indent + "INVERTED #{field.inverse.name}:'#{val[field.inverse.name]}'"
+      #puts " "*@indent + "INVERTED #{obj}.#{field.inverse.name}"
       _each(field, val) do |val|
         if !val[field.inverse.name].include?(obj)
           #puts " "*@indent + "FIXING #{obj}.#{field.inverse.name}"

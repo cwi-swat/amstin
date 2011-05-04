@@ -7,9 +7,9 @@ schema SchemaSchema
 
   class Schema
     #name: str
+    types: Type*
     classes: Klass* = "@types.select(&:Klass?)"
     primitives: Primitive* = "@types.select(&:Primitive?)"
-    types: Type*
   end
 
   class Type
